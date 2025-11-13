@@ -1,6 +1,8 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import fs from "fs/promises";
+import path from "path";
 import { getCategoryUrl } from "@utils/url-utils";
 
 // // Retrieve posts and sort them by publication date
@@ -51,6 +53,30 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 
 	return sortedPostsList;
 }
+
+export type TimelineItem = {
+	title: string;
+	date: string; // 例如 "2026/1/1"
+	tags: string[];
+};
+
+export async function getTimelineList(): Promise<TimelineItem[]> {
+	try {
+		// Astro 构建时 public 目录的相对路径
+		const jsonPath = path.resolve("./public/timeline.json");
+		const content = await fs.readFile(jsonPath, "utf-8");
+		const data = JSON.parse(content) as TimelineItem[];
+
+		// 确保时间按倒序排列
+		return data.sort(
+			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+		);
+	} catch (err) {
+		console.error("❌ 无法读取 timeline.json：", err);
+		return [];
+	}
+};
+
 export type Tag = {
 	name: string;
 	count: number;

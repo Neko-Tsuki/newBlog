@@ -1,0 +1,32 @@
+---
+import ArchivePanel from "@components/interactive/ArchivePanel.svelte";
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getTimelineList } from "@/utils/content-utils";
+
+const timelinePost = await getEntry("spec", "timeline");
+if (!timelinePost) {
+	throw new Error("page content not found");
+}
+
+const { Content } = await render(timelinePost);
+const timelineData = await getTimelineList();
+
+---
+
+<MainGridLayout title="活动归档 - Timeline">
+  <!-- 顶部容器 -->
+  <div class="flex w-full rounded-t-[var(--radius-large)] overflow-hidden relative min-h-32 bg-[var(--card-bg)]">
+    <div class="z-10 px-9 py-6 relative w-full">
+      <Markdown class="mt-2">
+        <Content />
+      </Markdown>
+    </div>
+  </div>
+
+  <!-- 时间线容器，与上方无缝衔接 -->
+  <div class="w-full rounded-b-[var(--radius-large)] bg-[var(--card-bg)] -mt-[1px]">
+    <ArchivePanel timelineData={timelineData} client:only="svelte" />
+  </div>
+</MainGridLayout>
