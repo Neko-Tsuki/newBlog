@@ -1,6 +1,6 @@
 ---
-import ArchivePanel from "@components/interactive/ArchivePanel.svelte";
 import { getEntry, render } from "astro:content";
+import ArchivePanel from "@components/interactive/ArchivePanel.svelte";
 import Markdown from "@components/misc/Markdown.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getTimelineList } from "@/utils/content-utils";
@@ -12,7 +12,6 @@ if (!timelinePost) {
 
 const { Content } = await render(timelinePost);
 const timelineData = await getTimelineList();
-
 ---
 
 <MainGridLayout title="活动归档 - Timeline">

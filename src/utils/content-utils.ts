@@ -1,9 +1,9 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import { getCategoryUrl } from "@utils/url-utils";
 import fs from "fs/promises";
 import path from "path";
-import { getCategoryUrl } from "@utils/url-utils";
 
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
@@ -69,13 +69,13 @@ export async function getTimelineList(): Promise<TimelineItem[]> {
 
 		// 确保时间按倒序排列
 		return data.sort(
-			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
 		);
 	} catch (err) {
 		console.error("❌ 无法读取 timeline.json：", err);
 		return [];
 	}
-};
+}
 
 export type Tag = {
 	name: string;

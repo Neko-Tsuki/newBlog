@@ -69,12 +69,15 @@ function formatTag(tagList: string[]) {
 onMount(() => {
 	if (timelineData && timelineData.length > 0) {
 		// ✅ 活动模式
-		const grouped = timelineData.reduce((acc, item) => {
-			const year = new Date(item.date).getFullYear();
-			if (!acc[year]) acc[year] = [];
-			acc[year].push(item);
-			return acc;
-		}, {} as Record<number, TimelineItem[]>);
+		const grouped = timelineData.reduce(
+			(acc, item) => {
+				const year = new Date(item.date).getFullYear();
+				if (!acc[year]) acc[year] = [];
+				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<number, TimelineItem[]>,
+		);
 
 		eventGroups = Object.keys(grouped)
 			.map((y) => ({
@@ -93,13 +96,13 @@ onMount(() => {
 		filteredPosts = filteredPosts.filter(
 			(post) =>
 				Array.isArray(post.data.tags) &&
-				post.data.tags.some((tag) => tags.includes(tag))
+				post.data.tags.some((tag) => tags.includes(tag)),
 		);
 	}
 
 	if (categories.length > 0) {
 		filteredPosts = filteredPosts.filter(
-			(post) => post.data.category && categories.includes(post.data.category)
+			(post) => post.data.category && categories.includes(post.data.category),
 		);
 	}
 
@@ -118,7 +121,7 @@ onMount(() => {
 			acc[year].push(post);
 			return acc;
 		},
-		{} as Record<number, Post[]>
+		{} as Record<number, Post[]>,
 	);
 
 	const groupedPostsArray = Object.keys(grouped).map((yearStr) => ({

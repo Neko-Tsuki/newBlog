@@ -1,3 +1,4 @@
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
@@ -16,6 +17,7 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, siteConfig } from "./src/config";
+import searchIndexer from "./src/integrations/searchIndex.mts";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -25,8 +27,6 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
-import mdx from "@astrojs/mdx";
-import searchIndexer from "./src/integrations/searchIndex.mts";
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
@@ -91,8 +91,7 @@ export default defineConfig({
 				codeFontFamily:
 					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
-				frames: {
-				},
+				frames: {},
 				textMarkers: {
 					delHue: 0,
 					insHue: 180,
@@ -111,24 +110,24 @@ export default defineConfig({
 				const pathname = url.pathname;
 
 				// 检查各个页面是否启用
-				if (pathname === '/anime/' && !siteConfig.pages.anime) {
+				if (pathname === "/anime/" && !siteConfig.pages.anime) {
 					return false;
 				}
-				if (pathname === '/sponsor/' && !siteConfig.pages.sponsor) {
+				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
 					return false;
 				}
-				if (pathname === '/guestbook/' && !siteConfig.pages.guestbook) {
+				if (pathname === "/guestbook/" && !siteConfig.pages.guestbook) {
 					return false;
 				}
-				if (pathname === '/bangumi/' && !siteConfig.pages.bangumi) {
+				if (pathname === "/bangumi/" && !siteConfig.pages.bangumi) {
 					return false;
 				}
 
 				return true;
 			},
 		}),
-    searchIndexer(),
-    mdx()
+		searchIndexer(),
+		mdx(),
 	],
 	markdown: {
 		remarkPlugins: [
