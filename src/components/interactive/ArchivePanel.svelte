@@ -62,6 +62,9 @@ function formatDate(date: Date | string) {
 function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
+function formatGroup(tagList: string[]) {
+	return tagList.map((t) => `群: ${t}`).join(" ");
+}
 
 /**
  * 初始化逻辑
@@ -214,7 +217,7 @@ onMount(() => {
 						</div>
 
 						<div class="hidden md:block md:w-[15%] text-left text-sm transition whitespace-nowrap overflow-ellipsis overflow-hidden text-30">
-							{formatTag(event.tags)}
+							{formatGroup(event.tags)}
 						</div>
 					</div>
 				</div>

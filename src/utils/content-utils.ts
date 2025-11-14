@@ -62,21 +62,21 @@ export type TimelineItem = {
 
 export async function getTimelineList(): Promise<TimelineItem[]> {
 	try {
-		// Astro 构建时 public 目录的相对路径
-		const jsonPath = path.resolve("./public/timeline.json");
-		const content = await fs.readFile(jsonPath, "utf-8");
-		const data = JSON.parse(content) as TimelineItem[];
-
-		// 确保时间按倒序排列
-		return data.sort(
-			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-		);
+	  // Astro 构建时 public 目录的相对路径
+	  const jsonPath = path.resolve("./public/timeline.json");
+	  const content = await fs.readFile(jsonPath, "utf-8");
+	  const data = JSON.parse(content) as TimelineItem[];
+  
+	  // 修改为按时间升序排列（最早的在前）
+	  return data.sort(
+		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+	  );
 	} catch (err) {
-		console.error("❌ 无法读取 timeline.json：", err);
-		return [];
+	  console.error("❌ 无法读取 timeline.json：", err);
+	  return [];
 	}
-}
-
+  }
+  
 export type Tag = {
 	name: string;
 	count: number;

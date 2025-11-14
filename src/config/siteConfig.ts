@@ -6,16 +6,15 @@ import { fontConfig } from "./fontConfig";
 const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
-	title: "Firefly",
-	subtitle: "Demo site",
-	site_url: "https://firefly.cuteleaf.cn",
+	title: "尘尘落落格",
+	subtitle: "",
+	site_url: "https://blog.shika-mori.top",
 	description:
-		"Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
+		"基于 Astro 框架和 Fuwari && Firefly 模板修改的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
 	keywords: [
 		"Firefly",
 		"Fuwari",
 		"Astro",
-		"ACGN",
 		"博客",
 		"技术博客",
 		"静态博客",
@@ -24,15 +23,15 @@ export const siteConfig: SiteConfig = {
 	lang: SITE_LANG,
 
 	themeColor: {
-		hue: 165, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		fixed: false, // 对访问者隐藏主题色选择器
+		hue: 235, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
+		fixed: true, // 对访问者隐藏主题色选择器
 		defaultMode: "system", // 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 	},
 
 	favicon: [
 		// 留空以使用默认 favicon
 		{
-			src: "/assets/images/favicon.ico", // 图标文件路径
+			src: "/assets/images/yuyuko.png", // 图标文件路径
 			theme: "light", // 可选，指定主题 'light' | 'dark'
 			sizes: "32x32", // 可选，图标大小
 		},
@@ -44,11 +43,11 @@ export const siteConfig: SiteConfig = {
 	// { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
 	// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
 	navbarLogo: {
-		type: "image",
-		value: "/assets/images/LiuYingPure3.svg",
+		type: "icon",
+		value: "material-icon-theme:jinja",
 		alt: "🍀",
 	},
-	navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
 	// 追番配置
 	bangumi: {
@@ -70,7 +69,7 @@ export const siteConfig: SiteConfig = {
 		anime: false, // 追番页面开关
 		sponsor: true, // 赞助页面开关
 		guestbook: true, // 留言板页面开关，需要配置评论系统
-		bangumi: true, // 番组计划页面开关，含追番和游戏
+		bangumi: false, // 番组计划页面开关，含追番和游戏
 	},
 
 	// 文章列表布局配置
@@ -78,7 +77,7 @@ export const siteConfig: SiteConfig = {
 		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
 		defaultMode: "list",
 		// 是否允许用户切换布局
-		allowSwitch: true,
+		allowSwitch: false,
 	},
 
 	// 分页配置
@@ -91,7 +90,7 @@ export const siteConfig: SiteConfig = {
 		// 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景无壁纸
 		mode: "banner",
 		// 是否允许用户通过导航栏切换壁纸模式，设为false可提升性能（只渲染当前模式）
-		switchable: true,
+		switchable: false,
 
 		// 背景图片配置
 		src: {
@@ -106,21 +105,21 @@ export const siteConfig: SiteConfig = {
 			// 图片位置
 			// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
 			// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
-			position: "0% 20%",
+			position: "top",
 
 			homeText: {
 				// 主页显示自定义文本（全局开关）
 				enable: true,
 				// 主页横幅主标题
-				title: "Lovely firefly!",
+				title: "Hell'o World",
 				// 主页横幅副标题
 				subtitle: [
-					"In Reddened Chrysalis, I Once Rest",
-					"From Shattered Sky, I Free Fall",
-					"Amidst Silenced Stars, I Deep Sleep",
-					"Upon Lighted Fyrefly, I Soon Gaze",
-					"From Undreamt Night, I Thence Shine",
-					"In Finalized Morrow, I Full Bloom",
+					"早上9:07会和猫讨论量子披萨配方的人",
+					"键盘下有咖啡渍和旧车票",
+					"脑子里塞满被书签咬过的诗句、断电时的吉他和半成品的发明",
+					"喜欢在雨天给植物起名字、把日常碎片拼成地图",
+					"然后丢进收藏的旧收音机里",
+					"会在地铁里唱错歌词却记得每个路口的色彩；",
 				],
 				typewriter: {
 					enable: true, // 启用副标题打字机效果
@@ -131,7 +130,7 @@ export const siteConfig: SiteConfig = {
 			},
 			credit: {
 				enable: {
-					desktop: true, // 桌面端显示横幅图片来源文本
+					desktop: false, // 桌面端显示横幅图片来源文本
 					mobile: false, // 移动端显示横幅图片来源文本
 				},
 				text: {
@@ -153,7 +152,7 @@ export const siteConfig: SiteConfig = {
 					mobile: true, // 移动端启用波浪动画效果
 				},
 				performance: {
-					quality: "high",
+					quality: "medium",
 					hardwareAcceleration: true, // 是否启用硬件加速
 				},
 				// 性能优化说明：
