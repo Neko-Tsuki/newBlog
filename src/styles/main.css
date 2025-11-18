@@ -7,7 +7,8 @@
 @import './transition.css';
 /* 导入统一导航栏样式 */
 @import './navbar.css';
-
+/* 导入评论区额外样式 */
+@import './waline.css';
 
 @tailwind base;
 @tailwind components;
@@ -210,7 +211,7 @@ html {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
     border-radius: 0 0 var(--radius-large) var(--radius-large) !important;
 }
-    
+
     .wallpaper-transparent .btn-card {
         @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
     }

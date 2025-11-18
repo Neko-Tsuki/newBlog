@@ -11,6 +11,10 @@ const config = {
   path: Astro.props.path,
   dark: 'html.dark',
   wordLimit: ["2", "300"],
+  sofa: "测试文字",
+  emoji: [
+    "//unpkg.com/@waline/emojis@1.4.0/tw-emoji",
+  ],
   ...(commentConfig.waline?.visitorCount ? { pageview: true } : {})
 }
 ---
