@@ -44,14 +44,14 @@ export const siteConfig: SiteConfig = {
 	// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
 	navbarLogo: {
 		type: "icon",
-		value: "material-icon-theme:jinja",
-		alt: "🍀",
+		value: "material-symbols:bookmark-stacks-rounded",
+		alt: "Site-Logo",
 	},
 	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
 	// 追番配置
 	bangumi: {
-		userId: "1163581", // 在此处设置你的Bangumi用户ID
+		userId: "", // 在此处设置你的Bangumi用户ID
 	},
 
 	// 文章页底部的"上次编辑时间"卡片开关
@@ -95,9 +95,9 @@ export const siteConfig: SiteConfig = {
 		// 背景图片配置
 		src: {
 			// 桌面背景图片
-			desktop: "/assets/images/d1.webp",
+			desktop: "/assets/images/d1.jpg",
 			// 移动背景图片
-			mobile: "/assets/images/m1.webp",
+			mobile: "/assets/images/m1.png",
 		},
 
 		// Banner模式特有配置

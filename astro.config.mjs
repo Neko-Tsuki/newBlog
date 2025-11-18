@@ -78,11 +78,11 @@ export default defineConfig({
 			plugins: [
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
-				// pluginLanguageBadge(),
+				pluginLanguageBadge(),
 				pluginCustomCopyButton(),
 			],
 			defaultProps: {
-				wrap: true,
+				wrap: false,
 				overridesByLang: {
 					shellsession: {
 						showLineNumbers: false,
@@ -114,16 +114,16 @@ export default defineConfig({
 				const pathname = url.pathname;
 
 				// 检查各个页面是否启用
-				if (pathname === "/anime/" && !siteConfig.pages.anime) {
+				if (pathname === '/anime/' && !siteConfig.pages.anime) {
 					return false;
 				}
-				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
+				if (pathname === '/sponsor/' && !siteConfig.pages.sponsor) {
 					return false;
 				}
-				if (pathname === "/guestbook/" && !siteConfig.pages.guestbook) {
+				if (pathname === '/guestbook/' && !siteConfig.pages.guestbook) {
 					return false;
 				}
-				if (pathname === "/bangumi/" && !siteConfig.pages.bangumi) {
+				if (pathname === '/bangumi/' && !siteConfig.pages.bangumi) {
 					return false;
 				}
 

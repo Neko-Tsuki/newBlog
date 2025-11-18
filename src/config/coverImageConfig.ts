@@ -19,8 +19,10 @@ export const coverImageConfig: CoverImageConfig = {
 	enable: true,
 	// 封面图API列表
 	apis: [
-		"https://t.alcy.cc/pc",
+		"https://img.paulzzh.com/touhou/random",
+		"https://api.r10086.com/%E6%A8%B1%E9%81%93%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3.php?%E5%9B%BE%E7%89%87%E7%B3%BB%E5%88%97=P%E7%AB%99%E7%B3%BB%E5%88%974",
 		"https://www.dmoe.cc/random.php",
+		"https://api.r10086.com/%E6%A8%B1%E9%81%93%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3.php?%E5%9B%BE%E7%89%87%E7%B3%BB%E5%88%97=%E4%B8%9C%E6%96%B9project1",
 		"https://uapis.cn/api/v1/random/image?category=acg&type=pc",
 	],
 	// 备用图片路径
@@ -67,4 +69,7 @@ export const coverImageConfig: CoverImageConfig = {
 		// 背景颜色
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},
+	
+	// 加载指示器开关
+	loadingIndicatorEnable: true,
 };
