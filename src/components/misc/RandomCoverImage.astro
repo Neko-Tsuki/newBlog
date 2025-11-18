@@ -47,8 +47,10 @@ if (isLocal) {
 		console.error(
 			`\n[ERROR] Image file not found: ${normalizedPath.replace("../../", "src/")}`,
 		);
+		img = null; // 设置为 null 而不是继续调用
+	} else {
+		img = await file();
 	}
-	img = await file();
 }
 // 如果是随机图API，生成所有API URL列表用于客户端重试
 let allApiUrls: string[] = [];
@@ -126,7 +128,7 @@ const watermarkStyles = showWatermark ? getWatermarkStyles(watermark?.position) 
   preview ? 'min-h-[150px] md:min-h-0' : 'min-h-[300px]'
 ]}> 
   <!-- 加载指示器：对所有文章封面图片显示 -->
-  {coverImageConfig.loadingIndicatorEnable !== false && (
+  {coverImageConfig.loading?.enable !== false && (
     <div 
       class="image-loading-indicator absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300"
       style={`background-color: ${coverImageConfig.loading?.backgroundColor || '#fefefe'};`}
