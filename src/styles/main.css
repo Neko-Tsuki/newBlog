@@ -9,6 +9,7 @@
 @import './navbar.css';
 /* 导入评论区额外样式 */
 @import './waline.css';
+@import './ai-summary.css';
 
 @tailwind base;
 @tailwind components;

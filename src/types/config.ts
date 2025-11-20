@@ -63,7 +63,7 @@ export type SiteConfig = {
     anime: boolean; // 追番页面开关
     sponsor: boolean; // 赞助页面开关
     guestbook: boolean; // 留言板页面开关
-    bangumi: boolean
+    bangumi: boolean;
   };
 
   // 文章列表布局配置
@@ -107,7 +107,6 @@ export enum NavBarSearchMethod {
   PageFind = 0,
   MeiliSearch = 1,
 };
-
 
 /**
  * MeiliSearch配置
@@ -153,8 +152,8 @@ export type LicenseConfig = {
   name: string;
   url: string;
 };
-// 评论配置
 
+// 评论配置
 export type CommentConfig = {
   /**
    * 当前启用的评论系统类型
@@ -686,4 +685,39 @@ export type SponsorConfig = {
   sponsors?: SponsorItem[]; // 赞助者列表（可选）
   showSponsorsList?: boolean; // 是否显示赞助者列表，默认 true
   showButtonInPost?: boolean; // 是否在文章详情页底部显示赞助按钮，默认 true
+};
+
+// AI总结配置
+export type AISummaryConfig = {
+  // AI总结功能开关
+  enable: boolean;
+  
+  // 调试信息输出开关
+  debug: boolean;
+  
+  // API配置
+  api: {
+    // API地址
+    endpoint: string;
+    // API密钥
+    apiKey: string;
+    // 使用的模型
+    model: string;
+    // 请求超时时间(ms)
+    timeout: number;
+  };
+  // 提示词配置
+  prompt: {
+    // 生成摘要的提示词
+    summary: string;
+  };
+  // 显示配置
+  display: {
+    // 加载时显示的文本
+    loadingText: string;
+    // 错误时显示的文本
+    errorText: string;
+    // 成功生成后的显示时长(ms)，0表示不自动隐藏
+    autoHideDelay: number;
+  };
 };
