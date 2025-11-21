@@ -22,7 +22,6 @@ import { sponsorConfig } from "@/config/sponsorConfig";
 import { url } from "@/utils/url-utils";
 import { processCoverImageSync } from "@/utils/image-utils";
 import AISummary from "@/components/misc/AISummary.astro";
-
 export async function getStaticPaths() {
   const blogEntries = await getSortedPosts();
   return blogEntries.map((entry) => {
@@ -186,6 +185,7 @@ const jsonLd = {
       <Markdown class="mb-6 markdown-content onload-animation">
         <Content />
       </Markdown>
+
       {/* 赞助按钮 */}
       {
         sponsorConfig.showButtonInPost && siteConfig.pages.sponsor && (

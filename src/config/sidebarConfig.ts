@@ -8,12 +8,13 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   // 是否启用侧边栏功能
   enable: true,
 
-  // 侧边栏位置：left=左侧，right=右侧
-  // both=双侧，开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1024px时隐藏
+  // 侧边栏位置：left=左侧，both=双侧
+  // 开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1200px时隐藏
   position: "left",
 
-  // 侧边栏组件配置列表
-  components: [
+  // 左侧边栏组件配置列表
+  // 组件位置position：top=顶部，sticky=粘性定位(会跟随页面滚动)
+  leftComponents: [
     {
       // 组件类型：用户资料组件
       type: "profile",
@@ -21,10 +22,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: true,
       // 组件显示顺序（数字越小越靠前）
       order: 1,
-      // 组件位置："top" 表示固定在顶部
+      // 组件位置
       position: "top",
-      // 所在侧边栏
-      sidebar: "left",
       // CSS 类名，用于应用样式和动画
       class: "onload-animation",
       // 动画延迟时间（毫秒），用于错开动画效果
@@ -33,14 +32,12 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
     {
       // 组件类型：公告组件
       type: "announcement",
-      // 是否启用该组件（现在通过统一配置控制）
+      // 是否启用该组件
       enable: true,
       // 组件显示顺序
       order: 2,
-      // 组件位置："top" 表示固定在顶部
+      // 组件位置
       position: "top",
-      // 所在侧边栏
-      sidebar: "left",
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
@@ -53,10 +50,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: false,
       // 组件显示顺序
       order: 3,
-      // 组件位置："sticky" 表示粘性定位，可滚动
+      // 组件位置
       position: "sticky",
-      // 所在侧边栏
-      sidebar: "left",
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
@@ -73,11 +68,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 是否启用该组件
       enable: true,
       // 组件显示顺序
-      order: 5,
-      // 组件位置："sticky" 表示粘性定位
+      order: 4,
+      // 组件位置
       position: "sticky",
-      // 所在侧边栏：右侧
-      sidebar: "left",
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
@@ -89,16 +82,36 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       },
     },
     {
+      // 组件类型：广告栏组件 1
+      type: "advertisement",
+      // 是否启用该组件
+      enable: false,
+      // 组件显示顺序
+      order: 5,
+      // 组件位置
+      position: "sticky",
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 300,
+      // 配置ID：使用第一个广告配置
+      configId: "ad1",
+    },
+  ],
+
+  // 右侧边栏组件配置列表
+  rightComponents: [
+    {
       // 组件类型：站点统计组件
       type: "stats",
       // 是否启用该组件
       enable: true,
       // 组件显示顺序
-      order: 6,
-      // 组件位置："top" 表示固定在顶部
+      order: 1,
+      // 组件位置
       position: "top",
-      // 所在侧边栏：右侧
-      sidebar: "left",
+      // 是否在文章详情页显示
+      showOnPostPage: true,
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
@@ -110,33 +123,31 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 是否启用该组件
       enable: false,
       // 组件显示顺序
-      order: 7,
-      // 组件位置："sticky" 表示粘性定位
+      order: 2,
+      // 组件位置
       position: "sticky",
-      // 所在侧边栏：右侧
-      sidebar: "right",
+      // 是否在文章详情页显示
+      showOnPostPage: false,
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
       animationDelay: 250,
     },
     {
-      // 组件类型：广告栏组件 1
-      type: "advertisement",
+      // 组件类型：侧边栏目录组件（只在文章详情页显示）
+      type: "sidebarToc",
       // 是否启用该组件
-      enable: false,
+      enable: true,
       // 组件显示顺序
-      order: 10,
-      // 组件位置："sticky" 表示粘性定位
+      order: 3,
+      // 组件位置
       position: "sticky",
-      // 所在侧边栏：左侧
-      sidebar: "left",
+      // 是否在文章详情页显示
+      showOnPostPage: true,
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
-      animationDelay: 300,
-      // 配置ID：使用第一个广告配置
-      configId: "ad1",
+      animationDelay: 250,
     },
     {
       // 组件类型：广告栏组件 2
@@ -144,11 +155,11 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 是否启用该组件
       enable: false,
       // 组件显示顺序
-      order: 10,
-      // 组件位置："sticky" 表示粘性定位
+      order: 4,
+      // 组件位置
       position: "sticky",
-      // 所在侧边栏：右侧
-      sidebar: "right",
+      // 是否在文章详情页显示
+      showOnPostPage: true,
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间

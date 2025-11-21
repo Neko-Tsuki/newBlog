@@ -91,7 +91,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 <html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]">
   <head>
     <!-- Google Tag Manager -->
-    <script>
+    <script data-swup-ignore-script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
         w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
@@ -105,7 +105,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     </script>
     <!-- End Google Tag Manager -->
     <!-- Microsoft Clarity -->
-    <script type="text/javascript">
+    <script data-swup-ignore-script type="text/javascript">
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||
@@ -735,6 +735,32 @@ function disableAnimation() {
           }
         }
       }
+
+      // 在页面切换后恢复布局状态（支持文章详情页的布局切换）
+      setTimeout(() => {
+        const savedLayout = localStorage.getItem("postListLayout");
+        if (savedLayout) {
+          const rightSidebar = document.getElementById("right-sidebar");
+          const mainGrid = document.getElementById("main-grid");
+          
+          // 根据保存的布局状态调整侧边栏显示
+          if (savedLayout === "grid") {
+            if (rightSidebar) {
+              rightSidebar.style.display = "none";
+            }
+            if (mainGrid) {
+              mainGrid.classList.add("grid-layout-active");
+            }
+          } else {
+            if (rightSidebar) {
+              rightSidebar.style.display = "";
+            }
+            if (mainGrid) {
+              mainGrid.classList.remove("grid-layout-active");
+            }
+          }
+        }
+      }, 50);
     });
     window.swup.hooks.on("visit:start", (visit: { to: { url: string } }) => {
       // change banner height immediately when a link is clicked
@@ -777,6 +803,15 @@ function disableAnimation() {
       // Control mobile banner visibility based on page with improved staging animation
       // 只在移动端（1024px以下）处理banner隐藏
       const isMobile = window.innerWidth < 1024;
+      
+      // 在移动端禁用文章列表容器的过渡动画，防止与主内容区位置变化冲突
+      if (isMobile) {
+        const postListContainer = document.getElementById("post-list-container");
+        if (postListContainer) {
+          postListContainer.style.transition = "none";
+        }
+      }
+
       const bannerWrapper = document.getElementById("banner-wrapper");
       const mainContentWrapper = document.querySelector(
         ".absolute.w-full.z-30"
@@ -784,13 +819,20 @@ function disableAnimation() {
 
       if (isMobile && bannerWrapper && mainContentWrapper) {
         if (isHomePage) {
-          // 首页：先显示banner，然后移除隐藏类让其优雅出现
+          // 首页：禁用主内容区域的过渡动画，防止文章列表下移
+          mainContentWrapper.style.transition = "none";
+          
+          // 先显示banner，然后移除隐藏类让其优雅出现
           bannerWrapper.style.display = "";
           setTimeout(() => {
             bannerWrapper.classList.remove("mobile-hide-banner");
           }, 100);
           setTimeout(() => {
             mainContentWrapper.classList.remove("mobile-main-no-banner");
+            // 在移除类之后立即恢复过渡动画（下次导航时使用）
+            setTimeout(() => {
+              mainContentWrapper.style.transition = "";
+            }, 50);
           }, 150);
         } else {
           // 非首页：分阶段隐藏，先隐藏banner，再移动内容
@@ -833,6 +875,17 @@ function disableAnimation() {
         top: 0,
         behavior: "instant",
       });
+
+      // 在移动端恢复文章列表容器的过渡动画（在主内容区位置动画完成后）
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile) {
+        setTimeout(() => {
+          const postListContainer = document.getElementById("post-list-container");
+          if (postListContainer) {
+            postListContainer.style.transition = "";
+          }
+        }, 600); // 等待主内容区动画完成（0.4s + 0.1s delay + 100ms buffer）
+      }
 
       // 同步主题状态 - 解决从首页进入文章页面时代码块渲染问题
       const storedTheme = localStorage.getItem("theme") || "light";
@@ -889,6 +942,67 @@ function disableAnimation() {
         // 移除页面切换保护，恢复过渡动画
         document.documentElement.classList.remove("is-page-transitioning");
       }, 200);
+    });
+
+    // 全局布局切换监听器 - 支持在任何页面（包括文章详情页）切换布局
+    window.addEventListener("layoutChange", (event: CustomEvent) => {
+      const newLayout = event.detail.layout;
+      const rightSidebar = document.getElementById("right-sidebar");
+      const mainGrid = document.getElementById("main-grid");
+      const postContainer = document.getElementById("post-container");
+      const swupContainer = document.getElementById("swup-container");
+      
+      // 为文章详情页容器添加切换动画
+      if (postContainer) {
+        postContainer.classList.add("layout-switching");
+        setTimeout(() => {
+          postContainer.classList.remove("layout-switching");
+        }, 400);
+      }
+      
+      // 为主内容区添加切换动画
+      if (swupContainer) {
+        swupContainer.classList.add("layout-transitioning");
+        setTimeout(() => {
+          swupContainer.classList.remove("layout-transitioning");
+        }, 500);
+      }
+      
+      // 根据新布局状态调整侧边栏显示
+      if (newLayout === "grid") {
+        if (rightSidebar) {
+          // 简洁的淡出动画
+          rightSidebar.style.transition = "opacity 0.35s ease-in-out, transform 0.35s ease-in-out";
+          rightSidebar.style.opacity = "0";
+          rightSidebar.style.transform = "translateX(15px)";
+          setTimeout(() => {
+            rightSidebar.style.display = "none";
+            rightSidebar.style.opacity = "";
+            rightSidebar.style.transform = "";
+          }, 350);
+        }
+        if (mainGrid) {
+          mainGrid.classList.add("grid-layout-active");
+        }
+      } else {
+        if (rightSidebar) {
+          // 简洁的淡入动画
+          rightSidebar.style.display = "";
+          rightSidebar.style.transition = "opacity 0.35s ease-in-out, transform 0.35s ease-in-out";
+          rightSidebar.style.opacity = "0";
+          rightSidebar.style.transform = "translateX(15px)";
+          setTimeout(() => {
+            rightSidebar.style.opacity = "1";
+            rightSidebar.style.transform = "translateX(0)";
+          }, 50);
+          setTimeout(() => {
+            rightSidebar.style.transition = "";
+          }, 400);
+        }
+        if (mainGrid) {
+          mainGrid.classList.remove("grid-layout-active");
+        }
+      }
     });
   };
   if (window?.swup?.hooks) {

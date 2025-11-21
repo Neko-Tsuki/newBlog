@@ -65,8 +65,7 @@ export const siteConfig: SiteConfig = {
 	// anime和bangumi都是来源bangumi的数据，请配置bangumi.userId
 	// anime是动态请求获取数据，所以是实时数据，目前缺点是需要手动F5刷新一次才加载数据
 	// bangumi的数据为编译时获取的，所以不是实时数据
-	pages: {
-		anime: false, // 追番页面开关
+	pages: { 
 		sponsor: true, // 赞助页面开关
 		guestbook: true, // 留言板页面开关，需要配置评论系统
 		bangumi: false, // 番组计划页面开关，含追番和游戏
@@ -171,15 +170,6 @@ export const siteConfig: SiteConfig = {
       opacity: 0.8, // 壁纸透明度
       blur: 1, // 背景模糊程度
     },
-  },
-
-  // 目录功能
-  toc: {
-    // 目录功能开关
-    enable: true,
-    // 目录深度，1-3，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推
-    // depth在新版已弃用
-    depth: 3,
   },
 
   // 字体配置
