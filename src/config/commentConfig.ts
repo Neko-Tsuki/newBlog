@@ -1,7 +1,7 @@
 import type { CommentConfig } from "../types/config";
 
 export const commentConfig: CommentConfig = {
-  type: 'waline', // 当前启用的评论系统类型: none, twikoo, waline, giscus, disqus，默认为none，即不启用评论系统。
+  type: 'none', // 当前启用的评论系统类型: none, twikoo, waline, giscus, disqus，默认为none，即不启用评论系统。
   //twikoo评论系统配置
   twikoo: {
     envId: "https://twikoo.vercel.app",
@@ -10,7 +10,7 @@ export const commentConfig: CommentConfig = {
   },
   //waline评论系统配置
   waline: {
-    serverURL: "https://waline-th.vercel.app",
+    serverURL: "https://waline.vercel.app",
     lang: "zh-CN", // 设置 Waline 评论系统语言
     login: "enable", // 评论登录模式。可选值如下：
     //   'enable'   —— 默认，允许访客匿名评论和用第三方 OAuth 登录评论，兼容性最佳。

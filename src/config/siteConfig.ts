@@ -31,7 +31,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// 留空以使用默认 favicon
 		{
-			src: "/assets/images/yuyuko.png", // 图标文件路径
+			src: "/assets/images/favicon.ico", // 图标文件路径
 			theme: "light", // 可选，指定主题 'light' | 'dark'
 			sizes: "32x32", // 可选，图标大小
 		},
@@ -42,9 +42,14 @@ export const siteConfig: SiteConfig = {
 	// { type: "icon", value: "material-symbols:home-pin-outline" }
 	// { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
 	// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
+	// navbarLogo: {
+	// 	type: "icon",
+	// 	value: "material-symbols:bookmark-stacks-rounded",
+	// 	alt: "Site-Logo",
+	// },
 	navbarLogo: {
-		type: "icon",
-		value: "material-symbols:bookmark-stacks-rounded",
+		type: "image",
+		value: "/assets/images/navbar.png",
 		alt: "Site-Logo",
 	},
 	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
@@ -77,7 +82,7 @@ export const siteConfig: SiteConfig = {
     // 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
     defaultMode: "list",
     // 是否允许用户切换布局
-    allowSwitch: true,
+    allowSwitch: false,
   },
 
   // 分页配置
@@ -134,11 +139,11 @@ export const siteConfig: SiteConfig = {
 					mobile: false, // 移动端显示横幅图片来源文本
 				},
 				text: {
-					desktop: "Pixiv - 晚晚喵", // 桌面端要显示的来源文本
-					mobile: "Mobile Credit", // 移动端要显示的来源文本
+					desktop: "", // 桌面端要显示的来源文本
+					mobile: "", // 移动端要显示的来源文本
 				},
 				url: {
-					desktop: "https://www.pixiv.net/artworks/135490046", // 桌面端原始艺术品或艺术家页面的 URL 链接
+					desktop: "", // 桌面端原始艺术品或艺术家页面的 URL 链接
 					mobile: "", // 移动端原始艺术品或艺术家页面的 URL 链接
 				},
 			},

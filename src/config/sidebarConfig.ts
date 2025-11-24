@@ -10,7 +10,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
   // 侧边栏位置：left=左侧，both=双侧
   // 开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1200px时隐藏
-  position: "left",
+  position: "both",
 
   // 左侧边栏组件配置列表
   // 组件位置position：top=顶部，sticky=粘性定位(会跟随页面滚动)
@@ -30,24 +30,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       animationDelay: 0,
     },
     {
-      // 组件类型：公告组件
-      type: "announcement",
-      // 是否启用该组件
-      enable: true,
-      // 组件显示顺序
-      order: 2,
-      // 组件位置
-      position: "top",
-      // CSS 类名
-      class: "onload-animation",
-      // 动画延迟时间
-      animationDelay: 50,
-    },
-    {
       // 组件类型：分类组件
       type: "categories",
       // 是否启用该组件
-      enable: false,
+      enable: true,
       // 组件显示顺序
       order: 3,
       // 组件位置
@@ -102,22 +88,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   // 右侧边栏组件配置列表
   rightComponents: [
     {
-      // 组件类型：站点统计组件
-      type: "stats",
-      // 是否启用该组件
-      enable: true,
-      // 组件显示顺序
-      order: 1,
-      // 组件位置
-      position: "top",
-      // 是否在文章详情页显示
-      showOnPostPage: true,
-      // CSS 类名
-      class: "onload-animation",
-      // 动画延迟时间
-      animationDelay: 200,
-    },
-    {
       // 组件类型：日历组件
       type: "calendar",
       // 是否启用该组件
@@ -166,6 +136,36 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       animationDelay: 350,
       // 配置ID：使用第二个广告配置
       configId: "ad2",
+    },
+    {
+      // 组件类型：站点统计组件
+      type: "stats",
+      // 是否启用该组件
+      enable: true,
+      // 组件显示顺序
+      order: 1,
+      // 组件位置
+      position: "top",
+      // 是否在文章详情页显示
+      showOnPostPage: true,
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 200,
+    },
+    {
+      // 组件类型：公告组件
+      type: "announcement",
+      // 是否启用该组件
+      enable: true,
+      // 组件显示顺序
+      order: 2,
+      // 组件位置
+      position: "top",
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 50,
     },
   ],
 

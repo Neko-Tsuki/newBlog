@@ -1,7 +1,7 @@
 import type { AISummaryConfig } from "../types/config";
 
 export const aiSummaryConfig: AISummaryConfig = {
-  // AI总结功能开关
+  // AI总结功能开关（默认关闭）
   enable: false, 
   // 调试信息输出开关
   debug: false,

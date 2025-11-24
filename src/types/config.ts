@@ -58,7 +58,7 @@ export type SiteConfig = {
   pages: {
     sponsor: boolean; // 赞助页面开关
     guestbook: boolean; // 留言板页面开关
-    bangumi: boolean
+    bangumi: boolean;
   };
 
   // 文章列表布局配置
@@ -101,7 +101,6 @@ export enum NavBarSearchMethod {
   PageFind = 0,
   MeiliSearch = 1,
 };
-
 
 /**
  * MeiliSearch配置
@@ -147,8 +146,8 @@ export type LicenseConfig = {
   name: string;
   url: string;
 };
-// 评论配置
 
+// 评论配置
 export type CommentConfig = {
   /**
    * 当前启用的评论系统类型
@@ -704,4 +703,4 @@ export type AISummaryConfig = {
     errorText: string;  // 错误时显示的文本
     autoHideDelay: number;  // 成功生成后的显示时长(ms)，0表示不自动隐藏
   };
-}
+};

@@ -1,15 +1,12 @@
 /* 导入统一变量 */
 @import './variables-unified.styl';
-/* 导入追番页面样式 */
-@import './anime.css';
 /* 导入统一动画样式 */
 @import './animation-enhancements.css';
 @import './transition.css';
 /* 导入统一导航栏样式 */
 @import './navbar.css';
-/* 导入评论区额外样式 */
-@import './waline.css';
 @import './ai-summary.css';
+
 
 @tailwind base;
 @tailwind components;
@@ -212,7 +209,7 @@ html {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
     border-radius: 0 0 var(--radius-large) var(--radius-large) !important;
 }
-
+    
     .wallpaper-transparent .btn-card {
         @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
     }

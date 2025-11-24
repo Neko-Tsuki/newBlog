@@ -8,12 +8,12 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "喵窝-NyaOne",
 			icon: "ph:fediverse-logo",
-			url: "https://space.bilibili.com/38932988",
+			url: "https://nya.one/@Hokori",
 		},
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/CuteLeaf",
+			url: "https://github.com/Neko-Tsuki",
 		},
 		{
 			name: "RSS",
