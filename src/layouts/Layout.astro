@@ -574,19 +574,21 @@ function disableAnimation() {
   const bannerEnabled = !!document.getElementById("banner-wrapper");
 
   function setClickOutsideToClose(panel: string, ignores: string[]) {
-    document.addEventListener("click", (event) => {
-      let panelDom = document.getElementById(panel);
-      let tDom = event.target;
-      if (!(tDom instanceof Node)) return; // Ensure the event target is an HTML Node
-      for (let ig of ignores) {
-        let ie = document.getElementById(ig);
-        if (ie == tDom || ie?.contains(tDom)) {
-          return;
+      document.addEventListener("click", (event) => {
+        let panelDom = document.getElementById(panel);
+        let tDom = event.target;
+        if (!(tDom instanceof Node)) return; // Ensure the event target is an HTML Node
+        for (let ig of ignores) {
+          let ie = document.getElementById(ig);
+          if (ie == tDom || ie?.contains(tDom)) {
+            return;
+          }
         }
-      }
-      panelDom!.classList.add("float-panel-closed");
-    });
-  }
+        if (panelDom) {
+          panelDom.classList.add("float-panel-closed");
+        }
+      });
+    }
   setClickOutsideToClose("display-setting", [
     "display-setting",
     "display-settings-switch",
@@ -815,7 +817,7 @@ function disableAnimation() {
       const bannerWrapper = document.getElementById("banner-wrapper");
       const mainContentWrapper = document.querySelector(
         ".absolute.w-full.z-30"
-      );
+      ) as HTMLElement;
 
       if (isMobile && bannerWrapper && mainContentWrapper) {
         if (isHomePage) {
@@ -1021,7 +1023,7 @@ function disableAnimation() {
     const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
     // 使用批量DOM操作优化性能
-    const operations = [];
+    const operations: Array<() => void> = [];
 
     if (backToTopBtn) {
       operations.push(() => {

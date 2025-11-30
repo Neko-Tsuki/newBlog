@@ -2,7 +2,7 @@ import type { SpineModelConfig, Live2DModelConfig } from "../types/config";
 
 // Spine 看板娘配置
 export const spineModelConfig: SpineModelConfig = {
-  enable: true, // 启用 Spine 看板娘
+  enable: false, // 启用 Spine 看板娘
   model: {
     // Spine模型文件路径
     path: "/pio/models/spine/firefly/1310.json",
@@ -55,10 +55,11 @@ export const spineModelConfig: SpineModelConfig = {
 
 // Live2D 看板娘配置
 export const live2dModelConfig: Live2DModelConfig = {
-  enable: false, // 启用 Live2D 看板娘
+  enable: true, // 启用 Live2D 看板娘
   model: {
     // Live2D模型文件路径
-    path: "/pio/models/live2d/snow_miku/model.json",
+    path: "/pio/models/live2d/11110/Lead_00.model.json"
+    // path: "/pio/models/live2d/snow_miku/model.json",
     // path: "/pio/models/live2d/illyasviel/illyasviel.model.json",
   },
   position: {
@@ -68,14 +69,14 @@ export const live2dModelConfig: Live2DModelConfig = {
     offsetY: 0, // 距离底部20px
   },
   size: {
-    width: 135, // 容器宽度
-    height: 165, // 容器高度
+    width: 235, // 容器宽度
+    height: 265, // 容器高度
   },
   interactive: {
     enabled: true, // 启用交互功能
     // motions 和 expressions 将从模型 JSON 文件中自动读取
     clickMessages: [
-      "你好！我是Miku~",
+      "海，你好！",
       "有什么需要帮助的吗？",
       "今天天气真不错呢！",
       "要不要一起玩游戏？",
