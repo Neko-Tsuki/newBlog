@@ -20,7 +20,7 @@ export const siteConfig: SiteConfig = {
 		"静态博客",
 	],
 
-  lang: SITE_LANG,
+	lang: SITE_LANG,
 
 	themeColor: {
 		hue: 235, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
@@ -42,54 +42,49 @@ export const siteConfig: SiteConfig = {
 	// { type: "icon", value: "material-symbols:home-pin-outline" }
 	// { type: "image", value: "/assets/images/logo.webp", alt: "Firefly Logo" }
 	// { type: "image", value: "https://example.com/logo.png", alt: "Firefly Logo" }
-	// navbarLogo: {
-	// 	type: "icon",
-	// 	value: "material-symbols:bookmark-stacks-rounded",
-	// 	alt: "Site-Logo",
-	// },
 	navbarLogo: {
 		type: "image",
 		value: "/assets/images/navbar.png",
 		alt: "Site-Logo",
 	},
-	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+	navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
-	// 追番配置
+	// 站点开始日期，用于统计运行天数
+	siteStartDate: "2022-10-30", // 请修改为你的站点实际开始日期，格式：YYYY-MM-DD
+
+	// bangumi配置
 	bangumi: {
 		userId: "", // 在此处设置你的Bangumi用户ID
 	},
 
-  // 文章页底部的"上次编辑时间"卡片开关
-  showLastModified: true,
+	// 文章页底部的"上次编辑时间"卡片开关
+	showLastModified: true,
 
-  // OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
-  generateOgImages: false,
+	// OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
+	generateOgImages: false,
 
-  // 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
-
-	// anime和bangumi都是来源bangumi的数据，请配置bangumi.userId
-	// anime是动态请求获取数据，所以是实时数据，目前缺点是需要手动F5刷新一次才加载数据
-	// bangumi的数据为编译时获取的，所以不是实时数据
-	pages: { 
+	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
+	// bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
+	pages: {
 		sponsor: true, // 赞助页面开关
 		guestbook: true, // 留言板页面开关，需要配置评论系统
 		bangumi: false, // 番组计划页面开关，含追番和游戏
 	},
 
-  // 文章列表布局配置
-  postListLayout: {
-    // 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
-    // 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
-    defaultMode: "list",
-    // 是否允许用户切换布局
-    allowSwitch: false,
-  },
+	// 文章列表布局配置
+	postListLayout: {
+		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
+		// 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
+		defaultMode: "list",
+		// 是否允许用户切换布局
+		allowSwitch: true,
+	},
 
-  // 分页配置
-  pagination: {
-    // 每页显示的文章数量
-    postsPerPage: 8,
-  },
+	// 分页配置
+	pagination: {
+		// 每页显示的文章数量
+		postsPerPage: 8,
+	},
 
 	backgroundWallpaper: {
 		// 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景无壁纸
@@ -169,15 +164,15 @@ export const siteConfig: SiteConfig = {
 			},
 		},
 
-    // 全屏透明覆盖模式特有配置
-    overlay: {
-      zIndex: -1, // 层级，确保壁纸在背景层
-      opacity: 0.8, // 壁纸透明度
-      blur: 1, // 背景模糊程度
-    },
-  },
+		// 全屏透明覆盖模式特有配置
+		overlay: {
+			zIndex: -1, // 层级，确保壁纸在背景层
+			opacity: 0.8, // 壁纸透明度
+			blur: 1, // 背景模糊程度
+		},
+	},
 
-  // 字体配置
-  // 在src/config/fontConfig.ts中配置具体字体
-  font: fontConfig,
+	// 字体配置
+	// 在src/config/fontConfig.ts中配置具体字体
+	font: fontConfig,
 };

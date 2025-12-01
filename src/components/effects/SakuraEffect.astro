@@ -1,11 +1,11 @@
 ---
-import { sakuraConfig } from '@/config';
+import { sakuraConfig } from "@/config";
 
 const config = sakuraConfig;
 ---
 
 {sakuraConfig?.enable && (
-	<script define:vars={{ sakuraConfig: config }}>
+	<script is:inline define:vars={{ sakuraConfig: config }}>
 		// 樱花对象类
 		class Sakura {
 			constructor(x, y, s, r, a, fn, idx, img, limitArray, config) {

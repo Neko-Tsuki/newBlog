@@ -39,10 +39,22 @@
     let groups: Group[] = [];
     let eventGroups: { year: number; events: TimelineItem[] }[] = []; // 用于存储时间线活动小组
 
-    function formatDate(date: Date | string) {
-        const d = new Date(date);
-        const month = (d.getMonth() + 1).toString().padStart(2, "0");
-        const day = d.getDate().toString().padStart(2, "0");
+    function formatDate(dateInput: string | Date): string {
+        let date: Date;
+        
+        if (typeof dateInput === "string") {
+            date = new Date(dateInput);
+        } else {
+            date = dateInput;
+        }
+        
+        if (isNaN(date.getTime())) {
+            console.warn(`Invalid date input: ${dateInput}`);
+            return "Invalid Date";
+        }
+        
+           const month = (date.getMonth() + 1).toString().padStart(2, "0");
+           const day = date.getDate().toString().padStart(2, "0");
         return `${month}-${day}`;
     }
 
@@ -51,7 +63,7 @@
     }
 
     function formatGroup(tagList: string[]) {
-        return tagList.map((t) => `群: ${t}`).join(" ");
+        return tagList.map((t) => `${t}`).join(" ");
     }
 
     onMount(async () => {
@@ -119,8 +131,8 @@
         );
 
         const groupedPostsArray = Object.keys(grouped).map((yearStr) => ({
-            year: Number.parseInt(yearStr),
-            posts: grouped[Number.parseInt(yearStr)],
+            year: Number.parseInt(yearStr, 10),
+            posts: grouped[Number.parseInt(yearStr, 10)],
         }));
 
         groupedPostsArray.sort((a, b) => b.year - a.year);

@@ -5,7 +5,6 @@
 @import './transition.css';
 /* 导入统一导航栏样式 */
 @import './navbar.css';
-@import './ai-summary.css';
 
 
 @tailwind base;
