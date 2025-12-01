@@ -24,7 +24,7 @@ export const siteConfig: SiteConfig = {
 
 	themeColor: {
 		hue: 235, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		fixed: false, // 对访问者隐藏主题色选择器
+		fixed: true, // 对访问者隐藏主题色选择器
 		defaultMode: "system", // 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 	},
 
@@ -47,7 +47,7 @@ export const siteConfig: SiteConfig = {
 		value: "/assets/images/navbar.png",
 		alt: "Site-Logo",
 	},
-	navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
 
 	// 站点开始日期，用于统计运行天数
 	siteStartDate: "2022-10-30", // 请修改为你的站点实际开始日期，格式：YYYY-MM-DD
@@ -77,7 +77,7 @@ export const siteConfig: SiteConfig = {
 		// 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
 		defaultMode: "list",
 		// 是否允许用户切换布局
-		allowSwitch: true,
+		allowSwitch: false,
 	},
 
 	// 分页配置

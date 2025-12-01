@@ -26,8 +26,8 @@ Hi！我是 **我是尘尘** ，一个在早上9:07分会和猫讨论量子披�
 
 如果你想和我交流技术问题，分享有趣的想法，或者只是想打个招呼，欢迎通过以下方式联系我：
 
-- 💻 **GitHub**: [CuteLeaf](https://github.com/CuteLeaf)
-- ✉️ **Email**: [xiaye@msn.com](mailto:xiaye@msn.com)
+- 💻 **GitHub**: [Kitamori](https://github.com/Neko-Tsuki)
+- ✉️ **Email**: [yumorichan@duck.com](mailto:yumorichan@duck.com)
 
 ---
 
