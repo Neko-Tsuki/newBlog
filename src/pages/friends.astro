@@ -53,7 +53,8 @@ const description = i18n(I18nKey.friendsDescription);
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 my-4">
         {
-          items.map((item) => (
+          items.filter((item) => item.weight > 30)
+            .map((item) => (
             <div class="flex flex-nowrap items-stretch h-24 sm:h-28 gap-3 sm:gap-4 rounded-[var(--radius-large)]">
               <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">
                 <img
@@ -133,7 +134,7 @@ const description = i18n(I18nKey.friendsDescription);
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 my-4">
         {
           items
-            .filter((item) => item.weight < 30)
+            .filter((item) => item.weight < 31)
             .map((item) => (
               <div class="flex flex-nowrap items-stretch h-24 sm:h-28 gap-3 sm:gap-4 rounded-[var(--radius-large)]">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-900">

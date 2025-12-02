@@ -31,6 +31,25 @@ export const friendsConfig: FriendLink[] = [
 		weight: 99,
 		enabled: true,
 	},
+	{
+		title: "东方行状录",
+		imgurl: "https://img.shika-mori.top/picGO/%E7%A4%BE%E5%9B%A2logo.png",
+		desc: "由咱参与的东方Project同人刊物",
+		siteurl: "https://www.touhouchronicle.com/",
+		tags: ["同人刊物"],
+		weight: 29,
+		enabled: true,
+
+	},
+	{
+		title: "PiCpo的阁楼",
+		imgurl: "https://avatars.githubusercontent.com/u/33993624?s=400&u=fef5f5d3d0e117d28c6a6addf608d1f8ef741cdc&v=4",
+		desc: "Computer Science & Security Learner",
+		siteurl: "https://picpo.top",
+		tags: ["PiCpo", "喵友"],
+		weight: 29,
+		enabled: true,
+	}
 ];
 
 // 获取启用的友链并按权重排序

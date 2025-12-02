@@ -13,7 +13,7 @@ description: "与优秀的朋友们一起成长"
 站点名称: 尘尘落落格
 站点描述: 在平平无奇的互联网中不起眼的一粒星尘
 站点链接: https://blog.shika-mori.top
-头像链接: 
+头像链接: https://blog.shika-mori.top/assets/images/avatar.png
 
 ```
 
