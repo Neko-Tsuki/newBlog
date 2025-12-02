@@ -49,6 +49,15 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["PiCpo", "喵友"],
 		weight: 29,
 		enabled: true,
+	},
+	{
+		title: "寒寒",
+		imgurl: "https://alikia2x.com/img/avatar.png",
+		desc: "技术菜菜，梦想大大",
+		siteurl: "https://blog.alikia2x.com",
+		tags: ["寒寒", "喵友"],
+		weight: 29,
+		enabled: true,
 	}
 ];
 
