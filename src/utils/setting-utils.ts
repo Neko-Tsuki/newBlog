@@ -54,7 +54,10 @@ export function resolveTheme(theme: LIGHT_DARK_MODE): LIGHT_DARK_MODE {
 
 export function getHue(): number {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
 		return getDefaultHue();
 	}
 	const stored = localStorage.getItem("hue");
@@ -63,7 +66,11 @@ export function getHue(): number {
 
 export function setHue(hue: number): void {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined" || typeof document === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function" ||
+		typeof document === "undefined"
+	) {
 		return;
 	}
 	localStorage.setItem("hue", String(hue));
@@ -142,7 +149,10 @@ let systemThemeListener:
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
 		return;
 	}
 
@@ -207,7 +217,7 @@ export function setupSystemThemeListener() {
 		mediaQuery.addEventListener("change", handleSystemThemeChange);
 	} else {
 		// 兼容旧浏览器
-		(mediaQuery as any).addListener(handleSystemThemeChange);
+		mediaQuery.addListener(handleSystemThemeChange);
 	}
 
 	systemThemeListener = handleSystemThemeChange;
@@ -225,7 +235,7 @@ function cleanupSystemThemeListener() {
 		mediaQuery.removeEventListener("change", systemThemeListener);
 	} else {
 		// 兼容旧浏览器
-		(mediaQuery as any).removeListener(systemThemeListener);
+		mediaQuery.removeListener(systemThemeListener);
 	}
 
 	systemThemeListener = null;
@@ -233,7 +243,10 @@ function cleanupSystemThemeListener() {
 
 export function getStoredTheme(): LIGHT_DARK_MODE {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
 		return getDefaultTheme();
 	}
 	return (
@@ -243,7 +256,10 @@ export function getStoredTheme(): LIGHT_DARK_MODE {
 
 // 初始化主题监听器（用于页面加载后）
 export function initThemeListener() {
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
 		return;
 	}
 
@@ -346,14 +362,14 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 
 function showBannerMode() {
 	// 隐藏全屏壁纸（通过CSS类和display控制）
-	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+	const overlayContainer = document.querySelector(
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
-	if (fullscreenContainer) {
-		fullscreenContainer.style.display = "none";
-		fullscreenContainer.classList.add("hidden");
-		fullscreenContainer.classList.add("opacity-0");
-		fullscreenContainer.classList.remove("opacity-100");
+	if (overlayContainer) {
+		overlayContainer.style.display = "none";
+		overlayContainer.classList.add("hidden");
+		overlayContainer.classList.add("opacity-0");
+		overlayContainer.classList.remove("opacity-100");
 	}
 
 	// 显示banner壁纸（通过CSS类和display控制）
@@ -446,17 +462,17 @@ function showBannerMode() {
 
 function showOverlayMode() {
 	// 显示全屏壁纸（通过CSS类和display控制）
-	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+	const overlayContainer = document.querySelector(
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
-	if (fullscreenContainer) {
+	if (overlayContainer) {
 		// 先设置display，然后使用requestAnimationFrame确保渲染
-		fullscreenContainer.style.display = "block";
-		fullscreenContainer.style.setProperty("display", "block", "important");
+		overlayContainer.style.display = "block";
+		overlayContainer.style.setProperty("display", "block", "important");
 		requestAnimationFrame(() => {
-			fullscreenContainer.classList.remove("hidden");
-			fullscreenContainer.classList.remove("opacity-0");
-			fullscreenContainer.classList.add("opacity-100");
+			overlayContainer.classList.remove("hidden");
+			overlayContainer.classList.remove("opacity-0");
+			overlayContainer.classList.add("opacity-100");
 		});
 	}
 
@@ -491,8 +507,8 @@ function showOverlayMode() {
 function hideAllWallpapers() {
 	// 隐藏所有壁纸（通过CSS类和display控制）
 	const bannerWrapper = document.getElementById("banner-wrapper");
-	const fullscreenContainer = document.querySelector(
-		"[data-fullscreen-wallpaper]",
+	const overlayContainer = document.querySelector(
+		"[data-overlay-wallpaper]",
 	) as HTMLElement;
 
 	if (bannerWrapper) {
@@ -501,11 +517,11 @@ function hideAllWallpapers() {
 		bannerWrapper.classList.add("opacity-0");
 	}
 
-	if (fullscreenContainer) {
-		fullscreenContainer.style.display = "none";
-		fullscreenContainer.classList.add("hidden");
-		fullscreenContainer.classList.add("opacity-0");
-		fullscreenContainer.classList.remove("opacity-100");
+	if (overlayContainer) {
+		overlayContainer.style.display = "none";
+		overlayContainer.classList.add("hidden");
+		overlayContainer.classList.add("opacity-0");
+		overlayContainer.classList.remove("opacity-100");
 	}
 
 	// 隐藏横幅图片来源文本
@@ -621,7 +637,10 @@ function adjustMainContentTransparency(enable: boolean) {
 
 export function setWallpaperMode(mode: WALLPAPER_MODE): void {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
 		return;
 	}
 	localStorage.setItem("wallpaperMode", mode);
@@ -635,7 +654,10 @@ export function initWallpaperMode(): void {
 
 export function getStoredWallpaperMode(): WALLPAPER_MODE {
 	// 检查是否在浏览器环境中
-	if (typeof localStorage === "undefined") {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
 		return siteConfig.backgroundWallpaper.mode;
 	}
 	return (

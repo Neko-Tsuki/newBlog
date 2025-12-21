@@ -8,7 +8,7 @@ category: 教程
 draft: false
 licenseName: "禁止任何形式的转载"
 date: 2025-12-01
-image: https://konachan.net/sample/f4a99b762a67cc1ecce43a7e87407949/Konachan.com%20-%20396082%20sample.jpg
+image: ./pachuli.jpg
 ---
 
 <div class="tips">

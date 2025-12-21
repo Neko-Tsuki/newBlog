@@ -47,7 +47,8 @@ export const siteConfig: SiteConfig = {
 		value: "/assets/images/navbar.png",
 		alt: "Site-Logo",
 	},
-	navbarTitle: "", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+	navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+	navbarWidthFull: false, // 全宽导航栏，导航栏是否占满屏幕宽度，true：占满，false：不占满
 
 	// 站点开始日期，用于统计运行天数
 	siteStartDate: "2022-10-30", // 请修改为你的站点实际开始日期，格式：YYYY-MM-DD
@@ -59,6 +60,8 @@ export const siteConfig: SiteConfig = {
 
 	// 文章页底部的"上次编辑时间"卡片开关
 	showLastModified: true,
+	// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+	outdatedThreshold: 90,
 
 	// OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
 	generateOgImages: false,
@@ -77,7 +80,13 @@ export const siteConfig: SiteConfig = {
 		// 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
 		defaultMode: "list",
 		// 是否允许用户切换布局
-		allowSwitch: false,
+		allowSwitch: true,
+
+		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
+		grid: {
+			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
+			masonry: true,
+		},
 	},
 
 	// 分页配置
