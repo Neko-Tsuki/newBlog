@@ -1,4 +1,5 @@
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
@@ -133,6 +134,8 @@ export default defineConfig({
       }),
       searchIndexer(),
       mdx(),
+      // 确保React集成在MDX之后
+      react(),
 	],
 
   markdown: {
