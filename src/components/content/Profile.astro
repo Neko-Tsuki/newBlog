@@ -67,7 +67,7 @@ import { url } from "@/utils/url-utils";
                             {showName && item.name}
                         </a>
                     } else {
-                        return <a rel="me" aria-label={item.name} href={item.url} target="_blank" class={className}>
+                        return <a rel="me" aria-label={item.name} href={item.url} target="_self" class={className}>
                             <Icon name={item.icon} class="text-[1.5rem]"></Icon>
                             {showName && item.name}
                         </a>

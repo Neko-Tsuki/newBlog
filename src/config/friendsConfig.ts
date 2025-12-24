@@ -58,7 +58,44 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["寒寒", "喵友"],
 		weight: 29,
 		enabled: true,
+	},
+	{
+		title: "日向花和",
+		imgurl: "https://hanawa.me/assets/img/avatar.jpg",
+		desc: "你好，我是饼饼",
+		siteurl: "https://blog.hanawa.me",
+		tags: ["日向花蛤", "饼饼"],
+		weight: 29,
+		enabled: true,
+	},
+	{		
+		title: "Fika",
+		imgurl: "https://pic.imgdb.cn/item/637c14ee16f2c2beb161a26e.jpg",
+		desc: "遇到困难睡大觉",
+		siteurl: "https://fika.ink/",
+		tags: ["Fika", "喵友"],
+		weight: 29,
+		enabled: true,
+	},
+	{
+		title: "SayoLab",
+		imgurl: "https://sayolab.uk:1500/favicon.ico",
+		desc: "欲得之物甚多，却终不可得之",
+		siteurl: "https://sayolab.uk:1500",
+		tags: ["Sayoki", "喵友"],
+		weight: 29,
+		enabled: true,
+	},
+	{
+		title: "XYenon",
+		imgurl: "https://blog.xyenon.bid/images/favicon.png",
+		desc: "",
+		siteurl: "https://blog.xyenon.bid/",
+		tags: ["XYenon", "喵友"],
+		weight: 29,
+		enabled: true,
 	}
+
 ];
 
 // 获取启用的友链并按权重排序
