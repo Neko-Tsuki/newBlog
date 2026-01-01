@@ -94,7 +94,17 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["XYenon", "喵友"],
 		weight: 29,
 		enabled: true,
+	},
+	{
+		title: "小意_rsesot",
+		imgurl: "https://rsesot.cn/files/site/avatar.png",
+		desc: "",
+		siteurl: "https://rsesot.cn/",
+		tags: ["小意", "喵友"],
+		weight: 29,
+		enabled: true,
 	}
+
 
 ];
 
