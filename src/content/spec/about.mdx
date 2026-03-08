@@ -1,0 +1,184 @@
+---
+title: 关于我
+description: 在代码的世界里修行，在幻想的境界里生活。
+---
+
+import { Icon } from "astro-icon/components";
+
+export function ContactCard({ icon, title, subtitle, href }) {
+  const isIconify = icon && icon.includes(':');
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative block no-underline rounded-[28px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-2 active:scale-[0.96]"
+    >
+      {/* 外部光晕层：模拟 Apple 的悬浮深度感 */}
+      <div className="
+        absolute -inset-px rounded-[28px] opacity-0 group-hover:opacity-100 
+        bg-gradient-to-b from-zinc-200/50 to-transparent 
+        dark:from-zinc-700/50 dark:to-transparent 
+        transition-opacity duration-500
+      " />
+
+      {/* 核心容器 */}
+      <div className="
+        relative
+        overflow-hidden
+        h-full
+        p-7
+        rounded-[28px]
+        border
+        border-zinc-200/40
+        dark:border-zinc-800/40
+        bg-white/50
+        dark:bg-zinc-900/50
+        backdrop-blur-2xl
+        shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+        group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]
+        dark:group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]
+        transition-all
+        duration-700
+      ">
+        
+        {/* 图标：改为更接近 iOS App 的圆角矩形比例 */}
+        <div className="
+          w-14 
+          h-14 
+          flex 
+          items-center 
+          justify-center 
+          rounded-[18px] 
+          mb-8 
+          bg-white/80 
+          dark:bg-zinc-800/80 
+          shadow-inner
+          ring-1
+          ring-black/5
+          dark:ring-white/5
+          group-hover:scale-110 
+          group-hover:rotate-[2deg]
+          transition-all 
+          duration-500
+        ">
+          {isIconify ? (
+            <Icon name={icon} className="w-7 h-7 text-zinc-800 dark:text-zinc-200" />
+          ) : (
+            <span className="text-3xl font-apple-emoji" role="img">{icon}</span>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="
+            text-[19px] 
+            font-bold 
+            tracking-tight
+            text-zinc-900 
+            dark:text-zinc-50
+          ">
+            {title}
+          </h3>
+
+          <p className="
+            text-[15px] 
+            leading-relaxed
+            text-zinc-500 
+            dark:text-zinc-400
+            font-medium
+          ">
+            {subtitle}
+          </p>
+        </div>
+
+        {/* 底部微小的装饰线条，增加精密感 */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-zinc-200/50 dark:via-zinc-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      </div>
+    </a>
+  );
+}
+
+# 🏮 关于我 / About Me
+
+Hi！我是 **尘尘 (LuluChan)**。  
+一个在早上 9:07 分会和猫讨论量子披萨配方的：
+
+- 📝 个人势 **Blogger**  
+- 👗 永远在路上的 **Coser**  
+- 💻 永远在修复 Bug 和写 Bug 的 **全不沾开发者**  
+
+> **“在代码的世界里修行，在幻想的境界里生活。”**
+
+---
+
+## 🎮 律动与幻想 (Interests)
+
+除了盯着终端窗口，我的生活被像素、音律和幻想乡占据。
+
+### 🌸 幻想境界 (Touhou Project)
+
+深受 **《东方 Project》** 的影响。无论是博丽神社的日常，还是对 **琪露诺** 等角色的喜爱，都构成了我创作灵感的源泉。
+
+---
+
+## 🚀 从 Hexo 到 Astro (The Journey)
+
+经过一个月的“大搬家”，我正式从 Hexo 迁徙到了 **Astro**。
+
+**为什么是 Astro？**
+
+并不是 Hexo 不够优秀，而是 Astro 给了我一种“全知全能”的错觉。在这里，没有预设的束缚，每一个页面、每一行 CSS 都可以完全自定义。在折腾主题的过程中，我不小心点满了许多~~邪道~~前端技能点。虽然它不像 Hexo 那样“开箱即用”，但这种 **亲手构建** 的快感正是开发者所追求的。
+
+---
+
+## 🛠️ 关于本站 (Tech Stack)
+
+本站是基于 **Astro** 框架构建的个性化试验田，采用了 [Firefly](https://github.com/CuteLeaf/Firefly) 模板。
+
+- **核心框架**: Astro (Modern & Fast)  
+- **视觉风格**: 基于 [Fuwari](https://github.com/saicaca/fuwari) 的二次进化  
+- **评论系统**: Waline (定制化样式)
+
+> ::github{repo="CuteLeaf/Firefly"}  
+> ::github{repo="saicaca/fuwari"}
+
+---
+
+## 📫 联络渠道 (Contact)
+
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+
+<ContactCard
+  icon="fa7-brands:github"
+  title="GitHub"
+  subtitle="Kitamori · 开源项目与代码仓库"
+  href="https://github.com/Neko-Tsuki"
+/>
+
+<ContactCard
+  icon="fa7-solid:rss"
+  title="Fediverse"
+  subtitle="@Hokori · 在联邦宇宙找到我"
+  href="https://nya.one/@hokori"
+/>
+
+<ContactCard
+  icon="fa7-brands:x-twitter"
+  title="X (Twitter)"
+  subtitle="@Luchan_Moeri · 技术碎碎念"
+  href="https://x.com/Luchan_Moeri"
+/>
+
+<ContactCard
+  icon="fa7-regular:envelope"
+  title="Email"
+  subtitle="yumorichan@duck.com"
+  href="mailto:yumorichan@duck.com"
+/>
+
+</div>
+
+---
+
+**感谢你的来访！希望在这个像素与代码交织的世界里，能有让你停下脚步的内容。**
