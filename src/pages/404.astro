@@ -6,8 +6,7 @@ import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { url } from "@/utils/url-utils";
 ---
 
-<MainGridLayout title="终端失联：数据流在星际中丢失了"
-description={i18n(I18nKey.notFoundDescription)}>
+<MainGridLayout title={i18n(I18nKey.notFound)} description={i18n(I18nKey.notFoundDescription)}>
     <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-96">
         <div class="card-base z-10 px-9 py-12 relative w-full flex flex-col items-center justify-center text-center">
             <!-- 404 大号数字 -->
@@ -22,7 +21,7 @@ description={i18n(I18nKey.notFoundDescription)}>
             
             <!-- 标题 -->
             <div class="text-3xl md:text-4xl font-bold mb-4 text-90">
-                "猫猫走丢了..."
+                {i18n(I18nKey.notFoundTitle)}
             </div>
             
             <!-- 描述 -->

@@ -127,8 +127,10 @@ export const siteConfig: SiteConfig = {
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
 	// bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
 	pages: {
+		// 友链页面开关
+		friends: true,
 		// 赞助页面开关
-		sponsor: true,
+		sponsor: false,
 		// 留言板页面开关，需要配置评论系统
 		guestbook: true,
 		// 番组计划页面开关，含追番、游戏、书籍和音乐，dev调试时只获取一页数据，build才会获取全部数据
@@ -137,6 +139,7 @@ export const siteConfig: SiteConfig = {
 		gallery: true,
 	},
 
+
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
 	categoryBar: true,
 
@@ -144,13 +147,19 @@ export const siteConfig: SiteConfig = {
 	postListLayout: {
 		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（多列布局）
 		defaultMode: "list",
+		// 移动端默认布局模式，不设置则跟随 defaultMode
+		mobileDefaultMode: "list",
+		// 是否在文章列表中显示标签
+		showTags: true,
+		// 文章简介显示行数，设为 0 则不截断
+		descriptionLines: 2,
 		// 是否允许用户切换布局
 		allowSwitch: true,
 		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 		grid: {
 			// 是否开启瀑布流布局，同时有封面图和无封面图的混合文章推荐开启
-			masonry: true,
-			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数，默认 280
+			masonry: false,
+			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
 			columnWidth: 320,
 		},
 	},
@@ -167,6 +176,28 @@ export const siteConfig: SiteConfig = {
 		googleAnalyticsId: "",
 		// Microsoft Clarity ID
 		microsoftClarityId: "",
+		// Umami 统计配置
+		umamiAnalytics: {
+			// Umami Website ID
+			websiteId: "",
+			// Umami JS地址，支持使用自建
+			scriptUrl: "https://cloud.umami.is/script.js",
+		},
+		// 51la 统计配置
+		la51Analytics: {
+			// 51la 统计 ID
+			Id: "",
+			// 自定义 SDK JS 地址，防止 DNS 污染，留空使用默认地址
+			sdkUrl: "",
+			// 多个统计 ID 的数据分离标识，留空则使用 Id
+			ck: "",
+			// 是否开启事件分析功能
+			autoTrack: false,
+			//  Hash路由模式, 项目使用History API路由, 所以不必开启默认false
+			hashMode: false,
+			// 是否开启网站录屏功能
+			screenRecord: true,
+		},
 	},
 
 	// 图像优化及响应式配置
@@ -179,7 +210,7 @@ export const siteConfig: SiteConfig = {
 		// - "avif": 仅输出 AVIF 格式（最新技术，最小体积，目前兼容性较低）
 		// - "webp": 仅输出 WebP 格式（体积适中，兼容性好）
 		// - "both": 同时输出 AVIF 和 WebP（推荐，浏览器自动选择最佳格式）
-		formats: "webp",
+		formats: "both",
 		// 图片压缩质量 (1-100)，值越低体积越小但质量越差，推荐 70-85
 		quality: 85,
 		// 为特定域名的图片添加 referrerpolicy="no-referrer" 属性
