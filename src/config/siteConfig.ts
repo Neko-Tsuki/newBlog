@@ -117,7 +117,15 @@ export const siteConfig: SiteConfig = {
 	// bangumi配置
 	bangumi: {
 		// Bangumi用户ID
-		userId: "1143164",
+		userId: "",
+		// 数据模式：static=构建时获取，dynamic=客户端实时获取
+		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
+		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
+		mode: "dynamic",
+		// Bangumi API 地址
+		apiUrl: "https://api.bangumi.one",
+		// 详情页地址
+		subjectBaseUrl: "https://bangumi.one/subject/",
 		// 条目类型排序，数组中的类型将按顺序优先展示
 		// 可选值: "anime" | "book" | "music" | "game" | "real" (暂不支持"real"类型)
 		// 未列出的类型将按默认顺序排在后面
@@ -136,7 +144,7 @@ export const siteConfig: SiteConfig = {
 		// 番组计划页面开关，含追番、游戏、书籍和音乐，dev调试时只获取一页数据，build才会获取全部数据
 		bangumi: false,
 		// 相册页面开关
-		gallery: true,
+		gallery: false,
 	},
 
 
@@ -169,7 +177,6 @@ export const siteConfig: SiteConfig = {
 		// 每页显示的文章数量
 		postsPerPage: 10,
 	},
-
 	// 统计分析
 	analytics: {
 		// Google Analytics ID
@@ -182,6 +189,25 @@ export const siteConfig: SiteConfig = {
 			websiteId: "",
 			// Umami JS地址，支持使用自建
 			scriptUrl: "https://cloud.umami.is/script.js",
+			// Umami 会话回放脚本地址，支持使用自建
+			replaysScriptUrl: "https://cloud.umami.is/recorder.js",
+			// 是否追踪出站链接
+			trackOutboundLinks: true,
+			// 是否收集浏览器性能指标
+			collectWebVitals: false,
+			// 会话回放配置
+			replays: {
+				// 是否启用会话回放
+				enabled: false,
+				// 录制会话采样率，范围 0-1，例如 0.15 表示记录 15% 的会话
+				sampleRate: 0.15,
+				// 隐私遮罩级别："moderate" 会遮罩所有输入框；"strict" 额外遮罩页面全部文本
+				maskLevel: "moderate",
+				// 单次录制最大时长（毫秒）
+				maxDuration: 300000,
+				// 需要排除录制的元素 CSS 选择器，例如 ".sensitive-widget"
+				blockSelector: "",
+			},
 		},
 		// 51la 统计配置
 		la51Analytics: {

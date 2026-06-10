@@ -17,9 +17,12 @@ export const zh_TW: Translation = {
 
 	[Key.tags]: "標籤",
 	[Key.categories]: "分類",
+	[Key.allCategories]: "所有分類",
+	[Key.allTags]: "所有標籤",
 	[Key.recentPosts]: "最新文章",
 	[Key.postList]: "文章列表",
-	[Key.tableOfContents]: "目錄",
+	[Key.tableOfContents]: "文章目錄",
+	[Key.tocEmpty]: "目前頁面沒有目錄",
 	[Key.music]: "音樂",
 	[Key.musicNoPlaying]: "暫未播放",
 	[Key.musicLyrics]: "歌詞",
@@ -52,6 +55,8 @@ export const zh_TW: Translation = {
 		"您還未在配置文件中啟用評論系統，啟用後訪客才可在此留言",
 	[Key.friends]: "友鏈",
 	[Key.friendsDescription]: "這裡是我的朋友們，歡迎互相訪問交流",
+	[Key.searchFriends]: "搜尋友鏈...",
+	[Key.friendsEmpty]: "暫無友情連結",
 	[Key.guestbook]: "留言",
 	[Key.guestbookDescription]: "歡迎在這裡留下你的足跡，分享你的想法和建議",
 	[Key.untitled]: "無標題",
@@ -72,6 +77,7 @@ export const zh_TW: Translation = {
 	[Key.systemMode]: "跟隨系統",
 
 	[Key.more]: "更多",
+	[Key.collapse]: "收起",
 
 	[Key.author]: "作者",
 	[Key.publishedAt]: "發布於",
@@ -119,6 +125,9 @@ export const zh_TW: Translation = {
 	[Key.bangumiNoDataDescription]: "該分類下還沒有任何條目",
 	[Key.bangumiEmpty]: "暫無數據",
 	[Key.bangumiEmptyReason]: "可能的原因：用戶名不存在、網絡連接問題或API限制",
+	[Key.bangumiFetchError]: "Bangumi 資料拉取失敗",
+	[Key.bangumiFetchErrorDesc]:
+		"構建時從 Bangumi API 獲取資料失敗，該頁面內容暫不可用。",
 	[Key.bangumiUsername]: "用戶名",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]: "提示：請在頁面配置中設置正確的Bangumi用戶名",
@@ -199,6 +208,8 @@ export const zh_TW: Translation = {
 	[Key.randomPosts]: "隨機文章",
 	[Key.smartRecommend]: "智慧推薦",
 	[Key.randomRecommend]: "隨機推薦",
+	[Key.noRelatedPosts]: "暫無相關文章",
+	[Key.noRandomPosts]: "暫無隨機文章",
 
 	// 加密
 	[Key.postEncrypted]: "本文已加密",
@@ -206,13 +217,18 @@ export const zh_TW: Translation = {
 	// 壁紙模式
 	[Key.wallpaperMode]: "壁紙模式",
 	[Key.wallpaperBannerMode]: "橫幅壁紙",
+	[Key.wallpaperFullscreenMode]: "全屏壁紙",
 	[Key.wallpaperOverlayMode]: "全屏透明",
 	[Key.wallpaperNoneMode]: "純色背景",
 
-	// 橫幅設置
-	[Key.bannerSettings]: "橫幅設置",
-	[Key.bannerTitle]: "首頁橫幅標題",
+	// 壁紙設置
+	[Key.wallpaperSettings]: "壁紙設置",
+	[Key.wallpaperTitle]: "首頁壁紙標題",
+	[Key.wallpaperCarousel]: "壁紙輪播",
 	[Key.wavesAnimation]: "水波紋動畫",
+	[Key.gradientTransition]: "漸變過渡",
+	[Key.sakuraEffect]: "櫻花特效",
+	[Key.effectsSettings]: "特效設定",
 	[Key.overlaySettings]: "透明設定",
 	[Key.overlayOpacity]: "桌布透明度",
 	[Key.overlayBlur]: "背景模糊度",
@@ -276,6 +292,8 @@ export const zh_TW: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+	[Key.calendar]: "站點日曆",
+	[Key.calendarHeatmapWeek]: "{month}月第{week}週，{count}篇文章",
 
 	[Key.shareArticle]: "分享",
 	[Key.generatingPoster]: "海報生成中...",
@@ -285,8 +303,8 @@ export const zh_TW: Translation = {
 	[Key.scanToRead]: "掃碼閱讀文章",
 
 	// 代碼區塊折疊配置
-	[Key.codeCollapsibleShowMore]: "顯示更多",
-	[Key.codeCollapsibleShowLess]: "顯示更少",
+	[Key.codeCollapsibleShowMore]: "展開",
+	[Key.codeCollapsibleShowLess]: "收起",
 	[Key.codeCollapsibleExpanded]: "代碼區塊已展開",
 	[Key.codeCollapsibleCollapsed]: "代碼區塊已折疊",
 
@@ -297,10 +315,11 @@ export const zh_TW: Translation = {
 	[Key.galleryAlbums]: "本相簿",
 	[Key.galleryNoAlbums]: "暫無相簿",
 	[Key.galleryBackToAlbums]: "返回相簿列表",
+	[Key.searchAlbums]: "搜尋相簿...",
 
 	// 密碼保護
 	[Key.passwordProtected]: "密碼保護",
-	[Key.passwordProtectedDesc]: "這篇文章已被密碼保護，請輸入密碼查看內容。",
+	[Key.passwordProtectedDesc]: "此內容已被密碼保護，請輸入密碼查看。",
 	[Key.passwordHint]: "提示",
 	[Key.passwordPlaceholder]: "請輸入密碼",
 	[Key.passwordSubmit]: "解鎖",
