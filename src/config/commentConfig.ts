@@ -11,6 +11,10 @@ export const commentConfig: CommentConfig = {
 		lang: "zh-CN",
 		// 是否启用文章访问量统计功能
 		visitorCount: true,
+		// 中国推荐1: https://registry.npmmirror.com/twikoo/1.7.12/files/dist/twikoo.min.js
+		// 中国推荐2: https://s4.zstatic.net/npm/twikoo@1.7.12/dist/twikoo.min.js
+		// 国际推荐: https://cdn.jsdelivr.net/npm/twikoo@1.7.12/dist/twikoo.min.js
+		jsUrl: "https://cdn.jsdelivr.net/npm/twikoo@1.7.12/dist/twikoo.min.js",
 	},
 
 	//waline评论系统配置
