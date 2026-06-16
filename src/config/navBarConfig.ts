@@ -4,20 +4,38 @@ import {
 	type NavBarSearchConfig,
 	NavBarSearchMethod,
 } from "../types/navBarConfig";
+import { siteConfig } from "./siteConfig";
 
 // ============================================================================
 // 导航栏配置 - 根据顺序动态生成导航栏链接
 // NavBar Configuration - Dynamically generate navigation bar links based on order
 // ============================================================================
 const getDynamicNavBarConfig = (): NavBarConfig => {
-	// 基础导航栏链接
-	const links: NavBarLink[] = [
-		// 主页
-		LinkPresets.Home,
-	];
+	const pages = siteConfig.pages;
+
+	function isEnabled(link: NavBarLink): boolean {
+		if (!link.pageKey) return true;
+		return pages[link.pageKey as keyof typeof pages] !== false;
+	}
+
+	function processLink(link: NavBarLink): NavBarLink | null {
+		if (!link.children) {
+			return isEnabled(link) ? link : null;
+		}
+
+		const filteredChildren = link.children.filter(isEnabled);
+
+		if (filteredChildren.length === 0) return null;
+		if (filteredChildren.length === 1) return filteredChildren[0];
+		return { ...link, children: filteredChildren };
+	}
+
+	const rawLinks: NavBarLink[] = [LinkPresets.Home];
+
+
 
 	// 文章及其子菜单
-	links.push({
+	rawLinks.push({
 		name: "文章",
 		url: "#",
 		icon: "material-symbols:article",
@@ -34,27 +52,27 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	});
 
 	// 友链
-	links.push(LinkPresets.Friends);
+	rawLinks.push(LinkPresets.Friends);
 
 	// 留言板
-	links.push(LinkPresets.Guestbook);
+	rawLinks.push(LinkPresets.Guestbook);
 
 	// 我的及其子菜单
-	// links.push({
-	// 	name: "我的",
-	// 	url: "#",
-	// 	icon: "material-symbols:person",
-	// 	children: [
-	// 		// 相册
-	// 		LinkPresets.Gallery,
+	rawLinks.push({
+		name: "我的",
+		url: "#",
+		icon: "material-symbols:person",
+		children: [
+			// 相册
+			LinkPresets.Gallery,
 
-	// 		// 番组计划
-	// 		LinkPresets.Bangumi,
-	// 	],
-	// });
+			// 番组计划
+			LinkPresets.Bangumi,
+		],
+	});
 
 	// 关于及其子菜单
-	links.push({
+	rawLinks.push({
 		name: "关于",
 		url: "#",
 		icon: "material-symbols:info",
@@ -108,6 +126,10 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 	external: true,
 	// 	icon: "material-symbols:docs",
 	// });
+	const links: NavBarLink[] = rawLinks
+		.map(processLink)
+		.filter((link): link is NavBarLink => link !== null);
+
 
 	return { links } as NavBarConfig;
 };
@@ -146,16 +168,19 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "友链",
 		url: "/friends/",
 		icon: "material-symbols:group",
+		pageKey: "friends",
 	},
 	Sponsor: {
 		name: "打赏",
 		url: "/sponsor/",
 		icon: "material-symbols:favorite",
+		pageKey: "sponsor",
 	},
 	Guestbook: {
 		name: "留言",
 		url: "/guestbook/",
 		icon: "material-symbols:chat",
+		pageKey: "guestbook",
 	},
 	About: {
 		name: "关于我",
@@ -166,11 +191,13 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "番组计划",
 		url: "/bangumi/",
 		icon: "material-symbols:movie",
+		pageKey: "bangumi",
 	},
 	Gallery: {
 		name: "相册",
 		url: "/gallery/",
 		icon: "material-symbols:photo-library",
+		pageKey: "gallery",
 	},
 };
 
