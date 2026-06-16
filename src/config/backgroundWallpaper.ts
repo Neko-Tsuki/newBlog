@@ -62,7 +62,30 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
 		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
 		position: "0% 20%",
-
+		// 图片来源
+		credit: {
+			enable: {
+				// 桌面端显示横幅图片来源文本
+				desktop: false,
+				// 移动端显示横幅图片来源文本
+				mobile: false,
+			},
+			text: {
+				// 桌面端要显示的来源文本
+				desktop: "Pixiv - 晚晚喵",
+				// 移动端要显示的来源文本
+				mobile: "Pixiv - KiraraShss",
+			},
+			url: {
+				// 桌面端原始艺术品或艺术家页面的 URL 链接
+				desktop: "https://www.pixiv.net/users/108801776",
+				// 移动端原始艺术品或艺术家页面的 URL 链接
+				mobile: "https://www.pixiv.net/users/42715864",
+			},
+		},
+	},
+	// 横幅和全屏壁纸共享配置
+	common: {
 		// 主页横幅文字
 		homeText: {
 			// 是否启用主页横幅文字
@@ -90,27 +113,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				deleteSpeed: 50,
 				// 完全显示后的暂停时间（毫秒）
 				pauseTime: 2000,
-			},
-		},
-		// 图片来源
-		credit: {
-			enable: {
-				// 桌面端显示横幅图片来源文本
-				desktop: false,
-				// 移动端显示横幅图片来源文本
-				mobile: false,
-			},
-			text: {
-				// 桌面端要显示的来源文本
-				desktop: "Pixiv - 晚晚喵",
-				// 移动端要显示的来源文本
-				mobile: "Pixiv - KiraraShss",
-			},
-			url: {
-				// 桌面端原始艺术品或艺术家页面的 URL 链接
-				desktop: "https://www.pixiv.net/users/108801776",
-				// 移动端原始艺术品或艺术家页面的 URL 链接
-				mobile: "https://www.pixiv.net/users/42715864",
 			},
 		},
 		// 横幅导航栏配置

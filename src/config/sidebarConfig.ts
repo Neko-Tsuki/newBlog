@@ -185,7 +185,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		{
 			type: "music",
 			enable: false,
-			position: "sticky",
 			showOnPostPage: true,
 		},
 		{

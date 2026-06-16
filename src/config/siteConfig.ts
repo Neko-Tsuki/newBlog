@@ -75,10 +75,10 @@ export const siteConfig: SiteConfig = {
 		// 3. 本地图片（src目录，自动优化但会增加构建时间，推荐）: { type: "image", value: "assets/images/logo.webp", alt: "Logo" }
 		// 4. 网络图片: { type: "url", value: "https://example.com/logo.png", alt: "Logo" }
 		logo: {
-		type: "image",
-		value: "assets/images/navbar.png",
-		alt: "Site-Logo",
-	},
+			type: "image",
+			value: "assets/images/navbar.png",
+			alt: "Site-Logo",
+		},
 		// 导航栏标题
 		title: "",
 		// 全宽导航栏，导航栏是否占满屏幕宽度，true：占满，false：不占满
@@ -113,6 +113,9 @@ export const siteConfig: SiteConfig = {
 
 	// OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
 	generateOgImages: false,
+
+	// 归档页是否折叠非最新年份文章，禁用后默认展开全部年份
+	foldArticle: true,
 
 	// bangumi配置
 	bangumi: {

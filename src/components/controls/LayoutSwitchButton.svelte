@@ -2,16 +2,22 @@
 import { onMount } from "svelte";
 import { siteConfig } from "@/config";
 
-export let currentLayout: "list" | "grid" = "list";
-
 /**
  * 文章列表布局切换按钮
  * 目前已弃用，已集成至DisplaySettingsIntegrated.svelte，当前文件保留以备将来可能的单独使用
  */
 
-let mounted = false;
-let isSmallScreen = false;
-let isSwitching = false;
+interface Props {
+	currentLayout?: "list" | "grid";
+}
+
+let {
+	currentLayout = "list",
+}: Props = $props();
+
+let mounted = $state(false);
+let isSmallScreen = $state(false);
+let isSwitching = $state(false);
 
 function checkScreenSize() {
 	isSmallScreen = window.innerWidth < 1200;
@@ -104,7 +110,7 @@ onMount(() => {
   <button 
     aria-label="切换文章列表布局" 
     class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center theme-switch-btn {isSwitching ? 'switching' : ''}" 
-    on:click={switchLayout}
+    onclick={switchLayout}
     disabled={isSwitching}
     title={currentLayout === 'list' ? '切换到网格模式' : '切换到列表模式'}
   >
