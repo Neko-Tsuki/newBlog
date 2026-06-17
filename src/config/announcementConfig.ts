@@ -5,7 +5,8 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "公告",
 
 	// 公告内容
-	content: "欢迎来到我的博客！如果你能看到这个页面那证明已经成功迁移到Astro了！",
+	content:
+		"欢迎来到我的博客！如果你能看到这个页面那证明已经成功迁移到Astro了！",
 
 	// 是否允许用户关闭公告
 	closable: true,

@@ -27,7 +27,7 @@ export const siteConfig: SiteConfig = {
 		"博客",
 		"技术博客",
 		"静态博客",
-		"东方Project"
+		"东方Project",
 	],
 
 	// 主题色
@@ -115,7 +115,6 @@ export const siteConfig: SiteConfig = {
 		generateOgImages: false,
 	},
 
-
 	// bangumi配置
 	bangumi: {
 		// Bangumi用户ID
@@ -148,7 +147,6 @@ export const siteConfig: SiteConfig = {
 		// 相册页面开关
 		gallery: false,
 	},
-
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
 	categoryBar: true,

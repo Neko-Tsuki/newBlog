@@ -860,7 +860,9 @@ export function setWallpaperMode(mode: WALLPAPER_MODE): void {
 
 export function initWallpaperMode(): void {
 	// 初始化透明模式参数（透明度/模糊度/卡片透明度）
-	applyStoredOverlaySettingsToDocument();
+	applyOverlayOpacityToDocument(getStoredOverlayOpacity());
+	applyOverlayBlurToDocument(getStoredOverlayBlur());
+	applyOverlayCardOpacityToDocument(getStoredOverlayCardOpacity());
 	const storedMode = getStoredWallpaperMode();
 	applyWallpaperModeToDocument(storedMode, false);
 }
@@ -1024,12 +1026,6 @@ export function setOverlayCardOpacity(cardOpacity: number): void {
 		localStorage.setItem("overlayCardOpacity", String(safeCardOpacity));
 	}
 	applyOverlayCardOpacityToDocument(safeCardOpacity);
-}
-
-export function applyStoredOverlaySettingsToDocument(): void {
-	applyOverlayOpacityToDocument(getStoredOverlayOpacity());
-	applyOverlayBlurToDocument(getStoredOverlayBlur());
-	applyOverlayCardOpacityToDocument(getStoredOverlayCardOpacity());
 }
 
 // Waves animation functions

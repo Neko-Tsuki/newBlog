@@ -54,11 +54,11 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["同人刊物"],
 		weight: 29,
 		enabled: true,
-
 	},
 	{
 		title: "PiCpo的阁楼",
-		imgurl: "https://avatars.githubusercontent.com/u/33993624?s=400&u=fef5f5d3d0e117d28c6a6addf608d1f8ef741cdc&v=4",
+		imgurl:
+			"https://avatars.githubusercontent.com/u/33993624?s=400&u=fef5f5d3d0e117d28c6a6addf608d1f8ef741cdc&v=4",
 		desc: "Computer Science & Security Learner",
 		siteurl: "https://picpo.top",
 		tags: ["喵友"],
@@ -83,7 +83,7 @@ export const friendsConfig: FriendLink[] = [
 		weight: 29,
 		enabled: true,
 	},
-	{		
+	{
 		title: "Fika",
 		imgurl: "https://pic.imgdb.cn/item/637c14ee16f2c2beb161a26e.jpg",
 		desc: "遇到困难睡大觉",
@@ -118,11 +118,8 @@ export const friendsConfig: FriendLink[] = [
 		tags: ["喵友"],
 		weight: 29,
 		enabled: true,
-	}
-
-
+	},
 ];
-
 
 // 获取启用的友链并进行排序
 export const getEnabledFriends = (): FriendLink[] => {

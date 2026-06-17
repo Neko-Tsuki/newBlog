@@ -97,9 +97,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅主标题字体大小
 			titleSize: "3.8rem",
 			// 主页横幅副标题
-			subtitle: [
-					"在代码的世界里修行，在幻想的境界里生活。",
-				],
+			subtitle: ["在代码的世界里修行，在幻想的境界里生活。"],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
 			typewriter: {

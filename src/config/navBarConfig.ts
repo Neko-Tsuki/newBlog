@@ -32,8 +32,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 	const rawLinks: NavBarLink[] = [LinkPresets.Home];
 
-
-
 	// 文章及其子菜单
 	rawLinks.push({
 		name: "文章",
@@ -129,7 +127,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	const links: NavBarLink[] = rawLinks
 		.map(processLink)
 		.filter((link): link is NavBarLink => link !== null);
-
 
 	return { links } as NavBarConfig;
 };
