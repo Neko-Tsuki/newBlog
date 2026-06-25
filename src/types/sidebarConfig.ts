@@ -44,6 +44,13 @@ export type WidgetSpecificConfig = {
 // 站点信息组件专用配置
 export type SiteInfoConfig = {
 	unknownBuildPlatform?: string; // 未识别的构建平台显示文本，默认 "Unknown CI"
+	// 构建信息显示控制
+	hideItems?: {
+		node?: boolean; // 隐藏 Node 版本
+		pnpm?: boolean; // 隐藏 pnpm 版本
+		system?: boolean; // 隐藏系统信息
+		buildTime?: boolean; // 隐藏构建时间
+	};
 };
 
 // 日历组件专用配置

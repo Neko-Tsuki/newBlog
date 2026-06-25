@@ -87,6 +87,9 @@ const siteDomain = siteConfig.site_url
 // 文章许可
 const licenseName = licenseConfig.enable ? licenseConfig.name : "None";
 
+// 读取 hideItems 配置
+const hideItems = widgetConfig?.specificConfig?.siteInfo?.hideItems ?? {};
+
 // ---- 组装展示数据 ----
 // 始终显示的项目（列表）
 const mainItems = [
@@ -132,28 +135,44 @@ const detailItems: {
 		label: i18n(I18nKey.siteInfoAstroVersion),
 		value: `v${astroVersion}`,
 	},
-	{
-		icon: "fa7-brands:node-js",
-		label: i18n(I18nKey.siteInfoNodeVersion),
-		value: nodeVersion,
-	},
-	{
-		icon: "simple-icons:pnpm",
-		label: i18n(I18nKey.siteInfoPnpmVersion),
-		value: pnpmVersion,
-	},
-	{
-		icon: "material-symbols:build-outline",
-		label: i18n(I18nKey.siteInfoBuildTime),
-		value: buildTime,
-		fullWidth: true,
-	},
-	{
-		icon: "material-symbols:computer-outline",
-		label: i18n(I18nKey.siteInfoSystem),
-		value: systemInfo,
-		fullWidth: true,
-	},
+	...(hideItems.node
+		? []
+		: [
+				{
+					icon: "fa7-brands:node-js",
+					label: i18n(I18nKey.siteInfoNodeVersion),
+					value: nodeVersion,
+				},
+			]),
+	...(hideItems.pnpm
+		? []
+		: [
+				{
+					icon: "simple-icons:pnpm",
+					label: i18n(I18nKey.siteInfoPnpmVersion),
+					value: pnpmVersion,
+				},
+			]),
+	...(hideItems.buildTime
+		? []
+		: [
+				{
+					icon: "material-symbols:build-outline",
+					label: i18n(I18nKey.siteInfoBuildTime),
+					value: buildTime,
+					fullWidth: true,
+				},
+			]),
+	...(hideItems.system
+		? []
+		: [
+				{
+					icon: "material-symbols:computer-outline",
+					label: i18n(I18nKey.siteInfoSystem),
+					value: systemInfo,
+					fullWidth: true,
+				},
+			]),
 ];
 ---
 
