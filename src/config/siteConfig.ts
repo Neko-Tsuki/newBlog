@@ -105,15 +105,16 @@ export const siteConfig: SiteConfig = {
 			// 注意：只有 theme 配置成 obsidian 主题才能基本支持这些语法，其他主题会有样式问题或不兼容的情况
 			enablePythonMarkdownAdmonitions: false,
 		},
-		// 文章页底部的"上次编辑时间"卡片开关
-		showLastModified: true,
-		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
-		outdatedThreshold: 30,
-		// 是否开启分享海报生成功能
-		sharePoster: true,
-		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
-		generateOgImages: false,
 	},
+
+	// 文章页底部的"上次编辑时间"卡片开关
+	showLastModified: true,
+	// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+	outdatedThreshold: 30,
+	// 是否开启分享海报生成功能
+	sharePoster: true,
+	// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
+	generateOgImages: false,
 
 	// bangumi配置
 	bangumi: {

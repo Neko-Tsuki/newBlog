@@ -115,15 +115,15 @@ export type SiteConfig = {
 			theme: "github" | "obsidian" | "vitepress" | "docusaurus";
 			enablePythonMarkdownAdmonitions?: boolean;
 		};
-		// 控制"上次编辑时间"卡片显示的开关
-		showLastModified: boolean;
-		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
-		outdatedThreshold?: number;
-		// 是否显示分享海报按钮
-		sharePoster?: boolean;
-		// OpenGraph图片功能
-		generateOgImages: boolean;
 	};
+	// 控制"上次编辑时间"卡片显示的开关
+	showLastModified?: boolean;
+	// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+	outdatedThreshold?: number;
+	// 是否显示分享海报按钮
+	sharePoster?: boolean;
+	// OpenGraph图片功能
+	generateOgImages?: boolean;
 
 	// bangumi配置
 	bangumi?: {
