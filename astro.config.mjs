@@ -11,17 +11,17 @@ import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import katex from "katex";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeComponents from "rehype-components"; /* Render the custom directive content */
+import rehypeComponents from "rehype-components";
 import rehypeKatex from "rehype-katex";
-import "katex/dist/contrib/mhchem.mjs"; // 加载 mhchem 扩展
+import "katex/dist/contrib/mhchem.mjs";
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
-import { pluginCollapsible } from "expressive-code-collapsible"; /* Collapsible */
-import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Language Badge */
+import { pluginCollapsible } from "expressive-code-collapsible";
+import { pluginLanguageBadge } from "expressive-code-language-badge";
 import rehypeCallouts from "rehype-callouts";
 import rehypeSlug from "rehype-slug";
 import remarkAdmonitionToBlockquoteCallout from "remark-admonition-to-blockquote-callout";
-import remarkDirective from "remark-directive"; /* Handle directives */
+import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, plantumlConfig, siteConfig } from "./src/config";
@@ -57,27 +57,25 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 
+	// 字体配置（使用自定义 FontConfig，通过 CDN 加载字体）
+	// 注意：未使用 Astro Font API，保持原有的自定义字体管理系统
+
 	adapter,
 
 	// 图像优化配置
 	image: {
 		// 全局响应式布局
 		layout: "constrained",
-	},
-
-	experimental: {
-		// Rust 编译器以提升构建性能（实验性），部分平台可能会导致构建失败，可以根据需要启用或禁用
-		rustCompiler: false,
-		// 队列渲染以优化性能（实验性）
-		queuedRendering: { enabled: true },
+		// 使用 noop image service 替代 Sharp（兼容 Cloudflare Workers）
+		service: {
+			entrypoint: "astro/assets/services/noop",
+		},
 	},
 
 	integrations: [
 		swup({
 			theme: false,
-			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-			// the default value `transition-` cause transition delay
-			// when the Tailwind class `transition-all` is used
+			animationClass: "transition-swup-",
 			containers: [
 				"#banner-overlay-container",
 				"#banner-dim-container",
@@ -93,11 +91,9 @@ export default defineConfig({
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
-			// 滚动相关配置优化
 			resolveUrl: (url) => url,
 			animateHistoryBrowsing: false,
 			skipPopStateHandling: (event) => {
-				// 跳过锚点链接的处理，让浏览器原生处理
 				return event.state?.url?.includes("#");
 			},
 		}),
@@ -117,13 +113,11 @@ export default defineConfig({
 			useDarkModeMediaQuery: false,
 			themeCssSelector: (theme) => `[data-theme='${theme.name}']`,
 			plugins: [
-				// pluginLanguageBadge 配置 - 从expressiveCodeConfig读取设置
 				...(expressiveCodeConfig.pluginLanguageBadge?.enable === true
 					? [pluginLanguageBadge()]
 					: []),
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
-				// pluginCollapsible 配置 - 从expressiveCodeConfig读取设置，使用i18n文本
 				...(expressiveCodeConfig.pluginCollapsible?.enable === true
 					? [
 							pluginCollapsible({
@@ -154,7 +148,7 @@ export default defineConfig({
 				borderRadius: "0.75rem",
 				codeFontSize: "0.875rem",
 				codeFontFamily:
-					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+					"var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
 				frames: {},
 				textMarkers: {
@@ -178,7 +172,6 @@ export default defineConfig({
 		svelte(),
 		sitemap({
 			filter: (page) => {
-				// 根据页面开关配置过滤sitemap
 				const url = new URL(page);
 				const pathname = url.pathname;
 
@@ -227,7 +220,7 @@ export default defineConfig({
 				rehypePlantuml,
 				rehypeFigure,
 				[rehypeExternalLinks, { siteUrl: siteConfig.site_url }],
-				[rehypeEmailProtection, { method: "base64" }], // 邮箱保护插件，支持 'base64' 或 'rot13'
+				[rehypeEmailProtection, { method: "base64" }],
 				[
 					rehypeComponents,
 					{
@@ -278,14 +271,11 @@ export default defineConfig({
 			minify: "esbuild",
 			esbuildOptions: {
 				minify: true,
-				// 删除 debugger 语句；console.log / console.debug 无副作用，未使用返回值时会被 dead code elimination 移除，
-				// console.warn / console.error 保留，确保生产环境出错时仍有日志可查
 				drop: ["debugger"],
 				pure: ["console.log", "console.debug"],
 			},
 			rollupOptions: {
 				onwarn(warning, warn) {
-					// temporarily suppress this warning
 					if (
 						warning.message.includes("is dynamically imported by") &&
 						warning.message.includes("but also statically imported by")
@@ -295,11 +285,9 @@ export default defineConfig({
 					warn(warning);
 				},
 			},
-			// CSS 优化
 			cssCodeSplit: true,
 			cssMinify: "esbuild",
 			assetsInlineLimit: 4096,
 		},
 	},
 });
-
