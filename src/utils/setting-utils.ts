@@ -1181,7 +1181,7 @@ export function getDefaultBannerTitleEnabled(): boolean {
 }
 
 export function getDefaultBannerCarouselEnabled(): boolean {
-	return backgroundWallpaper.banner?.carousel?.enable ?? false;
+	return backgroundWallpaper.common?.carousel?.enable ?? false;
 }
 
 export function getStoredBannerTitleEnabled(): boolean {
@@ -1200,7 +1200,7 @@ export function getStoredBannerTitleEnabled(): boolean {
 
 export function getStoredBannerCarouselEnabled(): boolean {
 	const isSwitchable =
-		backgroundWallpaper.banner?.carousel?.switchable ?? false;
+		backgroundWallpaper.common?.carousel?.switchable ?? false;
 	if (!isSwitchable) {
 		return getDefaultBannerCarouselEnabled();
 	}
@@ -1231,7 +1231,7 @@ export function setBannerTitleEnabled(enabled: boolean): void {
 export function setBannerCarouselEnabled(enabled: boolean): void {
 	const safeEnabled = !!enabled;
 	const isSwitchable =
-		backgroundWallpaper.banner?.carousel?.switchable ?? false;
+		backgroundWallpaper.common?.carousel?.switchable ?? false;
 	if (
 		isSwitchable &&
 		typeof localStorage !== "undefined" &&
