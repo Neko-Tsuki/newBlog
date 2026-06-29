@@ -50,6 +50,11 @@ import FloatingButton from "@/components/common/FloatingButton.astro";
   }
   // ... existing initialization logic ...
   // 页面加载完成后初始化
+  document.addEventListener("DOMContentLoaded", () => {
+    new BackToTopManager();
+  });
+
+  // 如果页面已经加载完成，立即初始化
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       new BackToTopManager();

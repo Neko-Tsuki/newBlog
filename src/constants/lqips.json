@@ -41,5 +41,6 @@
   "src:assets/images/avatar.png": "73a9e58ab5d890b4ca",
   "public:assets/images/sponsor/afdian.png": "e1bde8deb9e6d5b9de",
   "src:content/posts/touhou-cosplay/pachuli.jpg": "956f758c69667c6264",
-  "src:content/posts/Github-Action-Automatic-Deployment-hexo/cover.jpeg": "dfeaf9e3e3efe6e8f0"
+  "src:content/posts/Github-Action-Automatic-Deployment-hexo/cover.jpeg": "dfeaf9e3e3efe6e8f0",
+  "public:assets/images/ad/ad1.webp": "a1b8b68a8e918c8f93"
 }

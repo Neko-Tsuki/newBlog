@@ -704,7 +704,7 @@ function adjustMainContentPosition(
 		case "banner": {
 			// Banner模式：主内容在banner下方
 			const isHome = checkIsHomePage(window.location.pathname);
-			const bannerTargetTop = "calc(var(--banner-height) - 3rem)";
+			const bannerTargetTop = "calc(var(--banner-height) - 3.5rem)";
 
 			// 禁用 CSS transition，防止整个定位过程中的值变化触发过渡动画
 			mainContent.style.setProperty("transition", "none", "important");
@@ -860,9 +860,7 @@ export function setWallpaperMode(mode: WALLPAPER_MODE): void {
 
 export function initWallpaperMode(): void {
 	// 初始化透明模式参数（透明度/模糊度/卡片透明度）
-	applyOverlayOpacityToDocument(getStoredOverlayOpacity());
-	applyOverlayBlurToDocument(getStoredOverlayBlur());
-	applyOverlayCardOpacityToDocument(getStoredOverlayCardOpacity());
+	applyStoredOverlaySettingsToDocument();
 	const storedMode = getStoredWallpaperMode();
 	applyWallpaperModeToDocument(storedMode, false);
 }
@@ -1026,6 +1024,12 @@ export function setOverlayCardOpacity(cardOpacity: number): void {
 		localStorage.setItem("overlayCardOpacity", String(safeCardOpacity));
 	}
 	applyOverlayCardOpacityToDocument(safeCardOpacity);
+}
+
+export function applyStoredOverlaySettingsToDocument(): void {
+	applyOverlayOpacityToDocument(getStoredOverlayOpacity());
+	applyOverlayBlurToDocument(getStoredOverlayBlur());
+	applyOverlayCardOpacityToDocument(getStoredOverlayCardOpacity());
 }
 
 // Waves animation functions

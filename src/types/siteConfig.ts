@@ -84,6 +84,7 @@ export type SiteConfig = {
 		guestbook: boolean; // 留言板页面开关
 		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
+		anime: boolean; // 追番页面开关
 	};
 
 	// 分类导航栏开关
@@ -115,15 +116,15 @@ export type SiteConfig = {
 			theme: "github" | "obsidian" | "vitepress" | "docusaurus";
 			enablePythonMarkdownAdmonitions?: boolean;
 		};
+		// 控制"上次编辑时间"卡片显示的开关
+		showLastModified: boolean;
+		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+		outdatedThreshold?: number;
+		// 是否显示分享海报按钮
+		sharePoster?: boolean;
+		// OpenGraph图片功能
+		generateOgImages: boolean;
 	};
-	// 控制"上次编辑时间"卡片显示的开关
-	showLastModified?: boolean;
-	// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
-	outdatedThreshold?: number;
-	// 是否显示分享海报按钮
-	sharePoster?: boolean;
-	// OpenGraph图片功能
-	generateOgImages?: boolean;
 
 	// bangumi配置
 	bangumi?: {
@@ -132,6 +133,17 @@ export type SiteConfig = {
 		apiUrl?: string; // Bangumi API 地址
 		subjectBaseUrl?: string; // 条目详情页地址
 		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
+	};
+
+	// 追番配置（Bilibili + TMDB）
+	anime?: {
+		bilibili?: {
+			uid: string; // Bilibili 用户 UID
+		};
+		tmdb?: {
+			apiKey: string; // TMDB API Key
+			listId: string; // TMDB 列表 ID
+		};
 	};
 
 	// 分页配置

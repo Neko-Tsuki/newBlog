@@ -8,6 +8,7 @@ import { licenseConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import type { WidgetComponentConfig } from "@/types/config";
+import { detectBuildPlatform } from "@/utils/build-platform";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
 
 interface Props {
@@ -56,11 +57,13 @@ const buildTime = formatDateI18nWithTime(new Date());
 // 构建平台检测（使用 ci-info 自动识别 CI 环境）
 const unknownBuildPlatform =
 	widgetConfig?.specificConfig?.siteInfo?.unknownBuildPlatform || "Unknown CI";
-const buildPlatform = ci.isCI
-	? ci.name || unknownBuildPlatform
-	: import.meta.env.DEV
-		? "Local Dev"
-		: "Local";
+const buildPlatform = detectBuildPlatform({
+	env: process.env,
+	isCI: ci.isCI,
+	ciName: ci.name,
+	isDev: import.meta.env.DEV,
+	unknownBuildPlatform,
+});
 
 // 系统信息（平台 + 架构）
 const platformMap: Record<string, string> = {
@@ -86,9 +89,6 @@ const siteDomain = siteConfig.site_url
 
 // 文章许可
 const licenseName = licenseConfig.enable ? licenseConfig.name : "None";
-
-// 读取 hideItems 配置
-const hideItems = widgetConfig?.specificConfig?.siteInfo?.hideItems ?? {};
 
 // ---- 组装展示数据 ----
 // 始终显示的项目（列表）
@@ -135,44 +135,28 @@ const detailItems: {
 		label: i18n(I18nKey.siteInfoAstroVersion),
 		value: `v${astroVersion}`,
 	},
-	...(hideItems.node
-		? []
-		: [
-				{
-					icon: "fa7-brands:node-js",
-					label: i18n(I18nKey.siteInfoNodeVersion),
-					value: nodeVersion,
-				},
-			]),
-	...(hideItems.pnpm
-		? []
-		: [
-				{
-					icon: "simple-icons:pnpm",
-					label: i18n(I18nKey.siteInfoPnpmVersion),
-					value: pnpmVersion,
-				},
-			]),
-	...(hideItems.buildTime
-		? []
-		: [
-				{
-					icon: "material-symbols:build-outline",
-					label: i18n(I18nKey.siteInfoBuildTime),
-					value: buildTime,
-					fullWidth: true,
-				},
-			]),
-	...(hideItems.system
-		? []
-		: [
-				{
-					icon: "material-symbols:computer-outline",
-					label: i18n(I18nKey.siteInfoSystem),
-					value: systemInfo,
-					fullWidth: true,
-				},
-			]),
+	{
+		icon: "fa7-brands:node-js",
+		label: i18n(I18nKey.siteInfoNodeVersion),
+		value: nodeVersion,
+	},
+	{
+		icon: "simple-icons:pnpm",
+		label: i18n(I18nKey.siteInfoPnpmVersion),
+		value: pnpmVersion,
+	},
+	{
+		icon: "material-symbols:build-outline",
+		label: i18n(I18nKey.siteInfoBuildTime),
+		value: buildTime,
+		fullWidth: true,
+	},
+	{
+		icon: "material-symbols:computer-outline",
+		label: i18n(I18nKey.siteInfoSystem),
+		value: systemInfo,
+		fullWidth: true,
+	},
 ];
 ---
 
