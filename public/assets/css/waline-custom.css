@@ -263,13 +263,18 @@
 
 /* 计数/空 */
 #waline .wl-count {
-  color: var(--deep-text);
+  color: var(--deep-text) !important;
 }
 #waline .wl-empty {
-  color: var(--content-meta);
+  color: var(--content-meta) !important;
 }
 #waline .wl-power {
-  color: var(--content-meta);
+  color: var(--content-meta) !important;
+}
+
+/* 确保 wl-meta-head 内的文字跟随主题 */
+#waline .wl-meta-head {
+  color: var(--deep-text);
 }
 
 /* Reaction */
