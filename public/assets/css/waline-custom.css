@@ -179,18 +179,20 @@
 #waline .wl-card-item:last-child > .wl-card {
   border-bottom: none;
 }
-#waline .wl-card .wl-head .wl-nick {
-  color: var(--deep-text) !important;
+#waline .wl-card .wl-head .wl-nick,
+#waline .wl-card .wl-head a.wl-nick {
+  color: var(--primary) !important;
+  font-weight: bold;
 }
 #waline .wl-card span.wl-nick {
   color: var(--content-meta) !important;
 }
 #waline .wl-card .wl-time {
-  color: var(--content-meta);
+  color: var(--content-meta) !important;
 }
 #waline .wl-card .wl-meta > span {
   background: var(--btn-regular-bg);
-  color: var(--content-meta);
+  color: var(--content-meta) !important;
 }
 #waline .wl-card .wl-content {
   color: var(--deep-text) !important;
@@ -355,9 +357,8 @@
 .dark #waline .wl-card *,
 .dark #waline .wl-content *,
 .dark #waline p,
-.dark #waline .wl-card .wl-head .wl-nick,
 .dark #waline .wl-btn {
-  color: oklch(0.88 0.01 0);
+  color: oklch(0.88 0.01 0) !important;
 }
 
 .dark #waline .wl-card span.wl-nick,
@@ -365,8 +366,12 @@
 .dark #waline .wl-meta > span,
 .dark #waline .wl-power,
 .dark #waline .wl-action,
-.dark #waline .wl-sort li {
-  color: oklch(0.65 0.01 0);
+.dark #waline .wl-sort li,
+.dark #waline .wl-info .wl-text-number,
+.dark #waline .wl-header label,
+.dark #waline .wl-empty,
+.dark #waline .wl-close-icon {
+  color: oklch(0.65 0.01 0) !important;
 }
 
 .dark #waline .wl-card {
@@ -382,12 +387,32 @@
 }
 
 .dark #waline .wl-btn.primary {
-  color: oklch(0.16 0.014 0);
+  color: oklch(0.16 0.014 0) !important;
 }
 
 .dark #waline .wl-btn.primary:hover,
 .dark #waline .wl-btn.primary:active {
-  color: oklch(0.16 0.014 0);
+  color: oklch(0.16 0.014 0) !important;
+}
+
+/* 确保 wl-nick 在所有主题下正确显示 */
+#waline .wl-card .wl-head .wl-nick,
+#waline .wl-card .wl-head a.wl-nick {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
+
+#waline .wl-card span.wl-nick {
+  color: var(--content-meta) !important;
+}
+
+.dark #waline .wl-card .wl-head .wl-nick,
+.dark #waline .wl-card .wl-head a.wl-nick {
+  color: var(--primary) !important;
+}
+
+.dark #waline .wl-card span.wl-nick {
+  color: oklch(0.65 0.01 0) !important;
 }
 
 @media (max-width: 720px) {
