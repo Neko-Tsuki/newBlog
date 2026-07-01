@@ -1,0 +1,142 @@
+/* ===== Waline 评论系统主题样式 =====
+   使用 CSS 变量覆盖 Waline 默认样式，适配 Firefly 主题 */
+
+:root {
+  --waline-theme-color: var(--primary);
+  --waline-active-color: var(--primary);
+  --waline-color: var(--deep-text);
+  --waline-light-grey: var(--content-meta);
+  --waline-dark-grey: var(--deep-text);
+  --waline-white: var(--card-bg);
+  --waline-bg-color: var(--card-bg);
+  --waline-bg-color-light: var(--btn-regular-bg);
+  --waline-bg-color-hover: var(--btn-regular-bg-hover);
+  --waline-border-color: var(--line-divider);
+  --waline-border: 1px solid var(--line-divider);
+  --waline-avatar-radius: 0.5rem;
+  --waline-box-shadow: none;
+  --waline-badge-color: var(--primary);
+  --waline-info-bg-color: var(--btn-regular-bg);
+  --waline-info-color: var(--content-meta);
+  --waline-disable-bg-color: var(--btn-regular-bg);
+  --waline-disable-color: var(--content-meta);
+  --waline-bq-color: var(--line-divider);
+  --waline-code-bg-color: var(--codeblock-bg);
+  --waline-font-size: 0.9375rem;
+}
+
+/* 头像 */
+.wl-avatar img,
+.wl-cards .wl-user .wl-user-avatar { border-radius: var(--waline-avatar-radius) !important; }
+
+/* 面板 */
+.wl-panel { border-radius: var(--radius-large); background: var(--card-bg); border: 1px solid var(--line-divider); }
+.wl-header { border-bottom: 1px solid var(--line-divider); }
+.wl-header label { color: var(--content-meta); }
+.wl-header input { color: var(--deep-text); }
+
+/* 编辑器 */
+.wl-editor { color: var(--deep-text); background: transparent; border-radius: var(--radius-lg); }
+.wl-editor:focus, .wl-input:focus { background: var(--btn-regular-bg); }
+.wl-input { color: var(--deep-text); }
+
+/* 按钮 */
+.wl-btn { border-radius: var(--radius-lg); color: var(--deep-text); border-color: var(--line-divider); transition: all var(--duration-normal) var(--ease-standard); }
+.wl-btn:hover, .wl-btn:active { border-color: var(--primary); color: var(--primary); background: var(--btn-regular-bg-hover); }
+.wl-btn.primary { background: var(--primary); border-color: var(--primary); color: var(--card-bg); }
+.wl-btn.primary:hover, .wl-btn.primary:active { opacity: 0.85; background: var(--primary); color: var(--card-bg); }
+
+/* 操作按钮 */
+.wl-action { color: var(--content-meta); }
+.wl-action:hover { color: var(--primary); }
+.wl-action.active { color: var(--primary); }
+
+/* 表情弹窗 */
+.wl-emoji-popup { border-radius: var(--radius-lg); background: var(--card-bg); border: 1px solid var(--line-divider); }
+.wl-emoji-popup .wl-tabs::before { background: var(--line-divider); }
+.wl-emoji-popup .wl-tab.active { border-color: var(--line-divider); background: var(--card-bg); }
+.wl-emoji-popup button:hover { background: var(--btn-regular-bg-hover); }
+
+/* GIF */
+.wl-gif-popup { border-radius: var(--radius-lg); background: var(--card-bg); border: 1px solid var(--line-divider); }
+.wl-gif-popup input { border-color: var(--line-divider); border-radius: var(--radius-md); color: var(--deep-text); background: var(--btn-regular-bg); }
+.wl-gif-popup img:hover { border-color: var(--primary); }
+
+/* 评论卡片 */
+.wl-card { border-bottom: 1px dashed var(--line-divider); }
+.wl-card-item:last-child > .wl-card { border-bottom: none; }
+.wl-card .wl-head .wl-nick { color: var(--deep-text); }
+.wl-card span.wl-nick { color: var(--content-meta); }
+.wl-card .wl-time { color: var(--content-meta); }
+.wl-card .wl-meta > span { background: var(--btn-regular-bg); color: var(--content-meta); }
+.wl-card .wl-content { color: var(--deep-text); line-height: 1.75; }
+
+/* 引用块 */
+.wl-card .wl-quote { border-inline-start: 1px dashed var(--line-divider); }
+blockquote { border-inline-start-color: var(--line-divider); color: var(--content-meta); }
+
+/* 回复/点赞 */
+.wl-card .wl-delete, .wl-card .wl-like, .wl-card .wl-reply, .wl-card .wl-edit, .wl-card .wl-rss { color: var(--content-meta); }
+.wl-card .wl-delete:hover, .wl-card .wl-like:hover, .wl-card .wl-reply:hover, .wl-card .wl-edit:hover, .wl-card .wl-rss:hover { color: var(--primary); }
+.wl-card .wl-delete.active, .wl-card .wl-like.active, .wl-card .wl-reply.active, .wl-card .wl-edit.active, .wl-card .wl-rss.active { color: var(--primary); }
+
+/* badge */
+.wl-card .wl-badge { border-color: var(--primary); color: var(--primary); }
+
+/* 警告 */
+.wl-card .wl-warning { background: var(--btn-regular-bg); color: var(--deep-text); border-color: var(--primary); }
+
+/* 折叠 */
+.wl-card .wl-content.expand::after { background: var(--card-bg); color: var(--content-meta); }
+.wl-card .wl-content.expand::before { background: linear-gradient(180deg, transparent, var(--card-bg)); }
+
+/* 排序 */
+.wl-sort li { color: var(--content-meta); }
+.wl-sort li.active { color: var(--primary); }
+
+/* 计数/空 */
+.wl-count { color: var(--deep-text); }
+.wl-empty { color: var(--content-meta); }
+.wl-power { color: var(--content-meta); }
+
+/* Reaction */
+.wl-reaction-item.active .wl-reaction-text { color: var(--primary); }
+.wl-reaction-votes { border-color: var(--primary); color: var(--primary); background: var(--card-bg); }
+.wl-reaction-item.active .wl-reaction-votes { background: var(--primary); color: var(--card-bg); }
+
+/* 代码 */
+.wl-content pre, .wl-content pre[class*="language-"] { background: var(--codeblock-bg); border-radius: var(--radius-lg); }
+.wl-content pre code, .wl-content pre[class*="language-"] code { color: oklch(0.85 0.01 0); }
+code, pre { background: var(--inline-code-bg); color: var(--inline-code-color); border-radius: var(--radius-sm); }
+
+/* 滚动条 */
+pre::-webkit-scrollbar-thumb:horizontal,
+.wl-emoji-popup .wl-tab-wrapper::-webkit-scrollbar-thumb:vertical,
+.wl-emoji-popup .wl-tabs::-webkit-scrollbar-thumb:horizontal { background: var(--primary); }
+
+/* 关闭 */
+.wl-close-icon { color: var(--content-meta); }
+
+/* 用户列表 */
+.wl-user-list a, .wl-user-list a:hover, .wl-user-list a:visited { color: var(--deep-text); }
+.wl-user-list .wl-user-avatar { border-radius: var(--radius-md); }
+.wl-user-list .wl-user-badge { background: var(--btn-regular-bg); color: var(--content-meta); }
+.wl-user-list .wl-user-item:nth-child(1) .wl-user-badge { background: oklch(0.55 0.2 25); }
+.wl-user-list .wl-user-item:nth-child(2) .wl-user-badge { background: oklch(0.6 0.15 60); }
+.wl-user-list .wl-user-item:nth-child(3) .wl-user-badge { background: oklch(0.65 0.12 100); }
+
+/* 星级 */
+.wl-star-outline { stroke: var(--line-divider); }
+.wl-star-solid { fill: var(--primary); stroke: var(--primary); }
+.wl-star-progress { background: var(--btn-regular-bg); }
+.wl-star-progress-bar { background: var(--primary); }
+
+/* 链接/图片 */
+a { color: var(--primary); }
+a:hover { opacity: 0.8; }
+img { border-radius: var(--radius-md); }
+
+@media (max-width: 720px) {
+  :root { --waline-font-size: 0.875rem; }
+  .wl-panel { margin: 0.25em; }
+}
