@@ -263,10 +263,10 @@
 
 /* 计数/空 */
 #waline .wl-count {
-  color: var(--deep-text) !important;
+  color: var(--primary) !important;
 }
 #waline .wl-empty {
-  color: var(--content-meta) !important;
+  color: var(--primary) !important;
 }
 #waline .wl-power {
   color: var(--content-meta) !important;

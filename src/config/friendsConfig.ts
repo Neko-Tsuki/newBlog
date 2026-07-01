@@ -119,6 +119,15 @@ export const friendsConfig: FriendLink[] = [
 		weight: 29,
 		enabled: true,
 	},
+	{
+		title: "猫咪流浪记",
+		imgurl: "https://jihulab.com/spss/cdn/-/raw/master/img/avatar.jpg",
+		desc: "在虚无的幻想里漂流",
+		siteurl: "https://mtf.org.uk/",
+		tags: ["喵友"],
+		weight: 29,
+		enabled: true
+	},
 ];
 
 // 获取启用的友链并进行排序
