@@ -1,0 +1,105 @@
+---
+title: 给Waline评论系统调教成Firefly的样子
+published: 2026-07-02
+pinned: false
+description: 记录一下怎么把Waline评论的CSS一顿暴改，让它跟随Firefly主题切换亮暗模式
+tags: [前端, CSS, Waline, Firefly]
+category: 折腾日记
+draft: false
+---
+
+import { Icon } from "astro-icon/components";
+
+说真的，自从换上了 `Astro Firefly 主题` 之后，一切都舒舒服服的——直到打开留言页面，看到 Waline 那套自带的 CSS 样式跟你精心调教的主题**格格不入**，瞬间感觉天塌了一样。所以说啊，到头来还是得自己动手，把 Waline 的 CSS 魔改到能适配 Firefly 主题才行。
+
+## 一、问题出在哪儿？
+
+先瞧瞧 Waline 原始 CSS 是怎么写的：
+
+```css
+--waline-color: #444;
+--waline-bg-color: #fff;
+```
+
+两条全都是**写死的颜色值**。说实话，亮色模式下勉强能看，一切到暗色模式……黑乎乎一片根本看不清楚。也不知道是引用的 CDN 文件太古早还是年久失修，Waline 一直在维护迭代，样式却始终保持着这些硬编码的色值。
+
+更离谱的是，这套 CDN 里的 CSS 把变量挂在 `:root` 上，优先级高得离谱——你就算在外面再写一遍覆盖，人家也能用特异性把你吃得干干净净。
+
+## 二、挂载到 `#waline`
+
+找到根本原因就好办了。为了让引用更稳定、后续维护也更顺手，我选择 **保留 CDN 的原始 CSS 不动**，另外追加一份本地样式文件 `waline-custom.css`，通过 `<link>` 在原始文件之后加载，用更高的优先级稳稳盖上去。
+
+核心思路很简单——**把所有变量定义从 `:root` 搬到 `#waline` 下面**：
+
+```css
+#waline {
+  --waline-theme-color: var(--primary);
+  --waline-active-color: var(--primary);
+  --waline-color: var(--deep-text);
+  --waline-light-grey: var(--content-meta);
+  --waline-dark-grey: var(--deep-text);
+  --waline-white: var(--card-bg);
+  --waline-bg-color: var(--card-bg);
+  --waline-bg-color-light: var(--btn-regular-bg);
+  --waline-bg-color-hover: var(--btn-regular-bg-hover);
+  --waline-border-color: var(--line-divider);
+  --waline-border: 1px solid var(--line-divider);
+  --waline-avatar-radius: 0.5rem;
+  --waline-box-shadow: none;
+  --waline-badge-color: var(--primary);
+  --waline-info-bg-color: var(--btn-regular-bg);
+  --waline-info-color: var(--content-meta);
+  --waline-disable-bg-color: var(--btn-regular-bg);
+  --waline-disable-color: var(--content-meta);
+  --waline-bq-color: var(--line-divider);
+  --waline-code-bg-color: var(--codeblock-bg);
+  --waline-font-size: 0.9375rem;
+}
+```
+
+这样一来，Firefly 自家的 `--primary`、`--card-bg`、`--deep-text` 这些变量直接接管了 Waline 的配色体系。亮色模式下清清爽爽，暗色模式下也跟着切换。
+
+## 三、暗色模式 `wl-nick` 
+
+`wl-nick` 这个类名下的昵称文字，在暗色模式下没办法跟随主题变化。排查后发现，Waline 默认样式里有个 `[data-waline] .wl-card span.wl-nick` 的选择器，优先级极高，才导致出现这种问题。
+
+```css
+.dark #waline .wl-card *,
+.dark #waline .wl-content * {
+  color: oklch(0.88 0.01 0) !important;
+}
+```
+
+有时候**快刀斩乱麻才是最优解**，~~与其花三小时在那琢磨选择器特异性，不如一行 `!important` 直接解决问题。~~
+
+当然，能用更好的选择器解决还是尽量别滥用——这里纯粹是被逼的，没办法的办法。（笑）
+
+## 四、登录按钮
+
+主体搞定之后，别忘了还有两个小透明也等着料理——`.wl-login-info` 和 `.wl-logout-btn`。这俩在 Firefly 暗色模式下基本就是隐身状态，看不清楚也是正常现象。
+
+```css
+#waline .wl-login-info .wl-login-nick {
+  color: var(--primary);
+}
+#waline .wl-logout-btn {
+  color: var(--content-meta);
+  background: var(--card-bg);
+  border-radius: 50%;
+}
+#waline .wl-logout-btn:hover {
+  color: var(--primary);
+}
+```
+
+简洁明了，不再多废话。至此 Waline 的每一个角落——从头像圆角到表情弹窗、从代码块背景到星级评分全都可以跟随 Firefly 的主题。
+
+## 五、收工！
+
+亮暗切换的时候，评论区跟着主题一起变化，毫无违和感。整个过程说到底就两句话：**变量别挂 `:root`，暗色用 `!important`**。
+
+<blockquote>
+
+**小贴士**：如果你也想给自己的博客评论区换个皮肤，可以参考本站在 `public/assets/css/waline-custom.css` 里的完整样式。改完记得清一下 CDN 缓存，不然你会怀疑自己的眼睛——怎么改了半天还是老样子？
+
+</blockquote>
