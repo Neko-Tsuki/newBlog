@@ -1,0 +1,4 @@
+# GitHub OAuth 配置（用于 Decap CMS 后台管理认证）
+# 在 GitHub Settings → Developer settings → OAuth Apps 创建应用后获取
+OAUTH_GITHUB_CLIENT_ID=
+OAUTH_GITHUB_CLIENT_SECRET=

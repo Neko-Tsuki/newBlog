@@ -10,6 +10,7 @@ import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import katex from "katex";
+import decapCmsOauth from "decap-cms-oauth-astro";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -52,9 +53,12 @@ const adapter = process.env.CF_WORKERS
 		})
 	: undefined;
 
+const hasOAuth = !!(process.env.OAUTH_GITHUB_CLIENT_ID && process.env.OAUTH_GITHUB_CLIENT_SECRET);
+
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
+	output: adapter ? "hybrid" : "static",
 
 	base: "/",
 	trailingSlash: "always",
@@ -223,6 +227,10 @@ export default defineConfig({
 			},
 		}),
 		mdx(),
+		decapCmsOauth({
+			configPath: "./.decap.yml",
+			enable: hasOAuth,
+		}),
 	],
 	markdown: {
 		processor: unified({

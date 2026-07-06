@@ -1,0 +1,186 @@
+backend:
+  name: github
+  repo: your-username/your-repo
+  branch: main
+  base_url: https://your-domain.com
+  auth_endpoint: /oauth
+
+local_backend: true
+
+media_folder: public/assets/images
+public_folder: /assets/images
+
+locale: zh_CN
+
+editor:
+  preview: false
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 文章
+    folder: src/content/posts
+    create: true
+    slug: "{{slug}}"
+    path: "{{slug}}/index"
+    extension: mdx
+    format: frontmatter
+    summary: "{{title}} — {{published | date('YYYY-MM-DD')}}"
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+        required: true
+        i18n: true
+
+      - name: published
+        label: 发布日期
+        widget: datetime
+        required: true
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        i18n: duplicate
+
+      - name: updated
+        label: 更新日期
+        widget: datetime
+        required: false
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        i18n: duplicate
+
+      - name: draft
+        label: 草稿
+        widget: boolean
+        default: false
+        i18n: duplicate
+
+      - name: description
+        label: 摘要
+        widget: text
+        required: false
+        i18n: true
+
+      - name: image
+        label: 封面图片
+        widget: image
+        required: false
+        i18n: duplicate
+
+      - name: tags
+        label: 标签
+        widget: list
+        required: false
+        default: []
+        i18n: true
+        field:
+          name: tag
+          label: 标签
+          widget: string
+
+      - name: category
+        label: 分类
+        widget: string
+        required: false
+        i18n: true
+
+      - name: lang
+        label: 文章语言
+        widget: select
+        required: false
+        default: ""
+        i18n: duplicate
+        options:
+          - label: "默认 (跟随站点)"
+            value: ""
+          - label: "简体中文"
+            value: "zh_CN"
+          - label: "English"
+            value: "en"
+          - label: "日本語"
+            value: "ja"
+          - label: "繁體中文"
+            value: "zh_TW"
+          - label: "Русский"
+            value: "ru"
+
+      - name: pinned
+        label: 置顶
+        widget: boolean
+        default: false
+        i18n: duplicate
+
+      - name: comment
+        label: 启用评论
+        widget: boolean
+        default: true
+        i18n: duplicate
+
+      - name: password
+        label: 加密密码
+        widget: string
+        required: false
+        i18n: duplicate
+
+      - name: passwordHint
+        label: 密码提示
+        widget: string
+        required: false
+        i18n: true
+
+      - name: author
+        label: 作者
+        widget: string
+        required: false
+        i18n: duplicate
+
+      - name: sourceLink
+        label: 原文链接
+        widget: string
+        required: false
+        i18n: duplicate
+
+      - name: licenseName
+        label: 许可协议名称
+        widget: string
+        required: false
+        i18n: true
+
+      - name: licenseUrl
+        label: 许可协议链接
+        widget: string
+        required: false
+        i18n: duplicate
+
+      - name: body
+        label: 正文
+        widget: markdown
+        i18n: true
+
+  - name: spec
+    label: 特殊页面
+    label_singular: 特殊页面
+    folder: src/content/spec
+    create: false
+    extension: mdx
+    format: frontmatter
+    summary: "{{title}}"
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+        required: true
+        i18n: true
+
+      - name: description
+        label: 描述
+        widget: text
+        required: false
+        i18n: true
+
+      - name: body
+        label: 正文
+        widget: markdown
+        i18n: true
