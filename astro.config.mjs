@@ -47,18 +47,17 @@ if (process.env.NODE_ENV === "development") {
 	setMaxListeners(20);
 }
 
-const adapter = process.env.CF_WORKERS
-	? cloudflare({
-			prerenderEnvironment: "node",
-		})
-	: undefined;
+const adapter = cloudflare({
+	prerenderEnvironment: "node",
+});
 
-const hasOAuth = !!(process.env.OAUTH_GITHUB_CLIENT_ID && process.env.OAUTH_GITHUB_CLIENT_SECRET);
+// 始终启用 OAuth 路由注入 — 实际认证在运行时由 Cloudflare 环境变量控制
+// 必须在 Cloudflare Workers 环境变量中设置 OAUTH_GITHUB_CLIENT_ID 和 OAUTH_GITHUB_CLIENT_SECRET
 
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
-	output: adapter ? "hybrid" : "static",
+	output: "static",
 
 	base: "/",
 	trailingSlash: "always",
@@ -229,7 +228,7 @@ export default defineConfig({
 		mdx(),
 		decapCmsOauth({
 			configPath: "./.decap.yml",
-			enable: hasOAuth,
+			enable: true,
 		}),
 	],
 	markdown: {
