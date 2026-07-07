@@ -1,9 +1,5 @@
 backend:
-  name: github
-  repo: Neko-Tsuki/newBlog
-  branch: main
-  base_url: https://blog.shika-mori.top
-  auth_endpoint: /oauth
+  name: test-repo
 
 local_backend: true
 

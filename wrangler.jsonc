@@ -5,5 +5,14 @@
 	"assets": {
 		"directory": "./dist/client",
 		"binding": "ASSETS"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "8fa2a7fbad2340609c1c93889018379e"
+		}
+	],
+	"images": {
+		"binding": "IMAGES"
 	}
 }
