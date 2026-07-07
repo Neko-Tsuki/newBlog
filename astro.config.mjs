@@ -6,11 +6,10 @@ import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField } from "astro/config";
+import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import katex from "katex";
-import decapCmsOauth from "decap-cms-oauth-astro";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -49,11 +48,7 @@ if (process.env.NODE_ENV === "development") {
 
 const adapter = cloudflare({
 	prerenderEnvironment: "node",
-	sessionKVBindingName: "SESSION",
 });
-
-// 始终启用 OAuth 路由注入 — 实际认证在运行时由 Cloudflare 环境变量控制
-// 必须在 Cloudflare Workers 环境变量中设置 OAUTH_GITHUB_CLIENT_ID 和 OAUTH_GITHUB_CLIENT_SECRET
 
 // https://astro.build/config
 export default defineConfig({
@@ -62,21 +57,6 @@ export default defineConfig({
 
 	base: "/",
 	trailingSlash: "always",
-
-	env: {
-		schema: {
-			OAUTH_GITHUB_CLIENT_ID: envField.string({
-				context: "server",
-				access: "secret",
-				optional: true,
-			}),
-			OAUTH_GITHUB_CLIENT_SECRET: envField.string({
-				context: "server",
-				access: "secret",
-				optional: true,
-			}),
-		},
-	},
 
 	// 字体配置 - 只加载实际使用的字体，跳过未引用的以加快构建
 	fonts: (() => {
@@ -242,11 +222,6 @@ export default defineConfig({
 			},
 		}),
 		mdx(),
-		decapCmsOauth({
-			configPath: "./.decap.yml",
-			enable: false,
-			decapCMSVersion: "3.9.0",
-		}),
 	],
 	markdown: {
 		processor: unified({
