@@ -2,6 +2,7 @@ import { setMaxListeners } from "node:events";
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
+import decapCmsOauth from "astro-decap-cms-oauth";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
@@ -223,6 +224,10 @@ export default defineConfig({
 			},
 		}),
 		mdx(),
+		decapCmsOauth({
+			configPath: "./.decap.yml",
+			decapCMSVersion: "3.9.0",
+		}),
 	],
 	markdown: {
 		processor: unified({

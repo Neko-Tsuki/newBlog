@@ -83,6 +83,9 @@ importers:
       astro:
         specifier: 7.0.2
         version: 7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+      astro-decap-cms-oauth:
+        specifier: ^0.5.2
+        version: 0.5.2(astro@7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
       astro-expressive-code:
         specifier: ^0.43.1
         version: 0.43.1(astro@7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
@@ -2397,6 +2400,11 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
+
+  astro-decap-cms-oauth@0.5.2:
+    resolution: {integrity: sha512-TSm0Fxu2Xjk78Gwpbb2Y4yVG9dzBjBKfZuZMlWVReLsiSD39fxkShRhFGNNiW8EGAjzJSsuCIX0ereFZZjPoBg==}
+    peerDependencies:
+      astro: ^5.0.0 || ^6.0.0
 
   astro-expressive-code@0.43.1:
     resolution: {integrity: sha512-xddgwQxFRwpnnAnU7kSfrO82SsOAq7sQrYpXxVcrN9k/0aqNlTH2+mLrOMm1wXm6jdFKepst3hd8/qWojwuunw==}
@@ -8156,6 +8164,11 @@ snapshots:
       is-array-buffer: 3.0.5
 
   astring@1.9.0: {}
+
+  astro-decap-cms-oauth@0.5.2(astro@7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
+    dependencies:
+      astro: 7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+      js-yaml: 4.2.0
 
   astro-expressive-code@0.43.1(astro@7.0.2(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.3)(idb-keyval@6.2.6)(jiti@2.7.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
