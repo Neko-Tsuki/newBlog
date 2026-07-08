@@ -50,6 +50,7 @@ if (process.env.NODE_ENV === "development") {
 
 const adapter = cloudflare({
 	prerenderEnvironment: "node",
+	sessionKVBindingName: undefined,
 });
 
 // https://astro.build/config
