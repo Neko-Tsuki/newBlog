@@ -14,5 +14,14 @@
 			"binding": "SESSION",
 			"id": "64f5227dfd174bd1880b4a222d8a9444"
 		}
-	]
+	],
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": false
+		}
+	}
 }
