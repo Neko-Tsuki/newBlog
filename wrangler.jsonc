@@ -15,6 +15,10 @@
 			"id": "64f5227dfd174bd1880b4a222d8a9444"
 		}
 	],
+	"vars": {
+		"OAUTH_GITHUB_CLIENT_ID": "Ov23liZyoEXIjcUFj3cg",
+		"OAUTH_GITHUB_CLIENT_SECRET": "c32c323a806bcac75d1e867e137d0001a41086cd"
+	},
 	"observability": {
 		"logs": {
 			"enabled": true,
