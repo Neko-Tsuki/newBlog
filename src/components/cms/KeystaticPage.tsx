@@ -1,6 +1,6 @@
-import { makePage } from "@keystatic/astro/ui";
+import { Keystatic } from "@keystatic/core/ui";
 import keystaticConfig from "../../../keystatic.config";
 
-const KeystaticPage = makePage(keystaticConfig);
-
-export default KeystaticPage;
+export default function KeystaticPage() {
+	return <Keystatic config={keystaticConfig} />;
+}

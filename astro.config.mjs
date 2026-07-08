@@ -298,6 +298,7 @@ export default defineConfig({
 			alias: {
 				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.post.rehypeCallouts.theme}`,
 			},
+			dedupe: ["react", "react-dom"],
 		},
 		build: {
 			minify: "esbuild",
