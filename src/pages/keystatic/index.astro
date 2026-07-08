@@ -1,0 +1,16 @@
+---
+import KeystaticApp from "@keystatic/astro/ui";
+import config from "../../../keystatic.config";
+---
+
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Keystatic CMS</title>
+	</head>
+	<body>
+		<KeystaticApp config={config} client:only="react" />
+	</body>
+</html>
