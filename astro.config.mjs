@@ -2,7 +2,6 @@ import { setMaxListeners } from "node:events";
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
-import keystatic from "@keystatic/astro";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
@@ -17,7 +16,6 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/contrib/mhchem.mjs"; // 加载 mhchem 扩展
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
-import react from "@astrojs/react";
 import { pluginCollapsible } from "expressive-code-collapsible"; /* Collapsible */
 import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Language Badge */
 import rehypeCallouts from "rehype-callouts";
@@ -196,7 +194,6 @@ export default defineConfig({
 			},
 		}),
 		svelte(),
-		react(),
 		sitemap({
 			filter: (page) => {
 				// 根据页面开关配置过滤sitemap
@@ -226,7 +223,6 @@ export default defineConfig({
 			},
 		}),
 		mdx(),
-		keystatic(),
 	],
 	markdown: {
 		processor: unified({
@@ -298,7 +294,7 @@ export default defineConfig({
 			alias: {
 				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.post.rehypeCallouts.theme}`,
 			},
-			dedupe: ["react", "react-dom"],
+			dedupe: [],
 		},
 		build: {
 			minify: "esbuild",
