@@ -18,8 +18,8 @@ collections:
       delete: true
       extension: md
       format: frontmatter
-      slug: "{{title}}"
-      preview_path: "posts/{{title}}"
+      slug: "{{filename}}"
+      preview_path: "posts/{{filename}}"
       filter: { field: "extension", value: "md" }
       fields:
           - { label: "标题", name: "title", widget: "string" }
@@ -44,8 +44,8 @@ collections:
       delete: true
       extension: mdx
       format: frontmatter
-      slug: "{{title}}"
-      preview_path: "posts/{{title}}"
+      slug: "{{filename}}"
+      preview_path: "posts/{{filename}}"
       filter: { field: "extension", value: "mdx" }
       fields:
           - { label: "标题", name: "title", widget: "string" }
@@ -70,7 +70,7 @@ collections:
       delete: true
       extension: md
       format: frontmatter
-      slug: "{{title}}"
+      slug: "{{filename}}"
       filter: { field: "extension", value: "md" }
       fields:
           - { label: "标题", name: "title", widget: "string" }
@@ -85,7 +85,7 @@ collections:
       delete: true
       extension: mdx
       format: frontmatter
-      slug: "{{title}}"
+      slug: "{{filename}}"
       filter: { field: "extension", value: "mdx" }
       fields:
           - { label: "标题", name: "title", widget: "string" }
