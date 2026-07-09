@@ -16,8 +16,6 @@
 		}
 	],
 	"vars": {
-		"OAUTH_GITHUB_CLIENT_ID": "Ov23liZyoEXIjcUFj3cg",
-		"OAUTH_GITHUB_CLIENT_SECRET": "c32c323a806bcac75d1e867e137d0001a41086cd",
 		"PUBLIC_DECAP_CMS_SRC_URL": "https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"
 	},
 	"observability": {
