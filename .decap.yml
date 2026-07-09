@@ -16,6 +16,8 @@ collections:
       folder: "src/content/posts"
       create: true
       delete: true
+      extension: md
+      format: frontmatter
       slug: "{{title}}"
       preview_path: "posts/{{title}}"
       fields:
@@ -39,6 +41,8 @@ collections:
       folder: "src/content/spec"
       create: true
       delete: true
+      extension: md
+      format: frontmatter
       slug: "{{title}}"
       fields:
           - { label: "标题", name: "title", widget: "string" }
