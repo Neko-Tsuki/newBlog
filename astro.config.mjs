@@ -227,6 +227,7 @@ export default defineConfig({
 		decapCmsOauth({
 			configPath: "./.decap.yml",
 			decapCMSVersion: "3.9.0",
+			decapCMSSrcUrl: "https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js",
 			enable: true,
 		}),
 	],
