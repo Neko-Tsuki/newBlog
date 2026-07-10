@@ -1,0 +1,188 @@
+media:
+  input: public/assets/images
+  output: /assets/images
+
+content:
+  - name: posts-md
+    label: 文章 (Markdown)
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    fields:
+      - name: title
+        type: string
+        label: 标题
+        required: true
+      - name: published
+        type: date
+        label: 发布日期
+        required: true
+      - name: updated
+        type: date
+        label: 更新日期
+        required: false
+      - name: draft
+        type: boolean
+        label: 草稿
+        default: false
+      - name: description
+        type: text
+        label: 摘要
+        required: false
+      - name: image
+        type: string
+        label: 封面图片路径
+        required: false
+      - name: tags
+        type: string
+        label: 标签
+        list: true
+        required: false
+      - name: category
+        type: string
+        label: 分类
+        required: false
+      - name: lang
+        type: select
+        label: 文章语言
+        options:
+          - label: 默认
+            value: ""
+          - label: 简体中文
+            value: zh_CN
+          - label: English
+            value: en
+          - label: 日本語
+            value: ja
+          - label: 繁體中文
+            value: zh_TW
+          - label: Русский
+            value: ru
+        default: ""
+      - name: pinned
+        type: boolean
+        label: 置顶
+        default: false
+      - name: comment
+        type: boolean
+        label: 启用评论
+        default: true
+      - name: author
+        type: string
+        label: 作者
+        required: false
+      - name: body
+        type: rich-text
+        label: 正文
+
+  - name: posts-mdx
+    label: 文章 (MDX)
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    filename: "{primary}.mdx"
+    fields:
+      - name: title
+        type: string
+        label: 标题
+        required: true
+      - name: published
+        type: date
+        label: 发布日期
+        required: true
+      - name: updated
+        type: date
+        label: 更新日期
+        required: false
+      - name: draft
+        type: boolean
+        label: 草稿
+        default: false
+      - name: description
+        type: text
+        label: 摘要
+        required: false
+      - name: image
+        type: string
+        label: 封面图片路径
+        required: false
+      - name: tags
+        type: string
+        label: 标签
+        list: true
+        required: false
+      - name: category
+        type: string
+        label: 分类
+        required: false
+      - name: lang
+        type: select
+        label: 文章语言
+        options:
+          - label: 默认
+            value: ""
+          - label: 简体中文
+            value: zh_CN
+          - label: English
+            value: en
+          - label: 日本語
+            value: ja
+          - label: 繁體中文
+            value: zh_TW
+          - label: Русский
+            value: ru
+        default: ""
+      - name: pinned
+        type: boolean
+        label: 置顶
+        default: false
+      - name: comment
+        type: boolean
+        label: 启用评论
+        default: true
+      - name: author
+        type: string
+        label: 作者
+        required: false
+      - name: body
+        type: rich-text
+        label: 正文
+
+  - name: spec-md
+    label: 特殊页面 (Markdown)
+    type: collection
+    path: src/content/spec
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    fields:
+      - name: title
+        type: string
+        label: 标题
+        required: true
+      - name: description
+        type: text
+        label: 描述
+        required: false
+      - name: body
+        type: rich-text
+        label: 正文
+
+  - name: spec-mdx
+    label: 特殊页面 (MDX)
+    type: collection
+    path: src/content/spec
+    format: yaml-frontmatter
+    filename: "{primary}.mdx"
+    fields:
+      - name: title
+        type: string
+        label: 标题
+        required: true
+      - name: description
+        type: text
+        label: 描述
+        required: false
+      - name: body
+        type: rich-text
+        label: 正文
