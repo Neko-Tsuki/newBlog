@@ -84,6 +84,20 @@ export type BackgroundWallpaperConfig = {
 			| "right center"
 			| "right bottom"
 			| string; // 壁纸位置，支持CSS object-position的所有值，包括百分比和像素值
+		credit?: {
+			enable: {
+				desktop: boolean;
+				mobile: boolean;
+			};
+			text: {
+				desktop: string;
+				mobile: string;
+			};
+			url: {
+				desktop: string;
+				mobile: string;
+			};
+		};
 	};
 	// 全屏透明覆盖模式特有配置
 	overlay?: {
