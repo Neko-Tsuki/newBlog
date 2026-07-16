@@ -1,4 +1,4 @@
-import type { ProfileConfig } from "../types/config";
+import type { ProfileConfig } from "../types/profileConfig";
 
 export const profileConfig: ProfileConfig = {
 	// 头像
@@ -23,24 +23,22 @@ export const profileConfig: ProfileConfig = {
 	// showName: true 时显示图标和名称，false 时只显示图标
 	links: [
 		{
-			name: "喵窝-NyaOne",
-			icon: "ph:fediverse-logo",
-			url: "https://nya.one/@Hokori",
+			name: "NyaOne (Fediverse)",
+			icon: "simple-icons:mastodon",
+			url: "https://nya.one/@Tsuki",
+			showName: false,
 		},
 		{
 			name: "GitHub",
-			icon: "fa7-brands:github",
+			icon: "simple-icons:github",
 			url: "https://github.com/Neko-Tsuki",
+			showName: false,
 		},
 		{
 			name: "RSS",
-			icon: "mdi:rss",
-			url: "/rss.xml",
+			icon: "fa7-solid:rss",
+			url: "/rss",
+			showName: false,
 		},
-		// {
-		// 	name: "Timeline",
-		// 	icon: "mdi:timeline",
-		// 	url: "/timeline/",
-		// }
 	],
 };

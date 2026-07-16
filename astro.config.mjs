@@ -2,7 +2,6 @@ import { setMaxListeners } from "node:events";
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
-import decapCmsOauth from "astro-decap-cms-oauth";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
@@ -25,7 +24,7 @@ import remarkAdmonitionToBlockquoteCallout from "remark-admonition-to-blockquote
 import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
-import { expressiveCodeConfig, fontConfig, fontsList, plantumlConfig, siteConfig } from "./src/config";
+import { expressiveCodeConfig, fontConfig, fontsList, mermaidConfig, plantumlConfig, siteConfig } from "./src/config";
 import { collectUsedFontCssVars } from "./src/utils/fontHelper";
 import I18nKey from "./src/i18n/i18nKey";
 import { i18n } from "./src/i18n/translation";
@@ -34,6 +33,8 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import rehypeEmailProtection from "./src/plugins/rehype-email-protection.mjs";
 import rehypeExternalLinks from "./src/plugins/rehype-external-links.mjs";
 import rehypeFigure from "./src/plugins/rehype-figure.mjs";
+import rehypeImageReferrerPolicy from "./src/plugins/rehype-image-referrerpolicy.mjs";
+import { rehypeDiagramPanZoom } from "./src/plugins/rehype-diagram-panzoom.mjs";
 import { rehypeMermaid } from "./src/plugins/rehype-mermaid.mjs";
 import { rehypePlantuml } from "./src/plugins/rehype-plantuml.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
@@ -47,15 +48,15 @@ if (process.env.NODE_ENV === "development") {
 	setMaxListeners(20);
 }
 
-const adapter = cloudflare({
-	prerenderEnvironment: "node",
-	sessionKVBindingName: undefined,
-});
+const adapter = process.env.CF_WORKERS
+	? cloudflare({
+			prerenderEnvironment: "node",
+		})
+	: undefined;
 
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
-	output: "static",
 
 	base: "/",
 	trailingSlash: "always",
@@ -129,6 +130,7 @@ export default defineConfig({
 				"simple-icons": ["*"],
 				mdi: ["*"],
 				mingcute: ["*"],
+				"svg-spinners": ["*"],
 			},
 		}),
 		expressiveCode({
@@ -200,7 +202,9 @@ export default defineConfig({
 				// 根据页面开关配置过滤sitemap
 				const url = new URL(page);
 				const pathname = url.pathname;
-
+				if (pathname === "/dynamic/" && !siteConfig.pages.dynamic) {
+					return false;
+				}
 				if (pathname === "/friends/" && !siteConfig.pages.friends) {
 					return false;
 				}
@@ -224,12 +228,6 @@ export default defineConfig({
 			},
 		}),
 		mdx(),
-		decapCmsOauth({
-			configPath: "./.decap.yml",
-			decapCMSVersion: "3.9.0",
-			decapCMSSrcUrl: "https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js",
-			enable: true,
-		}),
 	],
 	markdown: {
 		processor: unified({
@@ -251,9 +249,14 @@ export default defineConfig({
 				[rehypeKatex, { katex }],
 				[rehypeCallouts, { theme: siteConfig.post.rehypeCallouts.theme }],
 				rehypeSlug,
-				rehypeMermaid,
+				[rehypeMermaid, mermaidConfig],
 				rehypePlantuml,
+				rehypeDiagramPanZoom,
 				rehypeFigure,
+				[
+					rehypeImageReferrerPolicy,
+					{ domains: siteConfig.imageOptimization?.noReferrerDomains || [] },
+				],
 				[rehypeExternalLinks, { siteUrl: siteConfig.site_url }],
 				[rehypeEmailProtection, { method: "base64" }], // 邮箱保护插件，支持 'base64' 或 'rot13'
 				[
@@ -301,7 +304,6 @@ export default defineConfig({
 			alias: {
 				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.post.rehypeCallouts.theme}`,
 			},
-			dedupe: [],
 		},
 		build: {
 			minify: "esbuild",

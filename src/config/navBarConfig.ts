@@ -4,36 +4,20 @@ import {
 	type NavBarSearchConfig,
 	NavBarSearchMethod,
 } from "../types/navBarConfig";
-import { siteConfig } from "./siteConfig";
 
 // ============================================================================
 // 导航栏配置 - 根据顺序动态生成导航栏链接
 // NavBar Configuration - Dynamically generate navigation bar links based on order
 // ============================================================================
 const getDynamicNavBarConfig = (): NavBarConfig => {
-	const pages = siteConfig.pages;
-
-	function isEnabled(link: NavBarLink): boolean {
-		if (!link.pageKey) return true;
-		return pages[link.pageKey as keyof typeof pages] !== false;
-	}
-
-	function processLink(link: NavBarLink): NavBarLink | null {
-		if (!link.children) {
-			return isEnabled(link) ? link : null;
-		}
-
-		const filteredChildren = link.children.filter(isEnabled);
-
-		if (filteredChildren.length === 0) return null;
-		if (filteredChildren.length === 1) return filteredChildren[0];
-		return { ...link, children: filteredChildren };
-	}
-
-	const rawLinks: NavBarLink[] = [LinkPresets.Home];
+	// 基础导航栏链接
+	const links: NavBarLink[] = [
+		// 主页
+		LinkPresets.Home,
+	];
 
 	// 文章及其子菜单
-	rawLinks.push({
+	links.push({
 		name: "文章",
 		url: "#",
 		icon: "material-symbols:article",
@@ -49,14 +33,25 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
-	// 友链
-	rawLinks.push(LinkPresets.Friends);
+	// 动态
+	links.push(LinkPresets.Dynamic);
 
-	// 留言板
-	rawLinks.push(LinkPresets.Guestbook);
+	//社交及其子菜单
+	links.push({
+		name: "社交",
+		url: "#",
+		icon: "material-symbols:group",
+		children: [
+			// 相册
+			LinkPresets.Friends,
+
+			// 追番
+			LinkPresets.Guestbook,
+		],
+	});
 
 	// 我的及其子菜单
-	rawLinks.push({
+	links.push({
 		name: "我的",
 		url: "#",
 		icon: "material-symbols:person",
@@ -64,13 +59,16 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 相册
 			LinkPresets.Gallery,
 
+			// 追番
+			LinkPresets.Anime,
+
 			// 番组计划
 			LinkPresets.Bangumi,
 		],
 	});
 
 	// 关于及其子菜单
-	rawLinks.push({
+	links.push({
 		name: "关于",
 		url: "#",
 		icon: "material-symbols:info",
@@ -84,38 +82,38 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	});
 
 	// 自定义导航栏链接
-	// links.push({
-	// 	name: "链接",
-	// 	url: "#",
-	// 	icon: "material-symbols:link",
-	// 	// 子菜单
-	// 	children: [
-	// 		{
-	// 			name: "GitHub",
-	// 			url: "https://github.com/CuteLeaf/Firefly",
-	// 			external: true,
-	// 			icon: "fa7-brands:github",
-	// 		},
-	// 		{
-	// 			name: "Gitee",
-	// 			url: "https://gitee.com/CuteLeaf/Firefly",
-	// 			external: true,
-	// 			icon: "fa7-brands:gitee",
-	// 		},
-	// 		{
-	// 			name: "QQ交流群",
-	// 			url: "https://qm.qq.com/q/ZGsFa8qX2G",
-	// 			external: true,
-	// 			icon: "fa7-brands:qq",
-	// 		},
-	// 		{
-	// 			name: "Firefly文档",
-	// 			url: "https://docs-firefly.cuteleaf.cn",
-	// 			external: true,
-	// 			icon: "material-symbols:docs",
-	// 		},
-	// 	],
-	// });
+	links.push({
+		name: "链接",
+		url: "#",
+		icon: "material-symbols:link",
+		// 子菜单
+		children: [
+			{
+				name: "GitHub",
+				url: "https://github.com/CuteLeaf/Firefly",
+				external: true,
+				icon: "fa7-brands:github",
+			},
+			{
+				name: "Gitee",
+				url: "https://gitee.com/CuteLeaf/Firefly",
+				external: true,
+				icon: "fa7-brands:gitee",
+			},
+			{
+				name: "QQ交流群",
+				url: "https://qm.qq.com/q/ZGsFa8qX2G",
+				external: true,
+				icon: "fa7-brands:qq",
+			},
+			{
+				name: "Firefly文档",
+				url: "https://docs-firefly.cuteleaf.cn",
+				external: true,
+				icon: "material-symbols:docs",
+			},
+		],
+	});
 
 	// 文档链接
 	// links.push({
@@ -124,9 +122,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 	external: true,
 	// 	icon: "material-symbols:docs",
 	// });
-	const links: NavBarLink[] = rawLinks
-		.map(processLink)
-		.filter((link): link is NavBarLink => link !== null);
 
 	return { links } as NavBarConfig;
 };
@@ -146,6 +141,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/",
 		icon: "material-symbols:home",
 	},
+	Dynamic: {
+		name: "动态",
+		url: "/dynamic/",
+		icon: "material-symbols:forum-rounded",
+		pageKey: "dynamic",
+	},
 	Archive: {
 		name: "归档",
 		url: "/archive/",
@@ -164,7 +165,7 @@ export const LinkPresets: Record<string, NavBarLink> = {
 	Friends: {
 		name: "友链",
 		url: "/friends/",
-		icon: "material-symbols:group",
+		icon: "material-symbols:link-2-rounded",
 		pageKey: "friends",
 	},
 	Sponsor: {
@@ -195,6 +196,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/gallery/",
 		icon: "material-symbols:photo-library",
 		pageKey: "gallery",
+	},
+	Anime: {
+		name: "追番",
+		url: "/anime/",
+		icon: "material-symbols:live-tv",
+		pageKey: "anime",
 	},
 };
 

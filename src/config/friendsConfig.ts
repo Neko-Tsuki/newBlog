@@ -1,4 +1,4 @@
-import type { FriendLink, FriendsPageConfig } from "../types/config";
+import type { FriendLink, FriendsPageConfig } from "../types/friendsConfig";
 
 // 可以在src/content/spec/friends.md中编写友链页面下方的自定义内容
 
@@ -12,6 +12,9 @@ export const friendsPageConfig: FriendsPageConfig = {
 
 	// 是否显示底部自定义内容（friends.mdx 中的内容）
 	showCustomContent: true,
+
+	// 是否显示评论区，需要先在commentConfig.ts启用评论系统
+	showComment: true,
 
 	// 是否开启随机排序配置，如果开启，就会忽略权重，构建时进行一次随机排序
 	randomizeSort: false,
@@ -126,7 +129,7 @@ export const friendsConfig: FriendLink[] = [
 		siteurl: "https://mtf.org.uk/",
 		tags: ["喵友"],
 		weight: 29,
-		enabled: true
+		enabled: true,
 	},
 ];
 

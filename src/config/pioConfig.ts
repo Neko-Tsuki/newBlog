@@ -1,4 +1,4 @@
-import type { Live2DWidgetConfig, SpineModelConfig } from "../types/config";
+import type { Live2DWidgetConfig, SpineModelConfig } from "../types/pioConfig";
 
 // Spine 看板娘配置
 export const spineModelConfig: SpineModelConfig = {
@@ -47,7 +47,6 @@ export const spineModelConfig: SpineModelConfig = {
 			"emoji_3",
 			"emoji_4",
 			"emoji_5",
-			"emoji_6",
 		],
 		// 点击时随机显示的文字消息
 		clickMessages: [
@@ -83,6 +82,7 @@ export const spineModelConfig: SpineModelConfig = {
 	opacity: 1.0,
 };
 
+// Live2D 看板娘配置 (使用 l2d-widget 库，文档：https://l2d-widget.hacxy.cn)
 export const live2dWidgetConfig: Live2DWidgetConfig = {
 	// Live2D 看板娘开关
 	enable: false,
