@@ -12,8 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "尘尘落落格",
 
 	// 个人签名
-	bio: `恰咯~这里是尘尘！
-		是一只普普通通的小透明~`,
+	bio: "恰咯~这里是尘尘！\n是一只普普通通的小透明~",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons

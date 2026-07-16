@@ -1,7 +1,7 @@
 import type { SiteConfig } from "@/types/siteConfig";
 
 // 定义站点语言
-// 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
+// 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko'。
 const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 
 	// 站点描述
 	description:
-		"​鹿鹿 (Lulu) 的个人博客。基于 Astro、Fuwari 与 Firefly 模板深度定制，专注于 Web 前端开发与 Android 技术分享。记录 MaiMai DX/ONGEKI 音游心得、东方 Project 创作及拼豆 (Perler Beads) 手工实践。在代码的世界里修行，在幻想的境界里生活。",
+		"咱是尘尘落落，Neko-Tsuki！这是一个基于 Astro 框架构建的个人博客，主要用来分享咱的开发折腾记录、生活感悟，以及一些有意思的小玩意儿。",
 
 	// 站点关键词
 	keywords: [
@@ -27,7 +27,6 @@ export const siteConfig: SiteConfig = {
 		"博客",
 		"技术博客",
 		"静态博客",
-		"东方Project",
 	],
 
 	// 主题色
@@ -96,26 +95,6 @@ export const siteConfig: SiteConfig = {
 	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
 	// 示例："Asia/Shanghai", "UTC"，如果为空，则按照构建服务器的时区进行时区转换
 	timezone: "Asia/Shanghai",
-
-	// 文章内容页配置
-	post: {
-		// 提醒框（Admonitions）配置，修改后需要重启开发服务器才能生效
-		// 主题：'github' | 'obsidian' | 'vitepress'，每个主题风格和语法不同，可根据喜好选择
-		rehypeCallouts: {
-			theme: "github",
-			// 是否启用兼容 Python-Markdown 风格的 admonition 语法（!!!和???语法）
-			// 注意：只有 theme 配置成 obsidian 主题才能基本支持这些语法，其他主题会有样式问题或不兼容的情况
-			enablePythonMarkdownAdmonitions: false,
-		},
-		// 文章页底部的"上次编辑时间"卡片开关
-		showLastModified: true,
-		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
-		outdatedThreshold: 30,
-		// 是否开启分享海报生成功能
-		sharePoster: true,
-		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
-		generateOgImages: false,
-	},
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
 	pages: {
@@ -191,16 +170,30 @@ export const siteConfig: SiteConfig = {
 		},
 	},
 
-	// 分页配置
-	pagination: {
-		// 每页显示的文章数量
-		postsPerPage: 10,
+	// 文章内容页配置
+	post: {
+		// 提醒框（Admonitions）配置，修改后需要重启开发服务器才能生效
+		// 主题：'github' | 'obsidian' | 'vitepress' | 'docusaurus'，每个主题风格和语法不同，可根据喜好选择
+		rehypeCallouts: {
+			theme: "github",
+			// 是否启用兼容 Python-Markdown 风格的 admonition 语法（!!!和???语法)
+			// 注意：只有 theme 配置成 obsidian 主题才能基本支持这些语法，其他主题会有样式问题或不兼容的情况
+			enablePythonMarkdownAdmonitions: false,
+		},
+		// 文章页底部的"上次编辑时间"卡片开关
+		showLastModified: true,
+		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
+		outdatedThreshold: 30,
+		// 是否开启分享海报生成功能
+		sharePoster: true,
+		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
+		generateOgImages: false,
 	},
 
 	// bangumi配置
 	bangumi: {
 		// Bangumi用户ID
-		userId: "",
+		userId: "38932988",
 		// 数据模式：static=构建时获取，dynamic=客户端实时获取
 		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
@@ -229,6 +222,12 @@ export const siteConfig: SiteConfig = {
 		//   // TMDB 列表 ID
 		//   listId: "your_list_id",
 		// },
+	},
+
+	// 分页配置
+	pagination: {
+		// 每页显示的文章数量
+		postsPerPage: 10,
 	},
 
 	// 图像优化及响应式配置

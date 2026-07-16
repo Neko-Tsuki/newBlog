@@ -130,7 +130,6 @@ export default defineConfig({
 				"simple-icons": ["*"],
 				mdi: ["*"],
 				mingcute: ["*"],
-				"svg-spinners": ["*"],
 			},
 		}),
 		expressiveCode({
