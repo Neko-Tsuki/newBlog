@@ -169,12 +169,24 @@ Keep minimal for Workers Assets mode:
 ### 6e. Fix sidebarTOC config
 `hideOnNonPostPage: true` (NOT `showOnNonPostPage: false`)
 
-### 6f. Restore Waline local CSS
+### 6f. Waline CSS — CDN base + local override (cascade order matters)
 In `src/components/comment/Waline.astro`:
-- Keep: `<link rel="stylesheet" href="/assets/css/waline-custom.css" />`
-- Remove: `<link rel="stylesheet" href="https://unpkg.com/@waline/client/v3/dist/waline.css" />`
+```astro
+  <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+  <link rel="stylesheet" href="/assets/css/waline-custom.css" />
+```
+- CDN CSS loads FIRST (provides base layout, grid, typography)
+- Custom CSS loads SECOND (overrides with `#waline` prefix for priority)
+- ❌ NEVER remove CDN CSS — custom CSS is an override layer, not a replacement
 
-### 6g. Add svg-spinners to astro-icon config
+### 6g. CMS — Workers Assets incompatible with binding-based CMS
+- Workers Assets (static) mode does NOT support bindings (KV, Images, Assets binding)
+- ❌ Decap CMS (needs OAuth → Worker runtime + KV)
+- ❌ Sveltia CMS (needs Worker runtime + KV + Images)
+- ✅ **Pages CMS** (`.pages.yml`) — git-based, no server, works with any static host
+- ✅ To use: configure `.pages.yml` at repo root, visit https://pagescms.org
+
+### 6h. Add svg-spinners to astro-icon config
 In `astro.config.mjs`, add `"svg-spinners": ["*"]` to the icon include.
 
 ---
@@ -215,8 +227,9 @@ git push origin master
 - [ ] Removed files deleted upstream
 - [ ] Fixed JSX comments in ternaries
 - [ ] Fixed icon prefixes
-- [ ] Fixed wrangler.jsonc
-- [ ] Fixed Waline CSS reference
+- [ ] Fixed wrangler.jsonc (no bindings)
+- [ ] Fixed Waline CSS (CDN base + local override, both present)
+- [ ] Fixed CMS (.pages.yml is the only option for Workers Assets)
 - [ ] Added svg-spinners to astro.config.mjs
 - [ ] `pnpm install` succeeded
 - [ ] `pnpm build` succeeded

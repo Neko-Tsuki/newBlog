@@ -1,0 +1,78 @@
+# Pages CMS Configuration
+# https://pagescms.org
+
+media_folder: public/assets/images
+public_folder: /assets/images
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 文章
+    folder: src/content/posts
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    path: "{{slug}}/index"
+    extension: mdx
+    format: frontmatter
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+        required: true
+      - name: published
+        label: 发布日期
+        widget: datetime
+        format: YYYY-MM-DD
+      - name: description
+        label: 摘要
+        widget: text
+        required: false
+      - name: image
+        label: 封面图片
+        widget: image
+        required: false
+      - name: tags
+        label: 标签
+        widget: string
+        required: false
+      - name: category
+        label: 分类
+        widget: select
+        options: []
+        required: false
+      - name: draft
+        label: 草稿
+        widget: boolean
+        default: false
+        required: false
+      - name: pinned
+        label: 置顶
+        widget: boolean
+        default: false
+        required: false
+      - name: body
+        label: 正文
+        widget: markdown
+
+  - name: spec
+    label: 特殊页面
+    label_singular: 特殊页面
+    folder: src/content/spec
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: mdx
+    format: frontmatter
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+        required: true
+      - name: description
+        label: 描述
+        widget: text
+        required: false
+      - name: body
+        label: 正文
+        widget: markdown

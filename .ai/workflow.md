@@ -131,7 +131,8 @@ src/
 
 1. **JSX HTML comments** in `src/pages/anime.astro`, `src/layouts/MainGridLayout.astro`, `src/components/layout/NavMenuPanel.astro`: change `<!-- comment -->` to `{/* comment */}` when inside `{...}`
 2. **`sidebarToc`**: use `hideOnNonPostPage: true` instead of `showOnNonPostPage: false`
-3. **Waline CSS**: CDN must be replaced with local `/assets/css/waline-custom.css`
+3. **Waline CSS**: CDN base CSS (`waline.css`) loads FIRST, then local custom override (`waline-custom.css`). Custom CSS is NOT a replacement — it's an override layer that depends on CDN's layout styles.
 4. **Profile icons**: bare icon names need set prefix (e.g., `github` → `simple-icons:github`)
-5. **`wrangler.jsonc`**: must stay minimal for Workers Assets mode (no bindings)
+5. **`wrangler.jsonc`**: must stay minimal for Workers Assets mode (no `assets.binding`, no `images`, no `kv_namespaces`)
 6. **`.gitignore`**: keep `opencode.json`, `.opencode/`, `dev_*.log`, `dev_*.txt`
+7. **CMS**: Workers Assets mode CANNOT use bindings (KV, Images, etc.). Only **Pages CMS** (`.pages.yml`) works with Workers Assets. Decap/Sveltia/Keystatic CMS require Cloudflare Worker runtime (not compatible).
