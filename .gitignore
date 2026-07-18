@@ -37,6 +37,7 @@ yarn.lock
 # opencode
 opencode.json
 .opencode/
+.omo/
 
 # docs
 Firefly-docs/

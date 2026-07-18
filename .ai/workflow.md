@@ -45,11 +45,12 @@
 1. `git fetch firefly master` (local `C:\Users\TY-Han\Documents\Firefly`)
 2. Check `git log --oneline HEAD..firefly/master` for new commits
 3. Copy framework directories: `src/components`, `src/layouts`, `src/plugins`, `src/utils`, `src/types`, `src/pages`, `src/i18n`, `src/styles`, `src/config`, root config files
-4. Always backup custom config (`src/config/*`) before sync
-5. Always restore user values after overwrite
-6. Fix JSX HTML comments inside ternary expressions: `<!-- ... -->` → `{/* ... */}`
-7. Remove upstream files that were deleted upstream (`git diff --name-only --diff-filter=A HEAD..firefly/master`)
-8. Build and push
+4. **Never copy `.github/`** — CI/CD workflows are permanently excluded from sync
+5. Always backup custom config (`src/config/*`) before sync
+6. Always restore user values after overwrite
+7. Fix JSX HTML comments inside ternary expressions: `<!-- ... -->` → `{/* ... */}`
+8. Remove upstream files that were deleted upstream (`git diff --name-only --diff-filter=A HEAD..firefly/master`)
+9. Build and push
 
 ### 4. Config Management
 - All site settings live in `src/config/*.ts`
@@ -124,6 +125,7 @@ src/
 | `src/styles/fancybox-custom.css` | Custom lightbox styles |
 | `.gitignore` | Custom ignores |
 | `AGENTS.md` | Repo-specific guidelines |
+| `.github/workflows/*` | Local CI/CD workflows — never sync from upstream |
 
 ---
 
