@@ -76,3 +76,22 @@ collections:
       - name: body
         label: 正文
         widget: markdown
+
+  - name: dynamic
+    label: 动态
+    label_singular: 动态
+    folder: src/content/dynamic
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - name: published
+        label: 发布时间
+        widget: datetime
+        format: YYYY-MM-DD HH:mm:ss
+        required: true
+      - name: body
+        label: 内容
+        widget: markdown

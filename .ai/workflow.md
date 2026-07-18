@@ -114,6 +114,7 @@ src/
 |------|--------|
 | `src/content/posts/*` | User's blog posts |
 | `src/content/spec/about.mdx`, `friends.mdx`, `guestbook.md` | Custom pages |
+| `src/content/dynamic/*` | User's dynamic posts |
 | `src/assets/images/*` | Avatar, wallpapers, favicon (original), navbar logo |
 | `public/assets/css/waline-custom.css` | Deep Waline theming |
 | `public/assets/css/twikoo-custom.css` | Custom Twikoo styling |

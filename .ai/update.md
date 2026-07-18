@@ -73,6 +73,23 @@ If upstream contains CMS-related changes:
 
 ---
 
+### Dynamic Content
+
+Protected:
+
+```
+src/content/dynamic/*
+```
+
+Rules:
+
+* Dynamic content is user-managed and must never be deleted or overwritten during sync.
+* The upstream `src/content/dynamic` directory must not be copied.
+* If upstream removes or replaces the dynamic module, local dynamic content must remain untouched.
+* Restore from backup after framework sync.
+
+---
+
 ### GitHub Actions / CI Workflows
 
 Protected:
@@ -133,6 +150,7 @@ Always backup before copying upstream files.
 mkdir -Force _backup/config
 mkdir -Force _backup/content/posts
 mkdir -Force _backup/content/spec
+mkdir -Force _backup/content/dynamic
 mkdir -Force _backup/styles
 mkdir -Force _backup/public
 mkdir -Force _backup/admin
@@ -145,6 +163,7 @@ Backup normal custom content:
 Copy-Item -Recurse -Force src/config/* _backup/config/
 Copy-Item -Recurse -Force src/content/posts/* _backup/content/posts/
 Copy-Item -Recurse -Force src/content/spec/* _backup/content/spec/
+Copy-Item -Recurse -Force src/content/dynamic/* _backup/content/dynamic/
 Copy-Item -Force src/styles/twikoo.css _backup/styles/
 Copy-Item -Force src/styles/fancybox-custom.css _backup/styles/
 Copy-Item -Recurse -Force src/assets/images/* _backup/
@@ -261,12 +280,10 @@ Remove-Item -Recurse -Force "src/content/posts/guide" -ErrorAction SilentlyConti
 # Remove upstream spec pages
 Remove-Item -Force "src/content/spec/about.md" -ErrorAction SilentlyContinue
 
-# Remove upstream dynamic content
-Remove-Item -Recurse -Force "src/content/dynamic" -ErrorAction SilentlyContinue
-
 # Restore user content
 Copy-Item -Recurse -Force _backup/content/posts/* src/content/posts/
 Copy-Item -Recurse -Force _backup/content/spec/* src/content/spec/
+Copy-Item -Recurse -Force _backup/content/dynamic/* src/content/dynamic/
 ```
 
 ---
@@ -918,6 +935,7 @@ Linux equivalent:
 mkdir -p _backup/config
 mkdir -p _backup/content/posts
 mkdir -p _backup/content/spec
+mkdir -p _backup/content/dynamic
 mkdir -p _backup/styles
 mkdir -p _backup/public
 mkdir -p _backup/admin
@@ -932,6 +950,8 @@ cp -r src/config/* _backup/config/
 cp -r src/content/posts/* _backup/content/posts/
 
 cp -r src/content/spec/* _backup/content/spec/
+
+cp -r src/content/dynamic/* _backup/content/dynamic/
 
 cp -r src/pages/admin/* _backup/admin/pages/
 
@@ -990,6 +1010,7 @@ public/admin/
 .decap.yml
 admin/
 .github/
+src/content/dynamic/
 ```
 
 ---
@@ -1077,6 +1098,7 @@ When running on Linux:
 * [ ] No new upstream commits? → Skip entire process
 * [ ] Backed up custom configs, posts, spec, styles, images, public, zh_CN
 * [ ] Backed up admin pages
+* [ ] Backed up dynamic content
 * [ ] Protected Decap CMS configuration
 * [ ] Copied framework directories from Firefly/
 * [ ] Skipped `src/pages/admin/`
