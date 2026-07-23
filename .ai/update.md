@@ -29,9 +29,7 @@ these areas.
 Protected:
 
 ```
-src/pages/admin/
 public/admin/
-admin/
 ```
 
 Rules:
@@ -43,27 +41,22 @@ Rules:
 
 ---
 
-### Decap CMS
+### Sveltia CMS
 
 Protected:
 
 ```
-.decap.yml
-admin/config.yml
-public/admin/*
-src/pages/admin/*
-CMS related scripts
-CMS authentication configuration
+public/admin/config.yml
+public/admin/index.html
 ```
 
 Rules:
 
-* Do not remove Decap CMS.
-* Do not migrate Decap CMS.
-* Do not replace Decap CMS with another CMS.
-* Do not modify CMS authentication flow.
-* Do not update CMS plugins automatically.
-* Do not change CMS-related configuration.
+* Sveltia CMS is the active CMS system. Current version: `0.172.4` (CDN `@sveltia/cms@0.172.4`).
+* Config at `public/admin/config.yml` defines collections. Collection names must be unique (e.g., `posts` + `posts-legacy`, not `posts` + `posts`).
+* Admin page at `public/admin/index.html` is a static HTML page (no Astro processing). Script must NOT have `type="module"`.
+* Do not modify the CMS config during upstream sync.
+* Do not migrate to another CMS.
 
 If upstream contains CMS-related changes:
 
@@ -171,14 +164,17 @@ Copy-Item -Recurse -Force public/assets/css/* _backup/public/
 Copy-Item -Force src/i18n/languages/zh_CN.ts _backup/
 ```
 
-Backup protected Admin and CMS:
+Backup protected Admin:
 
 ```powershell
-Copy-Item -Recurse -Force src/pages/admin/* _backup/admin/pages/
-Copy-Item -Recurse -Force public/admin/* _backup/admin/public/
+Copy-Item -Recurse -Force public/admin/* _backup/admin/
+```
 
-Copy-Item -Force .decap.yml _backup/cms/ -ErrorAction SilentlyContinue
-Copy-Item -Recurse -Force admin/* _backup/cms/admin/ -ErrorAction SilentlyContinue
+Backup CMS config:
+
+```powershell
+Copy-Item -Force public/admin/config.yml _backup/cms/ -ErrorAction SilentlyContinue
+Copy-Item -Force public/admin/index.html _backup/cms/ -ErrorAction SilentlyContinue
 ```
 
 ---
@@ -240,7 +236,7 @@ Protected files check:
 ```powershell
 git diff -- src/pages/admin
 git diff -- public/admin
-git diff -- .decap.yml
+git diff -- public/admin
 git diff -- .github
 ```
 
@@ -330,22 +326,20 @@ Copy-Item -Force _backup/zh_CN.ts src/i18n/languages/zh_CN.ts
 
 ### Restore Protected Admin and CMS
 
-Admin pages must always be restored after synchronization.
+Admin pages and CMS must always be restored after synchronization.
 
 ```powershell
-# Restore Blog Admin
-Copy-Item -Recurse -Force _backup/admin/pages/* src/pages/admin/
-
-Copy-Item -Recurse -Force _backup/admin/public/* public/admin/
+# Restore Admin
+Copy-Item -Recurse -Force _backup/admin/* public/admin/
 ```
 
-Restore Decap CMS:
+Restore Sveltia CMS:
 
 ```powershell
-# Restore Decap CMS configuration
-Copy-Item -Force _backup/cms/.decap.yml . -ErrorAction SilentlyContinue
+# Restore Sveltia CMS configuration
+Copy-Item -Force _backup/cms/config.yml public/admin/ -ErrorAction SilentlyContinue
 
-Copy-Item -Recurse -Force _backup/cms/admin/* admin/ -ErrorAction SilentlyContinue
+Copy-Item -Force _backup/cms/index.html public/admin/ -ErrorAction SilentlyContinue
 ```
 
 After restore:
@@ -353,10 +347,7 @@ After restore:
 Verify:
 
 ```powershell
-git diff -- src/pages/admin
 git diff -- public/admin
-git diff -- .decap.yml
-git diff -- .github
 ```
 
 Expected:
@@ -390,10 +381,7 @@ mermaid-render-script.js → replaced by diagram-panzoom-script.js
 Do NOT remove:
 
 ```text
-.decap.yml
-admin/*
-src/pages/admin/*
-public/admin/*
+public/admin/
 ```
 
 These are protected user files.
@@ -553,40 +541,11 @@ Never remove CDN CSS.
 
 ## 6g. CMS Protection
 
-CMS configuration is user-managed.
-
-DO NOT:
-
-* remove CMS files
-* migrate CMS configuration
-* replace Decap CMS
-* switch CMS providers
-* modify authentication flow
-* update CMS plugins automatically
-
-Protected:
-
-```text
-.decap.yml
-
-admin/
-
-src/pages/admin/
-
-public/admin/
-
-CMS related scripts
-```
-
-If upstream contains CMS changes:
-
-```text
-Skip changes.
-
-Report differences only.
-
-Keep current local CMS configuration.
-```
+* CMS configuration is user-managed and located at `public/admin/`.
+* Do not remove, modify, or migrate CMS files during sync.
+* Config file: `public/admin/config.yml` (YAML format with collections, fields, backend settings).
+* Admin page: `public/admin/index.html` (static HTML, not Astro-processed).
+* If upstream contains CMS-related changes, skip them and report only.
 
 ---
 
@@ -644,8 +603,6 @@ Before commit:
 ```powershell
 git diff -- src/pages/admin
 git diff -- public/admin
-git diff -- .decap.yml
-git diff -- admin/
 git diff -- .github
 ```
 
@@ -939,7 +896,6 @@ mkdir -p _backup/content/dynamic
 mkdir -p _backup/styles
 mkdir -p _backup/public
 mkdir -p _backup/admin
-mkdir -p _backup/cms
 ```
 
 Backup:
@@ -961,9 +917,8 @@ cp -r public/admin/* _backup/admin/public/
 CMS:
 
 ```bash
-cp .decap.yml _backup/cms/ 2>/dev/null || true
-
-cp -r admin/* _backup/cms/admin/ 2>/dev/null || true
+cp public/admin/config.yml _backup/cms/ 2>/dev/null || true
+cp public/admin/index.html _backup/cms/ 2>/dev/null || true
 ```
 
 ---
@@ -1007,8 +962,6 @@ Never sync:
 ```text
 src/pages/admin/
 public/admin/
-.decap.yml
-admin/
 .github/
 src/content/dynamic/
 ```
@@ -1042,9 +995,9 @@ git diff -- src/pages/admin
 
 git diff -- public/admin
 
-git diff -- .decap.yml
+git diff -- public/admin
 
-git diff -- admin/
+git diff -- public/admin
 
 git diff -- .github
 ```
@@ -1099,7 +1052,7 @@ When running on Linux:
 * [ ] Backed up custom configs, posts, spec, styles, images, public, zh_CN
 * [ ] Backed up admin pages
 * [ ] Backed up dynamic content
-* [ ] Protected Decap CMS configuration
+* [ ] Protected Sveltia CMS configuration
 * [ ] Copied framework directories from Firefly/
 * [ ] Skipped `src/pages/admin/`
 * [ ] Skipped `.github/` (never synced)
@@ -1113,7 +1066,7 @@ When running on Linux:
 * [ ] Fixed wrangler.jsonc
 * [ ] Fixed sidebarTOC config
 * [ ] Fixed Waline CSS
-* [ ] Preserved Decap CMS
+* [ ] Preserved Sveltia CMS
 * [ ] Added svg-spinners
 * [ ] `pnpm install` succeeded
 * [ ] `pnpm build` succeeded

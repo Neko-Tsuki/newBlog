@@ -20,7 +20,6 @@ collections:
     create: true
     delete: true
     slug: "{{slug}}"
-    path: "{{slug}}/index"
     extension: mdx
     format: frontmatter
     summary: "{{title}} — {{published | date('YYYY-MM-DD')}}"
@@ -34,7 +33,34 @@ collections:
       - { name: category, label: 分类, widget: string, required: false }
       - { name: draft, label: 草稿, widget: boolean, default: false, required: false }
       - { name: pinned, label: 置顶, widget: boolean, default: false, required: false }
-      - { name: lang, label: 语言, widget: select, options: ["", zh_CN, en, ja, zh_TW, ru], default: "", required: false }
+      - { name: lang, label: 语言, widget: select, options: ["", "zh_CN", "en", "ja", "zh_TW", "ru"], default: "", required: false }
+      - { name: comment, label: 启用评论, widget: boolean, default: true, required: false }
+      - { name: author, label: 作者, widget: string, required: false }
+      - { name: password, label: 密码, widget: string, required: false }
+      - { name: passwordHint, label: 密码提示, widget: string, required: false }
+      - { name: body, label: 正文, widget: markdown }
+
+  - name: posts-legacy
+    label: 文章 (Markdown)
+    label_singular: 文章
+    folder: src/content/posts
+    create: false
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    summary: "{{title}} — {{published | date('YYYY-MM-DD')}}"
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - { name: published, label: 发布日期, widget: datetime, format: YYYY-MM-DD }
+      - { name: updated, label: 更新日期, widget: datetime, format: YYYY-MM-DD, required: false }
+      - { name: description, label: 摘要, widget: text, required: false }
+      - { name: image, label: 封面图片, widget: image, required: false }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: category, label: 分类, widget: string, required: false }
+      - { name: draft, label: 草稿, widget: boolean, default: false, required: false }
+      - { name: pinned, label: 置顶, widget: boolean, default: false, required: false }
+      - { name: lang, label: 语言, widget: select, options: ["", "zh_CN", "en", "ja", "zh_TW", "ru"], default: "", required: false }
       - { name: comment, label: 启用评论, widget: boolean, default: true, required: false }
       - { name: author, label: 作者, widget: string, required: false }
       - { name: password, label: 密码, widget: string, required: false }
@@ -49,6 +75,20 @@ collections:
     delete: true
     slug: "{{slug}}"
     extension: mdx
+    format: frontmatter
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - { name: description, label: 描述, widget: text, required: false }
+      - { name: body, label: 正文, widget: markdown }
+
+  - name: spec-legacy
+    label: 特殊页面 (Markdown)
+    label_singular: 特殊页面
+    folder: src/content/spec
+    create: false
+    delete: true
+    slug: "{{slug}}"
+    extension: md
     format: frontmatter
     fields:
       - { name: title, label: 标题, widget: string }

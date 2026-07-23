@@ -138,4 +138,4 @@ src/
 4. **Profile icons**: bare icon names need set prefix (e.g., `github` → `simple-icons:github`)
 5. **`wrangler.jsonc`**: must stay minimal for Workers Assets mode (no `assets.binding`, no `images`, no `kv_namespaces`)
 6. **`.gitignore`**: keep `opencode.json`, `.opencode/`, `dev_*.log`, `dev_*.txt`
-7. **CMS**: Workers Assets mode CANNOT use bindings (KV, Images, etc.). Only **Pages CMS** (`.pages.yml`) works with Workers Assets. Decap/Sveltia/Keystatic CMS require Cloudflare Worker runtime (not compatible).
+7. **CMS**: Sveltia CMS at `public/admin/` (static HTML + YAML config). Workers Assets compatible. No bindings needed.
