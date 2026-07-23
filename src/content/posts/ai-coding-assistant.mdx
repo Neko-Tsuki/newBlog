@@ -1,0 +1,200 @@
+---
+title: 让AI给自己写了个博客主题
+published: 2026-07-23
+pinned: false
+description: 记录一下咱是怎么用AI给自己写了个自定义博客小组件的，从想法到落地踩过的坑和心得
+tags: [前端, AI, Astro, 折腾日记]
+category: 折腾日记
+draft: false
+---
+
+> **⚠️ 此文章由AI生成仅作测试使用**
+
+---
+
+事情是这样的——前阵子在落落格上加了个"今日推荐"的小卡片，想放在侧边栏随机展示一篇旧文章。原本以为就一个简单的组件，结果折腾了一个周末才弄得像模像样。
+
+怎么说呢，想法很丰满，现实很骨感。
+
+## 一、从哪儿开始的？
+
+起因很简单：某天翻归档，发现自己写过不少文章但好多都被埋在时间线里了。想想也是可惜，写都写了，总得让它们有机会重见天日吧？
+
+最初的设想就三个要求：
+
+1. 从所有**非置顶**文章里随机选一篇
+2. 在侧边栏展示标题、摘要和一张小图
+3. 每次刷新或者切换页面的时候重新随机
+
+看起来人畜无害对吧？我也是这么想的……
+
+## 二、第一次尝试——硬核纯前端
+
+大概翻了翻Astro的文档，咱的思路是：
+
+> 直接在后端把文章列表传过去，然后在浏览器端用 `Math.random()` 随机选一篇再渲染出来。
+
+说干就干！先搞了个简单的 Svelte 组件：
+
+```svelte
+<script lang="ts">
+  import { onMount } from "svelte";
+  let { posts } = $props();
+
+  let current = $state(null);
+
+  function pickRandom() {
+    const candidates = posts.filter((p) => !p.data.pinned);
+    current = candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
+  onMount(() => pickRandom());
+</script>
+```
+
+五分钟写完，兴冲冲启动 dev server 一看——嗯？导航切换页面的时候卡片的确刷新了，但有时候会出现**闪一下空白**的情况，观感极其糟糕。
+
+后来排查发现，问题在于页面切换时 Swup 会替换 DOM，组件重新挂载需要时间，而 `onMount` 里的随机逻辑触发时机比 DOM 替换早那么一丢丢——于是出现了一个"数据还没准备好，组件先渲染了"的空窗期。
+
+~~合着你搁这儿给我表演赛跑呢。~~
+
+## 三、换个思路——后端预选多篇
+
+既然客户端随机有延迟问题，那咱就在后端多选几篇丢给前端，然后前端只是"展示"不就好了吗？
+
+说得好听。但这样一来，每次刷新都是同一批候选，如果用户频繁刷新，看到的永远都是那几篇，就失去了"随机"的意义了。
+
+那……再加个基于日期的种子？
+
+```typescript
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+```
+
+根据日期生成种子，每天换一批候选，这样一天内看到的推荐是固定的，但每天都会更新。听起来好像是个不错的折中方案……
+
+但咱转念一想——这不对啊，如果一个用户一天之内反复访问，看到的推荐文章**一整天都不变**，那和置顶有什么区别？(ノ°Д°)ノ︵┻━┻
+
+## 四、最终方案——Storage 缓存 + 定时刷新
+
+最后在折腾了好几个方案之后，决定把问题分开来处理：
+
+| 问题 | 解决方案 |
+|------|---------|
+| 页面切换闪白 | 用 `sessionStorage` 缓存上次的推荐结果 |
+| 刷新后换一批 | 用 `localStorage` 存时间戳，每隔 6 小时自动换一批 |
+| 初始加载太慢 | 后端直接内联第一次的随机结果 |
+
+核心逻辑大概长这样：
+
+```svelte
+<script lang="ts">
+  import { onMount } from "svelte";
+
+  let { posts, initialPick } = $props();
+
+  let current = $state(initialPick);
+  const STORAGE_KEY = "daily-recommend-post";
+  const TTL = 6 * 60 * 60 * 1000; // 6小时
+
+  function pickFromCandidates(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  function rotate() {
+    const candidates = posts.filter((p) => !p.data.pinned && p.id !== current?.id);
+    if (candidates.length > 0) {
+      current = pickFromCandidates(candidates);
+    }
+  }
+
+  onMount(() => {
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "null");
+      const timestamp = parseInt(localStorage.getItem(STORAGE_KEY + "-ts") || "0");
+      const now = Date.now();
+
+      if (cached && now - timestamp < TTL) {
+        current = cached;
+      } else {
+        rotate();
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+        localStorage.setItem(STORAGE_KEY + "-ts", String(now));
+      }
+    } catch {
+      // storage 不可用时 fallback 到初始值
+    }
+  });
+</script>
+```
+
+虽然代码量多了不少，但至少现在：
+
+-  首次加载几乎**零延迟**（后端直接内联）
+-  页面切换**不会闪白**（sessionStorage 兜底）
+-  每次访问**都有新鲜感**（6小时自动轮换）
+
+~~为了这么一个小卡片折腾了整整一个周末……值得吗？看着效果好像还挺值的。~~
+
+## 五、组件的样式打磨
+
+功能搞定了，样式也不能落下。
+
+咱参考了 Firefly 现有的 `WidgetLayout` 组件的风格，保持一致性的同时稍微加了一点点小心思：
+
+```css
+.recommend-card {
+  background: var(--card-bg);
+  border: 1px solid var(--line-divider);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.recommend-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .recommend-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+```
+
+没有搞花里胡哨的动画，就是简简单单的 hover 边框变色 + 轻微阴影。~~毕竟咱的审美水平也就这样了，搞太复杂反而容易翻车。~~
+
+### 遇到的暗坑
+
+> 💡 **Tip:** 在 Astro 的 Svelte 组件里如果用了 `$props()` 解构，记得要在父组件传值的时候用 `client:load` 而不是 `client:idle`，不然 Swup 页面切换的时候 props 会变成 `undefined`。
+
+这个坑折腾了咱快两个小时……排查到最后发现只是指令用错了，真的想给自己一巴掌。😇
+
+## 六、总结
+
+回头看看，一个"随机推荐"组件，从想法到落地踩了这么多坑。但回过头来想想，折腾的过程本身就是学习的过程——至少现在咱对 Svelte 5 的 runes 系统、Astro 的岛屿架构还有 Swup 的页面切换生命周期都有了更深的理解。
+
+也算因祸得福吧（强行安慰自己）。
+
+最后贴个效果预览图（其实也没啥好看的，就一小卡片）：
+
+```
+┌──────────────────────────────┐
+│  📌 今日推荐                  │
+│                              │
+│  RimWorld游戏基础不完全指北    │
+│  一款类似废土建造生存的2D沙    │
+│  盒游戏...                    │
+│                              │
+│  ─────────── 2022.11.08      │
+└──────────────────────────────┘
+```
+
+反正就是这么一个东西，自我感觉还行。
+
+如果有同样想在侧边栏加随机推荐的朋友，可以参考一下上面的思路。**不过说实话，大概率也没人会照着做因为大部分主题都有这个功能了（笑）。**
+
+---
+
+> **后记**：这篇文章其实是用自己的经历改编的，但实际上咱折腾这个组件的时候，大部分代码反而是让 AI 帮忙写的——咱只需要描述需求，AI 就能生成差不多能跑的代码，咱再修修改改就行了。不得不说，2026 年的 AI 写代码能力是真的离谱，以前要翻半天 Stack Overflow 才能解决的问题，现在直接描述给 AI 就能拿到八九不离十的答案。~~感觉再过几年咱就要失业了……~~
