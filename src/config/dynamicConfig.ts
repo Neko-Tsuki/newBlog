@@ -12,4 +12,20 @@ export const dynamicConfig: DynamicConfig = {
 
 	// 每页显示的动态数量
 	itemsPerPage: 20,
+
+	// 动态数据 json 地址，本地默认 "/api/dynamic.json"
+	apiUrl: "/api/dynamic.json",
+
+	// ========== Memos 配置 ==========
+	// 启用后客户端会直接从 Memos API 实时获取数据，apiUrl 配置将被忽略
+	memos: {
+		// 是否启用 Memos 数据源
+		enable: false,
+
+		// Memos 实例地址
+		apiUrl: "https://memos.example.com",
+
+		// Memos 用户标识，如 "users/你的memos用户名"，用于过滤指定用户的动态
+		parent: "users/xiaye",
+	},
 };
