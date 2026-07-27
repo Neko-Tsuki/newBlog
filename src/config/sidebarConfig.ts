@@ -103,6 +103,30 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// 右侧边栏组件配置列表
 	rightComponents: [
 		{
+			// 组件类型：时间和问候语组件
+			type: "timeGreeting",
+			// 是否启用该组件
+			enable: true,
+			// 是否显示组件标题
+			showTitle: false,
+			// 组件位置
+			position: "top",
+			// 是否在文章详情页显示
+			showOnPostPage: true,
+		},
+		{
+			// 组件类型：日期倒计时/进度组件
+			type: "schedule",
+			// 是否启用该组件
+			enable: true,
+			// 是否显示组件标题
+			showTitle: false,
+			// 组件位置
+			position: "sticky",
+			// 是否在文章详情页显示
+			showOnPostPage: true,
+		},
+		{
 			// 组件类型：最新动态组件
 			type: "dynamic",
 			// 是否启用该组件
@@ -147,18 +171,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			},
 		},
 		{
-			// 组件类型：时间和问候语组件
-			type: "timeGreeting",
-			// 是否启用该组件
-			enable: true,
-			// 是否显示组件标题
-			showTitle: false,
-			// 组件位置
-			position: "top",
-			// 是否在文章详情页显示
-			showOnPostPage: true,
-		},
-		{
 			// 组件类型：日历组件
 			type: "calendar",
 			// 是否启用该组件
@@ -184,18 +196,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			enable: false,
 			// 是否显示组件标题
 			showTitle: true,
-			// 组件位置
-			position: "sticky",
-			// 是否在文章详情页显示
-			showOnPostPage: true,
-		},
-		{
-			// 组件类型：日期倒计时/进度组件
-			type: "schedule",
-			// 是否启用该组件
-			enable: true,
-			// 是否显示组件标题
-			showTitle: false,
 			// 组件位置
 			position: "sticky",
 			// 是否在文章详情页显示
