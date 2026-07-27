@@ -410,6 +410,16 @@ export const en: Translation = {
 	[Key.galleryBackToAlbums]: "Back to albums",
 	[Key.searchAlbums]: "Search albums...",
 
+	// Diary
+	[Key.diary]: "Diary",
+	[Key.diarySubtitle]: "Recording life's moments",
+	[Key.diaryCount]: "entries",
+	[Key.diaryMinutesAgo]: "m ago",
+	[Key.diaryHoursAgo]: "h ago",
+	[Key.diaryDaysAgo]: "d ago",
+	[Key.diaryNoResults]: "No matching diary entries found",
+	[Key.diaryTips]: "Life is like a diary - every page is a new beginning.",
+
 	// Password Protection
 	[Key.passwordProtected]: "Password Protected",
 	[Key.passwordProtectedDesc]:

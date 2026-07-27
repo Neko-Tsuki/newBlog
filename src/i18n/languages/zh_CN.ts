@@ -401,6 +401,16 @@ export const zh_CN: Translation = {
 	[Key.galleryBackToAlbums]: "返回相册列表",
 	[Key.searchAlbums]: "搜索相簿...",
 
+	// 日记
+	[Key.diary]: "日记",
+	[Key.diarySubtitle]: "记录生活的点滴",
+	[Key.diaryCount]: "篇",
+	[Key.diaryMinutesAgo]: "分钟前",
+	[Key.diaryHoursAgo]: "小时前",
+	[Key.diaryDaysAgo]: "天前",
+	[Key.diaryNoResults]: "没有找到匹配的日记",
+	[Key.diaryTips]: "生活就像日记，每页都是新的开始。",
+
 	// 密码保护
 	[Key.passwordProtected]: "密码保护",
 	[Key.passwordProtectedDesc]: "此内容已被密码保护，请输入密码查看。",

@@ -412,6 +412,16 @@ export const ru: Translation = {
 	[Key.galleryBackToAlbums]: "Вернуться к альбомам",
 	[Key.searchAlbums]: "Поиск альбомов...",
 
+	// Дневник
+	[Key.diary]: "Дневник",
+	[Key.diarySubtitle]: "Запись моментов жизни",
+	[Key.diaryCount]: "записей",
+	[Key.diaryMinutesAgo]: " мин. назад",
+	[Key.diaryHoursAgo]: " ч. назад",
+	[Key.diaryDaysAgo]: " д. назад",
+	[Key.diaryNoResults]: "Не найдено подходящих записей",
+	[Key.diaryTips]: "Жизнь как дневник — каждая страница новое начало.",
+
 	// Защита паролем
 	[Key.passwordProtected]: "Защищено паролем",
 	[Key.passwordProtectedDesc]:

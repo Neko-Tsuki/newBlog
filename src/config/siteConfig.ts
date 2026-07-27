@@ -98,7 +98,7 @@ export const siteConfig: SiteConfig = {
 	timezone: "Asia/Shanghai",
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
-	pages: {
+		pages: {
 		// 友链页面开关
 		friends: true,
 		// 打赏页面开关
@@ -113,6 +113,15 @@ export const siteConfig: SiteConfig = {
 		anime: true,
 		// 动态页面开关
 		dynamic: true,
+		// 日记页面开关
+		diary: true,
+	},
+
+	// 日记页面配置
+	diary: {
+		// 默认头像
+		defaultAvatar:
+			"https://api.dicebear.com/7.x/avataaars/svg?seed=default",
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航

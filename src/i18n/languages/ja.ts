@@ -409,6 +409,16 @@ export const ja: Translation = {
 	[Key.galleryBackToAlbums]: "アルバム一覧に戻る",
 	[Key.searchAlbums]: "アルバムを検索...",
 
+	// 日記
+	[Key.diary]: "日記",
+	[Key.diarySubtitle]: "日々の出来事を記録",
+	[Key.diaryCount]: "件",
+	[Key.diaryMinutesAgo]: "分前",
+	[Key.diaryHoursAgo]: "時間前",
+	[Key.diaryDaysAgo]: "日前",
+	[Key.diaryNoResults]: "該当する日記が見つかりません",
+	[Key.diaryTips]: "人生は日記のようなもの、毎ページが新しい始まりです。",
+
 	// パスワード保護
 	[Key.passwordProtected]: "パスワード保護",
 	[Key.passwordProtectedDesc]:

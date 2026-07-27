@@ -34,7 +34,17 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	});
 
 	// 动态
-	links.push(LinkPresets.Dynamic);
+	links.push({
+		name: "动态",
+		url: "#",
+		icon: "material-symbols:forum-rounded",
+		children: [
+			// 动态
+			LinkPresets.Dynamic,
+			// 日记
+			LinkPresets.Diary,
+		],
+	});
 
 	//社交及其子菜单
 	links.push({
@@ -165,6 +175,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/anime/",
 		icon: "material-symbols:live-tv",
 		pageKey: "anime",
+	},
+	Diary: {
+		name: "日记",
+		url: "/diary/",
+		icon: "material-symbols:book",
 	},
 };
 
