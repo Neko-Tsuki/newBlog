@@ -12,7 +12,9 @@ export type WidgetComponentType =
 		| "siteInfo"
 		| "dynamic"
 		| "relationship"
-		| "schedule";
+		| "schedule"
+		| "quoteOfTheDay"
+		| "timeGreeting";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型
