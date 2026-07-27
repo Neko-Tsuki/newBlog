@@ -33,6 +33,24 @@ type DynamicData = {
 	location: string;
 };
 
+type DiaryData = {
+	published: Date;
+	images: string[];
+	video: string;
+	location: string;
+	locationUrl: string;
+	mood: string;
+	tags: string[];
+	avatar: string;
+	imageDisplay?: {
+		type: "carousel" | "grid";
+		autoPlay?: boolean;
+		interval?: number;
+		showIndicator?: boolean;
+		showControls?: boolean;
+	};
+};
+
 type ContentCollection<T> = CollectionConfig<
 	ZodType<T>,
 	ReturnType<typeof glob>
@@ -83,6 +101,29 @@ const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 	}),
 });
 
+const diaryCollection: ContentCollection<DiaryData> = defineCollection({
+	loader: glob({ pattern: "**/*.md", base: "./src/content/diary" }),
+	schema: z.object({
+		published: z.date(),
+		images: z.array(z.string()).optional().default([]),
+		video: z.string().optional().default(""),
+		location: z.string().optional().default(""),
+		locationUrl: z.string().optional().default(""),
+		mood: z.string().optional().default(""),
+		tags: z.array(z.string()).optional().default([]),
+		avatar: z.string().optional().default(""),
+		imageDisplay: z
+			.object({
+				type: z.enum(["carousel", "grid"]).optional().default("grid"),
+				autoPlay: z.boolean().optional().default(true),
+				interval: z.number().optional().default(4000),
+				showIndicator: z.boolean().optional().default(true),
+				showControls: z.boolean().optional().default(true),
+			})
+			.optional(),
+	}),
+});
+
 const ziyuanCollection = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/ziyuan" }),
 	schema: z.union([
@@ -120,9 +161,11 @@ export const collections: {
 	posts: typeof postsCollection;
 	spec: typeof specCollection;
 	ziyuan: typeof ziyuanCollection;
+	diary: typeof diaryCollection;
 } = {
 	dynamic: dynamicCollection,
 	posts: postsCollection,
 	spec: specCollection,
 	ziyuan: ziyuanCollection,
+	diary: diaryCollection,
 };

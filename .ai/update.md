@@ -193,7 +193,9 @@ Implementation files:
 ```
 src/pages/diary.astro                — 日记页面路由 (/diary/)
 
-src/data/diary.ts                    — 日记数据源（硬编码）
+src/data/diary.ts                    — 日记数据源（类型定义 + 排序/标签提取函数）
+
+src/content/diary/*.md               — 日记内容（每篇一个 markdown 文件）
 
 src/components/features/diary/
 ├── index.ts                         — 组件导出
@@ -215,7 +217,8 @@ Rules:
 * During upstream sync, these files must NOT be deleted or overwritten.
 * Restore from backup after framework sync if accidentally removed.
 * **Enabled by default**: Diary page (`siteConfig.pages.diary: true`).
-* **Never sync diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
+* **Diary content uses file-based model**: diary entries are markdown files in `src/content/diary/`. Each markdown file = one diary entry. Frontmatter supports `published`, `location`, `tags`, `images` (URL array), `video`, `mood`, `imageDisplay`, etc.
+* **Never sync diary content (`src/content/diary/`) or diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
 * **Never sync dynamic content (`src/content/dynamic/*`) from other repositories — see "Dynamic Content" section for details.**
 
 To update from Firefly-hyde:
@@ -1199,7 +1202,7 @@ When running on Linux:
 * [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
 * [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
 * [ ] Diary feature implementation files untouched (src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/, src/components/atoms/FilterTabs.astro, src/utils/timeFormat.ts, public/js/filter-tabs-handler.js)
-* [ ] Diary data (`src/data/diary.ts`) not overwritten from any external repo
+* [ ] Diary content (`src/content/diary/`) not overwritten from any external repo
 * [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
