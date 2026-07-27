@@ -121,9 +121,9 @@ src/content/ziyuan/quote.md                   — 每日一言数据源
 
 ---
 
-### 动态-日记 (Dynamic/Moments) Feature
+### 动态 (Moments/Dynamic) Feature
 
-Custom feature for displaying moments/diary entries, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+Custom feature for displaying moments/status updates, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
 
 Implementation files:
 
@@ -181,6 +181,50 @@ rm -rf /tmp/firefly-hyde
 ```
 
 ---
+
+### 日记 (Diary) Feature
+
+Custom feature for displaying diary pages, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+
+Implementation files:
+
+```
+src/pages/diary.astro                — 日记页面路由 (/diary/)
+
+src/data/diary.ts                    — 日记数据源（硬编码）
+
+src/components/features/diary/
+├── index.ts                         — 组件导出
+├── types.ts                         — 日记类型定义
+└── MomentCard.astro                 — 日记卡片组件（支持图片轮播/网格、视频）
+
+src/components/atoms/
+├── index.ts                         — 原子组件导出
+└── FilterTabs.astro                 — 标签筛选组件
+
+src/utils/timeFormat.ts              — 相对时间格式化工具
+
+public/js/filter-tabs-handler.js     — 标签筛选交互脚本
+```
+
+Rules:
+
+* Diary feature components, data, and styles are custom additions from Firefly-hyde.
+* During upstream sync, these files must NOT be deleted or overwritten.
+* Restore from backup after framework sync if accidentally removed.
+* **Enabled by default**: Diary page (`siteConfig.pages.diary: true`).
+
+To update from Firefly-hyde:
+
+```bash
+git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
+# Check for new/changed files in src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/
+# Manually copy any desired changes
+rm -rf /tmp/firefly-hyde
+```
+
+---
+
 cd C:\Users\TY-Han\Documents\Firefly
 git fetch real-upstream master
 
@@ -1150,6 +1194,7 @@ When running on Linux:
 * [ ] Protected areas have no diff
 * [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
 * [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
+* [ ] Diary feature implementation files untouched (src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/, src/components/atoms/FilterTabs.astro, src/utils/timeFormat.ts, public/js/filter-tabs-handler.js)
 * [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
