@@ -18,7 +18,6 @@ import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import CoverImage from "@/components/common/CoverImage.astro";
-import AiSummary from "@/components/widget/AiSummary.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import RecommendedPost from "@/components/misc/RecommendedPost.astro";
 import SharePoster from "@/components/misc/SharePoster.svelte";
@@ -301,14 +300,6 @@ const relatedPosts = await getRelatedPosts(entry, 5);
           </div>
         )
       }
-
-      {/* AI 摘要 - 打字机动画 */}
-      {entry.data.description && (
-        <AiSummary
-          description={entry.data.description}
-          descriptionSource={(entry.data as any).descriptionSource}
-        />
-      )}
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>

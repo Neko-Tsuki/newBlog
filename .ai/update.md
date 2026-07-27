@@ -103,10 +103,40 @@ Rules:
 
 ---
 
-## Step 1: Fetch Upstream
+### Firefly-hyde Custom Widgets
 
-```powershell
-# In Firefly repo
+Custom widgets copied from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde) (fork by sin_13).
+
+Source files:
+
+```
+src/components/widget/AiSummary.astro         — AI 摘要（文章页，已禁用）
+src/components/widget/QuoteOfTheDay.astro     — 每日一言（侧边栏，已禁用）
+src/components/widget/WelcomeToast.astro      — 欢迎弹窗（布局级，已禁用）
+src/components/widgets/TimeGreeting.astro     — 时间问候（侧边栏，已启用）
+src/components/widget/Schedule.astro          — 日期进度（侧边栏，已启用）
+src/components/widget/RelationshipTimer.astro — 恋爱倒计时（侧边栏，已禁用）
+src/content/ziyuan/quote.md                   — 每日一言数据源
+```
+
+Rules:
+
+* These are custom additions not present in upstream CuteLeaf/Firefly.
+* During upstream sync, these files must NOT be deleted or overwritten.
+* Restore from backup after framework sync if accidentally removed.
+* **Enabled by default**: TimeGreeting, Schedule
+* **Disabled by default**: AiSummary, QuoteOfTheDay, WelcomeToast, RelationshipTimer
+
+To update from Firefly-hyde:
+
+```bash
+git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
+# Check for new/changed files in src/components/widget/ and src/components/widgets/
+# Manually copy any desired changes
+rm -rf /tmp/firefly-hyde
+```
+
+---
 cd C:\Users\TY-Han\Documents\Firefly
 git fetch real-upstream master
 
@@ -1043,6 +1073,7 @@ When running on Linux:
 * Never modify user's shell configuration.
 * Never overwrite protected files.
 * Always verify Git diff before commit.
+* **Firefly-hyde custom widgets** (AiSummary, QuoteOfTheDay, WelcomeToast, TimeGreeting, Schedule, RelationshipTimer) under `src/components/widget/`, `src/components/widgets/`, and `src/content/ziyuan/` are protected additions — do not delete or overwrite during upstream sync.
 * **Dynamic data source must always be in local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) after sync, unless explicitly overridden.**
 
 
@@ -1073,7 +1104,8 @@ When running on Linux:
 * [ ] `pnpm install` succeeded
 * [ ] `pnpm build` succeeded
 * [ ] Protected areas have no diff
-* [ ] Dynamic mode verified as local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`)
+* [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
+* [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
 
