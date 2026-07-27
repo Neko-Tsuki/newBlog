@@ -119,6 +119,40 @@ src/components/widget/RelationshipTimer.astro — 恋爱倒计时（侧边栏，
 src/content/ziyuan/quote.md                   — 每日一言数据源
 ```
 
+---
+
+### 动态-日记 (Dynamic/Moments) Feature
+
+Custom feature for displaying moments/diary entries, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+
+Implementation files:
+
+```
+src/components/pages/dynamic/
+├── DynamicFeed.svelte           — 动态列表组件（Svelte 响应式）
+├── DynamicItem.astro            — 单条动态项组件
+├── DynamicItemTemplate.astro    — 动态模板渲染
+├── DynamicGallery.astro         — 图片画廊组件
+├── DynamicInlineComments.astro  — 内联评论组件
+├── dynamic-gallery.ts           — 画廊交互脚本
+└── dynamic-inline-comments.ts   — 评论交互脚本
+
+src/components/widget/
+├── Dynamic.astro                — 动态页面入口组件
+└── DynamicSidebar.svelte        — 动态侧边栏组件
+
+src/config/dynamicConfig.ts      — 动态功能配置
+src/types/dynamicConfig.ts       — 动态配置类型定义
+src/content.config.ts            — 内容集合定义（含 dynamic collection）
+src/utils/dynamic-utils.ts       — 动态工具函数
+src/utils/memos-adapter.ts       — Memos API 适配器
+src/styles/dynamic.css           — 动态页面样式
+
+scripts/new-dynamic.js           — 新建动态脚本
+
+src/i18n/languages/*             — 动态功能 i18n 键值（各语言文件）
+```
+
 Rules:
 
 * These are custom additions not present in upstream CuteLeaf/Firefly.
@@ -126,6 +160,16 @@ Rules:
 * Restore from backup after framework sync if accidentally removed.
 * **Enabled by default**: TimeGreeting, Schedule
 * **Disabled by default**: AiSummary, QuoteOfTheDay, WelcomeToast, RelationshipTimer
+
+---
+
+### 动态-日记 Rules
+
+* Dynamic feature components, config, styles, and utilities are protected additions.
+* During upstream sync, these implementation files must NOT be deleted or overwritten.
+* **Dynamic content** (`src/content/dynamic/*`) is separately protected — see "Dynamic Content" section.
+* **Data source must be local mode** after sync: `apiUrl: "/api/dynamic.json"`, `memos.enable: false`.
+* Do not switch to third-party APIs or Memos without explicit instructions.
 
 To update from Firefly-hyde:
 
@@ -1105,7 +1149,24 @@ When running on Linux:
 * [ ] `pnpm build` succeeded
 * [ ] Protected areas have no diff
 * [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
+* [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
 * [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
+
+---
+
+## Auto-Upload Rule
+
+After any and all operations (including sync, feature addition, configuration changes, content updates, bug fixes, etc.), the changes **must be committed and pushed** to the remote repository (`origin master`) upon completion, **unless explicitly told otherwise** (e.g., "don't push yet", "keep local", "wait before uploading").
+
+This applies to:
+- Upstream Firefly sync
+- Firefly-hyde feature integration
+- Configuration changes
+- Content/documentation updates
+- Bug fixes and refactors
+- Any other modification to the codebase
+
+Exception: If the user explicitly says "do not commit", "don't push", "keep local", or similar instruction, skip the push and report that changes are local only.
 
