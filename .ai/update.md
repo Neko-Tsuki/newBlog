@@ -81,6 +81,8 @@ Rules:
 * If upstream removes or replaces the dynamic module, local dynamic content must remain untouched.
 * Restore from backup after framework sync.
 * **Dynamic data source must always be set to local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) during sync, unless an explicit override is specified. Do not switch to third-party APIs or Memos without explicit instructions.**
+* **Never sync dynamic content (`.md` files in `src/content/dynamic/`) from other repositories during upstream sync. Local dynamic content and implementation files are user-managed and must remain unchanged.**
+* **Never sync diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
 
 ---
 
@@ -163,7 +165,7 @@ Rules:
 
 ---
 
-### 动态-日记 Rules
+### 动态 Rules
 
 * Dynamic feature components, config, styles, and utilities are protected additions.
 * During upstream sync, these implementation files must NOT be deleted or overwritten.
@@ -213,6 +215,8 @@ Rules:
 * During upstream sync, these files must NOT be deleted or overwritten.
 * Restore from backup after framework sync if accidentally removed.
 * **Enabled by default**: Diary page (`siteConfig.pages.diary: true`).
+* **Never sync diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
+* **Never sync dynamic content (`src/content/dynamic/*`) from other repositories — see "Dynamic Content" section for details.**
 
 To update from Firefly-hyde:
 
@@ -1195,6 +1199,7 @@ When running on Linux:
 * [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
 * [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
 * [ ] Diary feature implementation files untouched (src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/, src/components/atoms/FilterTabs.astro, src/utils/timeFormat.ts, public/js/filter-tabs-handler.js)
+* [ ] Diary data (`src/data/diary.ts`) not overwritten from any external repo
 * [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
