@@ -117,13 +117,6 @@ export const siteConfig: SiteConfig = {
 		diary: true,
 	},
 
-	// 日记页面配置
-	diary: {
-		// 默认头像
-		defaultAvatar:
-			"https://api.dicebear.com/7.x/avataaars/svg?seed=default",
-	},
-
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
 	categoryBar: true,
 

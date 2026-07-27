@@ -41,7 +41,6 @@ type DiaryData = {
 	locationUrl: string;
 	mood: string;
 	tags: string[];
-	avatar: string;
 	imageDisplay?: {
 		type: "carousel" | "grid";
 		autoPlay?: boolean;
@@ -111,7 +110,6 @@ const diaryCollection: ContentCollection<DiaryData> = defineCollection({
 		locationUrl: z.string().optional().default(""),
 		mood: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
-		avatar: z.string().optional().default(""),
 		imageDisplay: z
 			.object({
 				type: z.enum(["carousel", "grid"]).optional().default("grid"),

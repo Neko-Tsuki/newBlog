@@ -11,7 +11,6 @@ export interface DiaryItem {
 	locationUrl?: string;
 	mood?: string;
 	tags?: string[];
-	avatar?: string;
 	// 图片展示配置
 	imageDisplay?: {
 		type: "carousel" | "grid"; // 显示类型：轮播图或网格布局

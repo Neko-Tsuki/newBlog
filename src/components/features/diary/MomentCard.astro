@@ -1,7 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
-import { siteConfig } from "../../../config/siteConfig";
+import { profileConfig } from "../../../config";
 import { formatRelativeTime } from "../../../utils/timeFormat";
+import { url } from "../../../utils/url-utils";
 import type { MomentCardProps } from "./types";
 
 const { moment, index, minutesAgo, hoursAgo, daysAgo } =
@@ -14,10 +15,7 @@ const relativeTime = formatRelativeTime(
 	daysAgo,
 );
 
-const avatarUrl =
-	moment.avatar ||
-	siteConfig.diary?.defaultAvatar ||
-	"https://api.dicebear.com/7.x/avataaars/svg?seed=default";
+const avatarUrl = url(profileConfig.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=default");
 
 const images = moment.images || [];
 

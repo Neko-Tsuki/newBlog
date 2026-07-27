@@ -88,12 +88,6 @@ export type SiteConfig = {
 		diary: boolean; // 日记页面开关
 	};
 
-	// 日记页面配置
-	diary?: {
-		// 默认头像
-		defaultAvatar?: string;
-	};
-
 	// 分类导航栏开关
 	categoryBar?: boolean;
 
