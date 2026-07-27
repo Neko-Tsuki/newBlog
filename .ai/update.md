@@ -80,6 +80,7 @@ Rules:
 * The upstream `src/content/dynamic` directory must not be copied.
 * If upstream removes or replaces the dynamic module, local dynamic content must remain untouched.
 * Restore from backup after framework sync.
+* **Dynamic data source must always be set to local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) during sync, unless an explicit override is specified. Do not switch to third-party APIs or Memos without explicit instructions.**
 
 ---
 
@@ -1042,6 +1043,7 @@ When running on Linux:
 * Never modify user's shell configuration.
 * Never overwrite protected files.
 * Always verify Git diff before commit.
+* **Dynamic data source must always be in local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) after sync, unless explicitly overridden.**
 
 
 ---
@@ -1071,6 +1073,7 @@ When running on Linux:
 * [ ] `pnpm install` succeeded
 * [ ] `pnpm build` succeeded
 * [ ] Protected areas have no diff
+* [ ] Dynamic mode verified as local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`)
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
 
