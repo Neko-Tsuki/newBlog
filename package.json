@@ -12,6 +12,8 @@
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-dynamic": "tsx scripts/new-dynamic.js",
     "new-d": "tsx scripts/new-dynamic.js",
+    "new-diary": "node scripts/new-diary.js",
+    "new-dy": "node scripts/new-diary.js",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
