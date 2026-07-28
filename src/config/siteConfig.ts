@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 
 	// 站点描述
 	description:
-		"咱是尘尘落落，Neko-Tsuki！这是一个基于 Astro 框架构建的个人博客，主要用来分享咱的开发折腾记录、生活感悟，以及一些有意思的小玩意儿。",
+		"咱是尘尘，这是一个基于 Astro 框架构建的个人博客，主要用来分享咱的开发折腾记录、生活感悟，以及一些有意思的小玩意儿。",
 
 	// 站点关键词
 	keywords: [
@@ -27,6 +27,7 @@ export const siteConfig: SiteConfig = {
 		"博客",
 		"技术博客",
 		"静态博客",
+		"Touhou",
 	],
 
 	// 主题色
