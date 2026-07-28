@@ -7,14 +7,10 @@ export type WidgetComponentType =
 	| "sidebarToc"
 	| "advertisement"
 	| "stats"
-		| "calendar"
-		| "music"
-		| "siteInfo"
-		| "dynamic"
-		| "relationship"
-		| "schedule"
-		| "quoteOfTheDay"
-		| "timeGreeting";
+	| "calendar"
+	| "music"
+	| "siteInfo"
+	| "dynamic";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型
