@@ -399,6 +399,16 @@ enum I18nKey {
 	galleryBackToAlbums = "galleryBackToAlbums",
 	searchAlbums = "searchAlbums",
 
+	// 日记页面
+	diary = "diary",
+	diarySubtitle = "diarySubtitle",
+	diaryCount = "diaryCount",
+	diaryMinutesAgo = "diaryMinutesAgo",
+	diaryHoursAgo = "diaryHoursAgo",
+	diaryDaysAgo = "diaryDaysAgo",
+	diaryNoResults = "diaryNoResults",
+	diaryTips = "diaryTips",
+
 	// 密码保护
 	passwordProtected = "passwordProtected",
 	passwordProtectedDesc = "passwordProtectedDesc",

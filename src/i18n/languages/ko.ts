@@ -408,6 +408,16 @@ export const ko: Translation = {
 	[Key.galleryBackToAlbums]: "앨범으로 돌아가기",
 	[Key.searchAlbums]: "앨범 검색...",
 
+	// 일기
+	[Key.diary]: "일기",
+	[Key.diarySubtitle]: "일상의 순간을 기록하다",
+	[Key.diaryCount]: "개",
+	[Key.diaryMinutesAgo]: "분 전",
+	[Key.diaryHoursAgo]: "시간 전",
+	[Key.diaryDaysAgo]: "일 전",
+	[Key.diaryNoResults]: "일치하는 일기 항목이 없습니다",
+	[Key.diaryTips]: "인생은 일기와 같습니다. 매 페이지가 새로운 시작입니다.",
+
 	// Password Protection
 	[Key.passwordProtected]: "비밀번호로 보호됨",
 	[Key.passwordProtectedDesc]:

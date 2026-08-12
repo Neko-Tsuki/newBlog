@@ -403,6 +403,16 @@ export const zh_TW: Translation = {
 	[Key.galleryBackToAlbums]: "返回相簿列表",
 	[Key.searchAlbums]: "搜尋相簿...",
 
+	// 日記
+	[Key.diary]: "日記",
+	[Key.diarySubtitle]: "記錄生活的點滴",
+	[Key.diaryCount]: "篇",
+	[Key.diaryMinutesAgo]: "分鐘前",
+	[Key.diaryHoursAgo]: "小時前",
+	[Key.diaryDaysAgo]: "天前",
+	[Key.diaryNoResults]: "沒有找到匹配的日記",
+	[Key.diaryTips]: "生活就像日記，每頁都是新的開始。",
+
 	// 密碼保護
 	[Key.passwordProtected]: "密碼保護",
 	[Key.passwordProtectedDesc]: "此內容已被密碼保護，請輸入密碼查看。",

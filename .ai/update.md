@@ -80,6 +80,9 @@ Rules:
 * The upstream `src/content/dynamic` directory must not be copied.
 * If upstream removes or replaces the dynamic module, local dynamic content must remain untouched.
 * Restore from backup after framework sync.
+* **Dynamic data source must always be set to local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) during sync, unless an explicit override is specified. Do not switch to third-party APIs or Memos without explicit instructions.**
+* **Never sync dynamic content (`.md` files in `src/content/dynamic/`) from other repositories during upstream sync. Local dynamic content and implementation files are user-managed and must remain unchanged.**
+* **Never sync diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
 
 ---
 
@@ -102,10 +105,133 @@ Rules:
 
 ---
 
-## Step 1: Fetch Upstream
+### Firefly-hyde Custom Widgets
 
-```powershell
-# In Firefly repo
+Custom widgets copied from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde) (fork by sin_13).
+
+Source files:
+
+```
+src/components/widget/AiSummary.astro         — AI 摘要（文章页，已禁用）
+src/components/widget/QuoteOfTheDay.astro     — 每日一言（侧边栏，已禁用）
+src/components/widget/WelcomeToast.astro      — 欢迎弹窗（布局级，已禁用）
+src/components/widgets/TimeGreeting.astro     — 时间问候（侧边栏，已启用）
+src/components/widget/Schedule.astro          — 日期进度（侧边栏，已启用）
+src/components/widget/RelationshipTimer.astro — 恋爱倒计时（侧边栏，已禁用）
+src/content/ziyuan/quote.md                   — 每日一言数据源
+```
+
+---
+
+### 动态 (Moments/Dynamic) Feature
+
+Custom feature for displaying moments/status updates, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+
+Implementation files:
+
+```
+src/components/pages/dynamic/
+├── DynamicFeed.svelte           — 动态列表组件（Svelte 响应式）
+├── DynamicItem.astro            — 单条动态项组件
+├── DynamicItemTemplate.astro    — 动态模板渲染
+├── DynamicGallery.astro         — 图片画廊组件
+├── DynamicInlineComments.astro  — 内联评论组件
+├── dynamic-gallery.ts           — 画廊交互脚本
+└── dynamic-inline-comments.ts   — 评论交互脚本
+
+src/components/widget/
+├── Dynamic.astro                — 动态页面入口组件
+└── DynamicSidebar.svelte        — 动态侧边栏组件
+
+src/config/dynamicConfig.ts      — 动态功能配置
+src/types/dynamicConfig.ts       — 动态配置类型定义
+src/content.config.ts            — 内容集合定义（含 dynamic collection）
+src/utils/dynamic-utils.ts       — 动态工具函数
+src/utils/memos-adapter.ts       — Memos API 适配器
+src/styles/dynamic.css           — 动态页面样式
+
+scripts/new-dynamic.js           — 新建动态脚本
+
+src/i18n/languages/*             — 动态功能 i18n 键值（各语言文件）
+```
+
+Rules:
+
+* These are custom additions not present in upstream CuteLeaf/Firefly.
+* During upstream sync, these files must NOT be deleted or overwritten.
+* Restore from backup after framework sync if accidentally removed.
+* **Enabled by default**: TimeGreeting, Schedule
+* **Disabled by default**: AiSummary, QuoteOfTheDay, WelcomeToast, RelationshipTimer
+
+---
+
+### 动态 Rules
+
+* Dynamic feature components, config, styles, and utilities are protected additions.
+* During upstream sync, these implementation files must NOT be deleted or overwritten.
+* **Dynamic content** (`src/content/dynamic/*`) is separately protected — see "Dynamic Content" section.
+* **Data source must be local mode** after sync: `apiUrl: "/api/dynamic.json"`, `memos.enable: false`.
+* Do not switch to third-party APIs or Memos without explicit instructions.
+
+To update from Firefly-hyde:
+
+```bash
+git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
+# Check for new/changed files in src/components/widget/ and src/components/widgets/
+# Manually copy any desired changes
+rm -rf /tmp/firefly-hyde
+```
+
+---
+
+### 日记 (Diary) Feature
+
+Custom feature for displaying diary pages, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+
+Implementation files:
+
+```
+src/pages/diary.astro                — 日记页面路由 (/diary/)
+
+src/data/diary.ts                    — 日记数据源（类型定义 + 排序/标签提取函数）
+
+src/content/diary/*.md               — 日记内容（每篇一个 markdown 文件）
+
+src/components/features/diary/
+├── index.ts                         — 组件导出
+├── types.ts                         — 日记类型定义
+└── MomentCard.astro                 — 日记卡片组件（支持图片轮播/网格、视频）
+
+src/components/atoms/
+├── index.ts                         — 原子组件导出
+└── FilterTabs.astro                 — 标签筛选组件
+
+src/utils/timeFormat.ts              — 相对时间格式化工具
+
+public/js/filter-tabs-handler.js     — 标签筛选交互脚本
+```
+
+Rules:
+
+* Diary feature components, data, and styles are custom additions from Firefly-hyde.
+* During upstream sync, these files must NOT be deleted or overwritten.
+* Restore from backup after framework sync if accidentally removed.
+* **Enabled by default**: Diary page (`siteConfig.pages.diary: true`).
+* **Diary content uses file-based model**: diary entries are markdown files in `src/content/diary/`. Each markdown file = one diary entry. Frontmatter supports `published`, `location`, `tags`, `images` (URL array), `video`, `mood`, `imageDisplay`, etc.
+* **Never sync diary content (`src/content/diary/`) or diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
+* **Never sync dynamic content (`src/content/dynamic/*`) from other repositories — see "Dynamic Content" section for details.**
+
+To update from Firefly-hyde:
+
+```bash
+git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
+# Check for new/changed files in src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/
+# Manually copy any desired changes
+rm -rf /tmp/firefly-hyde
+```
+
+---
+
 cd C:\Users\TY-Han\Documents\Firefly
 git fetch real-upstream master
 
@@ -1042,6 +1168,8 @@ When running on Linux:
 * Never modify user's shell configuration.
 * Never overwrite protected files.
 * Always verify Git diff before commit.
+* **Firefly-hyde custom widgets** (AiSummary, QuoteOfTheDay, WelcomeToast, TimeGreeting, Schedule, RelationshipTimer) under `src/components/widget/`, `src/components/widgets/`, and `src/content/ziyuan/` are protected additions — do not delete or overwrite during upstream sync.
+* **Dynamic data source must always be in local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) after sync, unless explicitly overridden.**
 
 
 ---
@@ -1071,6 +1199,27 @@ When running on Linux:
 * [ ] `pnpm install` succeeded
 * [ ] `pnpm build` succeeded
 * [ ] Protected areas have no diff
+* [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
+* [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
+* [ ] Diary feature implementation files untouched (src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/, src/components/atoms/FilterTabs.astro, src/utils/timeFormat.ts, public/js/filter-tabs-handler.js)
+* [ ] Diary content (`src/content/diary/`) not overwritten from any external repo
+* [ ] Dynamic mode verified as local mode
 * [ ] `_backup/` removed
 * [ ] Committed and pushed to origin master
+
+---
+
+## Auto-Upload Rule
+
+After any and all operations (including sync, feature addition, configuration changes, content updates, bug fixes, etc.), the changes **must be committed and pushed** to the remote repository (`origin master`) upon completion, **unless explicitly told otherwise** (e.g., "don't push yet", "keep local", "wait before uploading").
+
+This applies to:
+- Upstream Firefly sync
+- Firefly-hyde feature integration
+- Configuration changes
+- Content/documentation updates
+- Bug fixes and refactors
+- Any other modification to the codebase
+
+Exception: If the user explicitly says "do not commit", "don't push", "keep local", or similar instruction, skip the push and report that changes are local only.
 

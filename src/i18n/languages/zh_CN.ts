@@ -43,6 +43,8 @@ export const zh_CN: Translation = {
 	[Key.dynamicNextImage]: "下一张图片",
 	[Key.dynamicViewImage]: "查看图片 {index}",
 	[Key.dynamicSelectImage]: "切换到图片 {index}",
+	[Key.siteStatsDynamicCount]: "动态",
+	[Key.today]: "今天",
 	[Key.musicNoPlaying]: "暂未播放",
 	[Key.musicLyrics]: "歌词",
 	[Key.musicVolume]: "音量",
@@ -292,6 +294,16 @@ export const zh_CN: Translation = {
 	[Key.overlayBlur]: "背景模糊度",
 	[Key.overlayCardOpacity]: "卡片透明度",
 
+	// 设置面板标签
+	[Key.settingsTabAppearance]: "外观",
+	[Key.settingsTabWallpaper]: "壁纸",
+	[Key.settingsTabEffects]: "特效",
+
+	// 卡片样式
+	[Key.cardSettings]: "卡片样式",
+	[Key.cardBorder]: "卡片边框和阴影",
+	[Key.cardFollowTheme]: "卡片跟随主题色",
+
 	// 文章布局
 	[Key.postListLayout]: "文章布局",
 	[Key.postListLayoutList]: "列表",
@@ -328,29 +340,6 @@ export const zh_CN: Translation = {
 	[Key.siteStatsLastUpdate]: "最后活动",
 	[Key.siteStatsDaysAgo]: "{days} 天前",
 	[Key.siteStatsDays]: "{days} 天",
-
-	// 动态
-	[Key.dynamic]: "动态",
-	[Key.latestDynamics]: "最新动态",
-	[Key.moreDynamics]: "更多动态",
-	[Key.dynamicDescription]: "随手记下此刻的想法与日常",
-	[Key.dynamicEmpty]: "还没有发布动态",
-	[Key.dynamicSearch]: "搜索动态...",
-	[Key.dynamicNoResults]: "没有找到匹配的动态",
-	[Key.dynamicLoading]: "正在加载动态",
-	[Key.dynamicAllYears]: "全部年份",
-	[Key.dynamicLoadMore]: "加载更多",
-	[Key.dynamicBackToList]: "返回动态列表",
-	[Key.dynamicProfile]: "查看 {name} 的资料",
-	[Key.dynamicPermalink]: "此动态的固定链接",
-	[Key.dynamicCollapseGallery]: "收起",
-	[Key.dynamicViewOriginal]: "查看大图",
-	[Key.dynamicPreviousImage]: "上一张图片",
-	[Key.dynamicNextImage]: "下一张图片",
-	[Key.dynamicViewImage]: "查看图片 {index}",
-	[Key.dynamicSelectImage]: "切换到图片 {index}",
-	[Key.siteStatsDynamicCount]: "动态",
-	[Key.today]: "今天",
 
 	// 站点信息
 	[Key.siteInfo]: "站点信息",
@@ -411,6 +400,16 @@ export const zh_CN: Translation = {
 	[Key.galleryNoAlbums]: "暂无相册",
 	[Key.galleryBackToAlbums]: "返回相册列表",
 	[Key.searchAlbums]: "搜索相簿...",
+
+	// 日记
+	[Key.diary]: "日记",
+	[Key.diarySubtitle]: "记录生活的点滴",
+	[Key.diaryCount]: "篇",
+	[Key.diaryMinutesAgo]: "分钟前",
+	[Key.diaryHoursAgo]: "小时前",
+	[Key.diaryDaysAgo]: "天前",
+	[Key.diaryNoResults]: "没有找到匹配的日记",
+	[Key.diaryTips]: "生活就像日记，每页都是新的开始。",
 
 	// 密码保护
 	[Key.passwordProtected]: "密码保护",

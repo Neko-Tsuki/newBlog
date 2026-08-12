@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 
 	// 站点描述
 	description:
-		"咱是尘尘落落，Neko-Tsuki！这是一个基于 Astro 框架构建的个人博客，主要用来分享咱的开发折腾记录、生活感悟，以及一些有意思的小玩意儿。",
+		"咱是尘尘，这是一个基于 Astro 框架构建的个人博客，主要用来分享咱的开发折腾记录、生活感悟，以及一些有意思的小玩意儿。",
 
 	// 站点关键词
 	keywords: [
@@ -27,14 +27,13 @@ export const siteConfig: SiteConfig = {
 		"博客",
 		"技术博客",
 		"静态博客",
+		"Touhou",
 	],
 
 	// 主题色
 	themeColor: {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
 		hue: 245,
-		// 是否对访问者隐藏主题色选择器
-		fixed: true,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 		defaultMode: "system",
 	},
@@ -98,7 +97,7 @@ export const siteConfig: SiteConfig = {
 	timezone: "Asia/Shanghai",
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
-	pages: {
+		pages: {
 		// 友链页面开关
 		friends: true,
 		// 打赏页面开关
@@ -113,6 +112,8 @@ export const siteConfig: SiteConfig = {
 		anime: true,
 		// 动态页面开关
 		dynamic: true,
+		// 日记页面开关
+		diary: true,
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
@@ -127,8 +128,6 @@ export const siteConfig: SiteConfig = {
 		defaultMode: "list",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "list",
-		// 是否允许用户切换布局
-		allowSwitch: true,
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
