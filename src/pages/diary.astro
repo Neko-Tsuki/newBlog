@@ -1,12 +1,12 @@
 ---
+import { getCollection } from "astro:content";
 import { MomentCard } from "@components/features/diary";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
 import { FilterTabs } from "../components/atoms";
-import { getCollection } from "astro:content";
 
 import { siteConfig } from "../config";
-import { getAllTags, getDiaryList, type DiaryItem } from "../data/diary";
+import { type DiaryItem, getAllTags, getDiaryList } from "../data/diary";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 
@@ -18,9 +18,10 @@ const diaryEntries = await getCollection("diary");
 const moments: DiaryItem[] = diaryEntries.map((entry, index) => ({
 	id: index + 1,
 	content: entry.body || "",
-	date: entry.data.published instanceof Date
-		? entry.data.published.toISOString()
-		: String(entry.data.published),
+	date:
+		entry.data.published instanceof Date
+			? entry.data.published.toISOString()
+			: String(entry.data.published),
 	images: entry.data.images || [],
 	video: entry.data.video || "",
 	location: entry.data.location || "",

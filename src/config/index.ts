@@ -31,13 +31,13 @@ export type {
 	WidgetComponentType,
 	WidgetSpecificConfig,
 } from "../types/config";
-export type { RelationshipConfig } from "../types/RelationshipConfig"; // 恋爱计时配置类型
 export type {
 	BuiltinFontProvider,
 	CustomFontProvider,
 	FontDefinition,
 	FontSelectionConfig,
 } from "../types/fontConfig"; // 字体类型定义
+export type { RelationshipConfig } from "../types/RelationshipConfig"; // 恋爱计时配置类型
 export { analyticsConfig } from "./analyticsConfig"; // 统计分析配置
 export { announcementConfig } from "./announcementConfig"; // 公告配置
 // 样式配置
