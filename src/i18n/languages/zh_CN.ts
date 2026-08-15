@@ -43,8 +43,6 @@ export const zh_CN: Translation = {
 	[Key.dynamicNextImage]: "下一张图片",
 	[Key.dynamicViewImage]: "查看图片 {index}",
 	[Key.dynamicSelectImage]: "切换到图片 {index}",
-	[Key.siteStatsDynamicCount]: "动态",
-	[Key.today]: "今天",
 	[Key.musicNoPlaying]: "暂未播放",
 	[Key.musicLyrics]: "歌词",
 	[Key.musicVolume]: "音量",
@@ -78,6 +76,10 @@ export const zh_CN: Translation = {
 	[Key.friendsDescription]: "这里是我的朋友们，欢迎互相访问交流",
 	[Key.searchFriends]: "搜索友链...",
 	[Key.friendsEmpty]: "暂无友情链接",
+	[Key.booknav]: "书签导航",
+	[Key.booknavDescription]: "收藏一些好用的网站，按分类整理",
+	[Key.searchBooknav]: "搜索书签...",
+	[Key.booknavEmpty]: "暂无书签",
 	[Key.guestbook]: "留言",
 	[Key.guestbookDescription]: "欢迎在这里留下你的足迹，分享你的想法和建议",
 	[Key.untitled]: "无标题",
@@ -170,6 +172,38 @@ export const zh_CN: Translation = {
 	[Key.bangumiUpdatedAt]: "构建时间",
 	[Key.bangumiDataStatic]: "静态数据",
 
+	// VNDB
+	[Key.vndb]: "VNDB",
+	[Key.vndbSubtitle]: "我的 VNDB 视觉小说列表",
+	[Key.vndbFilterAll]: "全部",
+	[Key.vndbFilterVoted]: "已评分",
+	[Key.vndbFilterUnvoted]: "未评分",
+	[Key.vndbFilterNotes]: "有笔记",
+	[Key.vndbStatusWishlist]: "想玩",
+	[Key.vndbStatusPlaying]: "在玩",
+	[Key.vndbStatusFinished]: "已玩",
+	[Key.vndbStatusStalled]: "搁置",
+	[Key.vndbStatusDropped]: "抛弃",
+	[Key.vndbStatusUnknown]: "未知",
+	[Key.vndbNoData]: "暂无数据",
+	[Key.vndbNoDataDescription]: "该分类下还没有任何条目",
+	[Key.vndbEmpty]: "暂无数据",
+	[Key.vndbEmptyReason]:
+		"可能的原因：用户 ID 不存在、列表为私密、网络连接问题或 API 限制",
+	[Key.vndbFetchError]: "VNDB 数据拉取失败",
+	[Key.vndbFetchErrorDesc]:
+		"构建时从 VNDB API 获取数据失败，该页面内容暂不可用。",
+	[Key.vndbNotConfigured]: "未配置 VNDB 用户ID",
+	[Key.vndbNotConfiguredDesc]:
+		"请在 src/config/siteConfig.ts 中配置你的 VNDB 用户ID",
+	[Key.vndbLastUpdated]: "数据更新于",
+	[Key.vndbVotes]: "票",
+	[Key.vndbLengthVeryShort]: "极短",
+	[Key.vndbLengthShort]: "短",
+	[Key.vndbLengthMedium]: "中等",
+	[Key.vndbLengthLong]: "长",
+	[Key.vndbLengthVeryLong]: "极长",
+
 	// 追番
 	[Key.anime]: "追番",
 	[Key.animeSubtitle]: "我的追番列表，数据来自 Bilibili 和 TMDB",
@@ -218,6 +252,7 @@ export const zh_CN: Translation = {
 	[Key.paginationOf]: "页，共",
 	[Key.paginationTotal]: "页，总计",
 	[Key.paginationRecords]: "条记录",
+	[Key.paginationJump]: "跳转到指定页",
 
 	// 404页面
 	[Key.notFound]: "404",
@@ -333,6 +368,7 @@ export const zh_CN: Translation = {
 	// 站点统计
 	[Key.siteStats]: "站点统计",
 	[Key.siteStatsPostCount]: "文章",
+	[Key.siteStatsDynamicCount]: "动态",
 	[Key.siteStatsCategoryCount]: "分类",
 	[Key.siteStatsTagCount]: "标签",
 	[Key.siteStatsTotalWords]: "总字数",
@@ -340,6 +376,7 @@ export const zh_CN: Translation = {
 	[Key.siteStatsLastUpdate]: "最后活动",
 	[Key.siteStatsDaysAgo]: "{days} 天前",
 	[Key.siteStatsDays]: "{days} 天",
+	[Key.today]: "今天",
 
 	// 站点信息
 	[Key.siteInfo]: "站点信息",

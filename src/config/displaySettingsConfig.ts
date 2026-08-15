@@ -6,6 +6,12 @@ import type { DisplaySettingsConfig } from "../types/displaySettingsConfig";
 // 也方便进行调试预览效果
 
 export const displaySettingsConfig: DisplaySettingsConfig = {
+	// ── 总开关 (Master switch) ────────────────────────────
+
+	// 视图设置面板总开关
+	// 关闭时导航栏入口、设置面板以及下方所有设置项均不生效
+	enable: true,
+
 	// ── 外观 (Appearance) ──────────────────────────────────
 
 	// 主题色选择器开关

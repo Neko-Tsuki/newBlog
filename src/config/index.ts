@@ -7,6 +7,10 @@ export type {
 	AnalyticsConfig,
 	AnnouncementConfig,
 	BackgroundWallpaperConfig,
+	BooknavFaviconConfig,
+	BooknavGroup,
+	BooknavItem,
+	BooknavPageConfig,
 	CommentConfig,
 	CoverImageConfig,
 	DisplaySettingsConfig,
@@ -37,11 +41,11 @@ export type {
 	FontDefinition,
 	FontSelectionConfig,
 } from "../types/fontConfig"; // 字体类型定义
-export type { RelationshipConfig } from "../types/RelationshipConfig"; // 恋爱计时配置类型
 export { analyticsConfig } from "./analyticsConfig"; // 统计分析配置
 export { announcementConfig } from "./announcementConfig"; // 公告配置
 // 样式配置
 export { backgroundWallpaper } from "./backgroundWallpaper"; // 背景壁纸配置
+export { booknavConfig, booknavPageConfig } from "./booknavConfig"; // 书签导航配置
 // 功能配置
 export { commentConfig } from "./commentConfig"; // 评论系统配置
 export { coverImageConfig } from "./coverImageConfig"; // 封面图配置
@@ -61,7 +65,6 @@ export { navBarConfig, navBarSearchConfig } from "./navBarConfig"; // 导航栏�
 export { live2dWidgetConfig, spineModelConfig } from "./pioConfig"; // 看板娘配置
 export { plantumlConfig } from "./plantumlConfig"; // PlantUML 图表配置
 export { profileConfig } from "./profileConfig"; // 用户资料配置
-export { relationshipConfig } from "./relationshipConfig"; // 恋爱计时配置
 // 布局配置
 export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置

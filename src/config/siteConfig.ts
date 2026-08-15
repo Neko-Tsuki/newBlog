@@ -106,18 +106,28 @@ export const siteConfig: SiteConfig = {
 		guestbook: true,
 		// 番组计划页面开关，含追番、游戏、书籍和音乐
 		bangumi: false,
+		// VNDB页面开关
+		vndb: false,
 		// 相册页面开关
 		gallery: false,
 		// 追番页面开关
 		anime: true,
 		// 动态页面开关
 		dynamic: true,
+		// 书签导航页面开关
+		booknav: false,
 		// 日记页面开关
 		diary: true,
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
 	categoryBar: true,
+
+	// 分类导航栏按钮样式："pill"=胶囊，"rectangle"=矩形
+	categoryStyle: "pill",
+
+	// 标签样式："pill"=胶囊，"rectangle"=主题色矩形
+	tagStyle: "pill",
 
 	// 归档页是否折叠非最新年份文章，禁用后默认展开全部年份
 	foldArticle: true,
@@ -128,6 +138,8 @@ export const siteConfig: SiteConfig = {
 		defaultMode: "list",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "list",
+		// 列表模式下封面图显示在哪一侧："right" 右侧，"left" 左侧
+		coverPosition: "right",
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
@@ -136,6 +148,10 @@ export const siteConfig: SiteConfig = {
 		// 设置为"meta"：显示在文章标题下的元数据
 		// 设置为"bottom"：顶替stats在底部显示
 		tagsPosition: "bottom",
+		// 底部标签样式，仅在 tagsPosition 为 "bottom" 时生效
+		// "chip"：按钮样式，形状跟随上方的 tagStyle 配置
+		// "text"：无底色，只有文字
+		tagsBottomStyle: "chip",
 		// PostMeta 元数据显示控制
 		meta: {
 			// 是否显示发布日期
@@ -167,6 +183,8 @@ export const siteConfig: SiteConfig = {
 			masonry: false,
 			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数
 			columnWidth: 320,
+			// 网格模式封面是否撑满卡片贴边
+			coverFullWidth: false,
 		},
 	},
 
@@ -228,6 +246,26 @@ export const siteConfig: SiteConfig = {
 	pagination: {
 		// 每页显示的文章数量
 		postsPerPage: 10,
+	},
+
+	// VNDB 配置
+	vndb: {
+		// VNDB 用户 ID
+		userId: "",
+		// 数据模式：static=构建时获取，dynamic=客户端实时获取
+		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
+		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
+		mode: "static",
+		// 构建时下载并压缩封面到 public/vndb-covers，图片由本站服务器提供
+		downloadCovers: true,
+		// VNDB API 地址
+		apiUrl: "https://api.vndb.org/kana",
+		// 条目详情页地址，末尾需要带 /
+		vnBaseUrl: "https://vndb.org/",
+		// 私密列表访问令牌，仅 static 模式下使用；不要把真实令牌提交到公开仓库！
+		apiToken: "",
+		// 对Nsfw的游戏封面模糊化
+		blurNsfw: true,
 	},
 
 	// 图像优化及响应式配置
