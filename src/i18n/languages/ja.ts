@@ -13,12 +13,20 @@ export const ja: Translation = {
 	[Key.searchContent]: "内容",
 	[Key.searchViewMore]: "さらに結果を表示 ({count} 件)",
 	[Key.other]: "その他",
+
+	// ナビバーメニューグループ
+	[Key.navArticles]: "記事",
+	[Key.navSocial]: "ソーシャル",
+	[Key.navMine]: "マイ",
+	[Key.navAbout]: "について",
+	[Key.navLinks]: "リンク",
 	[Key.all]: "すべて",
 
 	[Key.tags]: "タグ",
 	[Key.categories]: "カテゴリ",
 	[Key.allCategories]: "すべてのカテゴリ",
 	[Key.allTags]: "すべてのタグ",
+	[Key.allSeries]: "すべてのシリーズ",
 	[Key.recentPosts]: "最近の投稿",
 	[Key.postList]: "投稿リスト",
 	[Key.tableOfContents]: "目次",
@@ -111,10 +119,10 @@ export const ja: Translation = {
 	[Key.updatedAt]: "更新日",
 	[Key.readTime]: "読了時間",
 	[Key.license]: "ライセンス",
-	[Key.bangumi]: "バングミ",
+	[Key.bangumi]: "Bangumi",
 
 	// バングミフィルターと状態文本
-	[Key.bangumiTitle]: "私のバングミ",
+	[Key.bangumiTitle]: "私のBangumi",
 	[Key.bangumiSubtitle]: "私の二次元の旅を記録する",
 	[Key.bangumiFilterAll]: "すべて",
 	[Key.bangumiFilterWatched]: "見た",
@@ -208,9 +216,14 @@ export const ja: Translation = {
 	[Key.vndbLengthLong]: "長い",
 	[Key.vndbLengthVeryLong]: "非常に長い",
 
-	// 追番（アニメ追跡）
-	[Key.anime]: "追番",
-	[Key.animeSubtitle]: "私のアニメ追跡リスト、Bilibili と TMDB からデータ取得",
+	// 追番 - Bilibili
+	[Key.bilibili]: "Bilibili",
+	[Key.bilibiliSubtitle]: "私のBilibili追番・追劇リスト",
+	[Key.bilibiliNotConfigured]: "Bilibiliデータソースが未設定",
+	[Key.bilibiliNotConfiguredDesc]:
+		"src/config/siteConfig.ts で bilibili.uid を設定してください",
+
+	// 追番 - 共通コンポーネント
 	[Key.animeTotal]: "合計",
 	[Key.animeAverageRating]: "平均評価",
 	[Key.animeSearch]: "アニメを検索...",
@@ -223,20 +236,13 @@ export const ja: Translation = {
 	[Key.animeDateAsc]: "古い順",
 	[Key.animeNoResults]: "一致するアニメが見つかりません",
 	[Key.animeLastUpdated]: "データ更新",
-	[Key.animeSource]: "データソース",
 	[Key.animeEpStatus]: "進捗",
 	[Key.animeViewDetails]: "詳細を見る",
-	[Key.animeNotConfigured]: "アニメデータソースが未設定",
-	[Key.animeNotConfiguredDesc]:
-		"src/config/siteConfig.ts で Bilibili UID または TMDB API Key を設定してください",
 	[Key.animeBilibiliAvg]: "Bilibili 平均",
-	[Key.animeTmdbAvg]: "TMDB 平均",
-	[Key.animeDualSynced]: "デュアル同期済み",
 	[Key.animeNoOverview]: "あらすじなし",
 	[Key.animeClose]: "閉じる",
 	[Key.animeSynopsis]: "あらすじ",
 	[Key.animeWatchNow]: "今すぐ視聴",
-	[Key.animeViewTmdb]: "TMDB 詳細を見る",
 	[Key.animeAllWithCount]: "すべて ({count})",
 	[Key.animeTVWithCount]: "TV ({count})",
 	[Key.animeMovieWithCount]: "映画 ({count})",
@@ -246,6 +252,36 @@ export const ja: Translation = {
 	[Key.animeTypeChinese]: "中国アニメ",
 	[Key.animeTypeDrama]: "ドラマ",
 	[Key.animeTypeConcert]: "コンサート",
+
+	// MyAnimeList
+	[Key.mal]: "MyAnimeList",
+	[Key.malSubtitle]: "私の MyAnimeList アニメ・マンガリスト",
+	[Key.malCategoryAnime]: "アニメ",
+	[Key.malCategoryManga]: "マンガ",
+	[Key.malFilterAll]: "すべて",
+	[Key.malStatusWatching]: "視聴中",
+	[Key.malStatusReading]: "読んでいる",
+	[Key.malStatusCompleted]: "見た",
+	[Key.malStatusOnHold]: "保留",
+	[Key.malStatusDropped]: "中断",
+	[Key.malStatusPlanToWatch]: "見たい",
+	[Key.malStatusPlanToRead]: "読みたい",
+	[Key.malNoData]: "データなし",
+	[Key.malNoDataDescription]: "このカテゴリに項目がありません",
+	[Key.malEmpty]: "データなし",
+	[Key.malEmptyReason]:
+		"考えられる理由：ユーザー名が存在しない、リストが非公開、Client ID が無効、またはネットワーク接続の問題",
+	[Key.malFetchError]: "MyAnimeList データ取得失敗",
+	[Key.malFetchErrorDesc]:
+		"ビルド時に MyAnimeList API からのデータ取得に失敗しました。ユーザー名と Client ID を確認し、リストが公開であることを確認してください。",
+	[Key.malNotConfigured]: "MyAnimeList が未設定です",
+	[Key.malNotConfiguredDesc]:
+		"src/config/siteConfig.ts で MyAnimeList のユーザー名と Client ID を設定してください（リストは公開にする必要があります）",
+	[Key.malLastUpdated]: "データ更新",
+	[Key.malSeasonWinter]: "冬",
+	[Key.malSeasonSpring]: "春",
+	[Key.malSeasonSummer]: "夏",
+	[Key.malSeasonFall]: "秋",
 
 	// ページネーション
 	[Key.paginationFirst]: "最初",
@@ -312,6 +348,13 @@ export const ja: Translation = {
 	[Key.randomRecommend]: "ランダム",
 	[Key.noRelatedPosts]: "関連記事がありません",
 	[Key.noRandomPosts]: "ランダム記事がありません",
+
+	// 記事シリーズ
+	[Key.series]: "シリーズ",
+	[Key.seriesPartOf]: "シリーズの一部",
+	[Key.seriesPart]: "パート {n}",
+	[Key.seriesThisArticle]: "この記事",
+	[Key.noSeries]: "シリーズはありません",
 
 	// 暗号化
 	[Key.postEncrypted]: "この記事は暗号化されています",
@@ -445,16 +488,6 @@ export const ja: Translation = {
 	[Key.galleryNoAlbums]: "アルバムがありません",
 	[Key.galleryBackToAlbums]: "アルバム一覧に戻る",
 	[Key.searchAlbums]: "アルバムを検索...",
-
-	// 日記
-	[Key.diary]: "日記",
-	[Key.diarySubtitle]: "日々の出来事を記録",
-	[Key.diaryCount]: "件",
-	[Key.diaryMinutesAgo]: "分前",
-	[Key.diaryHoursAgo]: "時間前",
-	[Key.diaryDaysAgo]: "日前",
-	[Key.diaryNoResults]: "該当する日記が見つかりません",
-	[Key.diaryTips]: "人生は日記のようなもの、毎ページが新しい始まりです。",
 
 	// パスワード保護
 	[Key.passwordProtected]: "パスワード保護",
