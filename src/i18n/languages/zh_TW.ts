@@ -358,6 +358,9 @@ export const zh_TW: Translation = {
 	[Key.wallpaperMode]: "壁紙模式",
 	[Key.wallpaperBannerMode]: "橫幅壁紙",
 	[Key.wallpaperFullscreenMode]: "全屏壁紙",
+	[Key.fullscreenLayout]: "全屏佈局",
+	[Key.fullscreenClassicLayout]: "經典模式",
+	[Key.fullscreenHeroLayout]: "Hero 模式",
 	[Key.wallpaperOverlayMode]: "覆蓋透明",
 	[Key.wallpaperNoneMode]: "純色背景",
 
@@ -498,4 +501,28 @@ export const zh_TW: Translation = {
 	[Key.videoPrev]: "上一個影片",
 	[Key.videoNext]: "下一個影片",
 	[Key.videoLoadError]: "影片載入失敗",
+
+	// 沉浸閱讀
+	[Key.immersiveReading]: "沉浸閱讀",
+	[Key.enterImmersiveReading]: "進入沉浸閱讀",
+	[Key.exitImmersiveReading]: "退出沉浸閱讀",
+	[Key.tocExpand]: "展開目錄",
+	[Key.tocCollapse]: "摺疊目錄",
+	[Key.anime]: "追番",
+	[Key.animeSubtitle]: "我的追番列表，數據來自 Bilibili 和 TMDB",
+	[Key.animeSource]: "數據來源",
+	[Key.animeNotConfigured]: "未配置追番資料來源",
+	[Key.animeNotConfiguredDesc]: "",
+	[Key.animeTmdbAvg]: "TMDB 均分",
+	[Key.animeDualSynced]: "雙源已同步",
+	[Key.animeViewTmdb]: "查看 TMDB 詳情",
+	[Key.diary]: "日記",
+	[Key.diarySubtitle]: "記錄生活的點滴",
+	[Key.diaryCount]: "篇",
+	[Key.diaryMinutesAgo]: "分鐘前",
+	[Key.diaryHoursAgo]: "小時前",
+	[Key.diaryDaysAgo]: "天前",
+	[Key.diaryNoResults]: "沒有找到匹配的日記",
+	[Key.diaryTips]: "生活就像日記，每頁都是新的開始。",
+
 };

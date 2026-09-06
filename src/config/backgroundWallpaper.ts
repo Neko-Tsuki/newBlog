@@ -94,15 +94,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				pauseTime: 2000,
 			},
 		},
-		// 导航栏配置
-		navbar: {
-			// 导航栏透明模式："semi" 半透明，"full" 完全透明，"semifull" 动态透明
-			transparentMode: "semifull",
-			// 是否开启毛玻璃模糊效果，开启可能会影响页面性能，如果不开启则是半透明，请根据自己的喜好开启
-			enableBlur: true,
-			// 毛玻璃模糊度
-			blur: 3,
-		},
 		// 水波纹动画效果配置，开启会影响页面性能，请根据自己的喜好开启
 		waves: {
 			enable: {
@@ -139,6 +130,13 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
 		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
 		position: "0% 20%",
+		// 导航栏配置（Banner 模式生效）
+		navbar: {
+			// 导航栏透明模式："semi" 半透明，"semifull" 动态透明，"none" 纯色不透明
+			transparentMode: "semifull",
+			// 毛玻璃模糊度，0 即关闭导航栏毛玻璃
+			blur: 3,
+		},
 	},
 	// 全屏透明覆盖模式特有配置
 	overlay: {
@@ -155,5 +153,10 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	fullscreen: {
 		// 图片位置
 		position: "center",
+		// 导航栏配置（全屏壁纸模式生效，切到该模式时保持一致）
+		navbar: {
+			transparentMode: "semifull",
+			blur: 3,
+		},
 	},
 };

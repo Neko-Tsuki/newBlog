@@ -352,6 +352,9 @@ enum I18nKey {
 	wallpaperMode = "wallpaperMode",
 	wallpaperBannerMode = "wallpaperBannerMode",
 	wallpaperFullscreenMode = "wallpaperFullscreenMode",
+	fullscreenLayout = "fullscreenLayout",
+	fullscreenClassicLayout = "fullscreenClassicLayout",
+	fullscreenHeroLayout = "fullscreenHeroLayout",
 	wallpaperOverlayMode = "wallpaperOverlayMode",
 	wallpaperNoneMode = "wallpaperNoneMode",
 
@@ -490,6 +493,30 @@ enum I18nKey {
 	videoPrev = "videoPrev",
 	videoNext = "videoNext",
 	videoLoadError = "videoLoadError",
+
+	// 沉浸阅读 (immersive reading)
+	immersiveReading = "immersiveReading",
+	enterImmersiveReading = "enterImmersiveReading",
+	exitImmersiveReading = "exitImmersiveReading",
+	tocExpand = "tocExpand",
+	tocCollapse = "tocCollapse",
+	anime = "anime",
+	animeSubtitle = "animeSubtitle",
+	animeSource = "animeSource",
+	animeNotConfigured = "animeNotConfigured",
+	animeNotConfiguredDesc = "animeNotConfiguredDesc",
+	animeTmdbAvg = "animeTmdbAvg",
+	animeDualSynced = "animeDualSynced",
+	animeViewTmdb = "animeViewTmdb",
+	diary = "diary",
+	diarySubtitle = "diarySubtitle",
+	diaryCount = "diaryCount",
+	diaryMinutesAgo = "diaryMinutesAgo",
+	diaryHoursAgo = "diaryHoursAgo",
+	diaryDaysAgo = "diaryDaysAgo",
+	diaryNoResults = "diaryNoResults",
+	diaryTips = "diaryTips",
+
 }
 
 export default I18nKey;

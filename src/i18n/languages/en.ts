@@ -365,6 +365,9 @@ export const en: Translation = {
 	[Key.wallpaperMode]: "Wallpaper Mode",
 	[Key.wallpaperBannerMode]: "Banner Wallpaper",
 	[Key.wallpaperFullscreenMode]: "Fullscreen Wallpaper",
+	[Key.fullscreenLayout]: "Fullscreen Layout",
+	[Key.fullscreenClassicLayout]: "Classic",
+	[Key.fullscreenHeroLayout]: "Hero",
 	[Key.wallpaperOverlayMode]: "Overlay Wallpaper",
 	[Key.wallpaperNoneMode]: "None Wallpaper",
 
@@ -508,4 +511,28 @@ export const en: Translation = {
 	[Key.videoPrev]: "Previous video",
 	[Key.videoNext]: "Next video",
 	[Key.videoLoadError]: "Video failed to load",
+
+	// Immersive Reading
+	[Key.immersiveReading]: "Immersive Reading",
+	[Key.enterImmersiveReading]: "Enter Immersive Reading",
+	[Key.exitImmersiveReading]: "Exit Immersive Reading",
+	[Key.tocExpand]: "Expand directory",
+	[Key.tocCollapse]: "Collapse directory",
+	[Key.anime]: "Anime",
+	[Key.animeSubtitle]: "My anime tracking list, data from Bilibili and TMDB",
+	[Key.animeSource]: "Source",
+	[Key.animeNotConfigured]: "Anime data source not configured",
+	[Key.animeNotConfiguredDesc]: "",
+	[Key.animeTmdbAvg]: "TMDB Avg",
+	[Key.animeDualSynced]: "Dual Synced",
+	[Key.animeViewTmdb]: "View TMDB Details",
+	[Key.diary]: "Diary",
+	[Key.diarySubtitle]: "Recording life's moments",
+	[Key.diaryCount]: "entries",
+	[Key.diaryMinutesAgo]: "m ago",
+	[Key.diaryHoursAgo]: "h ago",
+	[Key.diaryDaysAgo]: "d ago",
+	[Key.diaryNoResults]: "No matching diary entries found",
+	[Key.diaryTips]: "Life is like a diary - every page is a new beginning.",
+
 };

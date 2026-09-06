@@ -363,6 +363,9 @@ export const ko: Translation = {
 	[Key.wallpaperMode]: "배경화면 모드",
 	[Key.wallpaperBannerMode]: "배너 배경화면",
 	[Key.wallpaperFullscreenMode]: "전체화면 배경화면",
+	[Key.fullscreenLayout]: "전체화면 레이아웃",
+	[Key.fullscreenClassicLayout]: "클래식",
+	[Key.fullscreenHeroLayout]: "히어로",
 	[Key.wallpaperOverlayMode]: "오버레이 배경화면",
 	[Key.wallpaperNoneMode]: "배경화면 없음",
 
@@ -505,4 +508,28 @@ export const ko: Translation = {
 	[Key.videoPrev]: "이전 영상",
 	[Key.videoNext]: "다음 영상",
 	[Key.videoLoadError]: "영상을 불러오지 못했습니다",
+
+	// 몰입형 읽기
+	[Key.immersiveReading]: "몰입형 읽기",
+	[Key.enterImmersiveReading]: "몰입형 읽기 시작",
+	[Key.exitImmersiveReading]: "몰입형 읽기 종료",
+	[Key.tocExpand]: "목차 펼치기",
+	[Key.tocCollapse]: "목차 접기",
+	[Key.anime]: "애니메이션",
+	[Key.animeSubtitle]: "저의 애니메이션 시청 기록, Bilibili와 TMDB 데이터 기반",
+	[Key.animeSource]: "출처",
+	[Key.animeNotConfigured]: "애니메이션 데이터 소스가 설정되지 않았습니다",
+	[Key.animeNotConfiguredDesc]: "",
+	[Key.animeTmdbAvg]: "TMDB 평균",
+	[Key.animeDualSynced]: "이중 동기화됨",
+	[Key.animeViewTmdb]: "TMDB 상세 정보 보기",
+	[Key.diary]: "일기",
+	[Key.diarySubtitle]: "일상의 순간을 기록하다",
+	[Key.diaryCount]: "개",
+	[Key.diaryMinutesAgo]: "분 전",
+	[Key.diaryHoursAgo]: "시간 전",
+	[Key.diaryDaysAgo]: "일 전",
+	[Key.diaryNoResults]: "일치하는 일기 항목이 없습니다",
+	[Key.diaryTips]: "인생은 일기와 같습니다. 매 페이지가 새로운 시작입니다.",
+
 };

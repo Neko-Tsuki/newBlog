@@ -31,6 +31,9 @@ export const displaySettingsConfig: DisplaySettingsConfig = {
 	// 壁纸模式切换开关
 	wallpaperModeSwitchable: true,
 
+	// 全屏壁纸布局切换开关（classic 文档流 / hero 固定首屏）
+	fullscreenLayoutSwitchable: true,
+
 	// 水波纹动画开关
 	wavesSwitchable: true,
 

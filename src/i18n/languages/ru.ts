@@ -366,6 +366,9 @@ export const ru: Translation = {
 	[Key.wallpaperMode]: "Режим обоев",
 	[Key.wallpaperBannerMode]: "Баннер обои",
 	[Key.wallpaperFullscreenMode]: "Полноэкранные обои",
+	[Key.fullscreenLayout]: "Полноэкранный макет",
+	[Key.fullscreenClassicLayout]: "Классический",
+	[Key.fullscreenHeroLayout]: "Hero",
 	[Key.wallpaperOverlayMode]: "Прозрачный",
 	[Key.wallpaperNoneMode]: "Однотонный фон",
 
@@ -509,4 +512,28 @@ export const ru: Translation = {
 	[Key.videoPrev]: "Предыдущее видео",
 	[Key.videoNext]: "Следующее видео",
 	[Key.videoLoadError]: "Не удалось загрузить видео",
+
+	// Чтение без отвлечений
+	[Key.immersiveReading]: "Чтение без отвлечений",
+	[Key.enterImmersiveReading]: "Войти в режим чтения",
+	[Key.exitImmersiveReading]: "Выйти из режима чтения",
+	[Key.tocExpand]: "Развернуть оглавление",
+	[Key.tocCollapse]: "Свернуть оглавление",
+	[Key.anime]: "Аниме",
+	[Key.animeSubtitle]: "",
+	[Key.animeSource]: "Источник",
+	[Key.animeNotConfigured]: "Источник данных не настроен",
+	[Key.animeNotConfiguredDesc]: "",
+	[Key.animeTmdbAvg]: "TMDB ср.",
+	[Key.animeDualSynced]: "Два источника",
+	[Key.animeViewTmdb]: "Подробнее на TMDB",
+	[Key.diary]: "Дневник",
+	[Key.diarySubtitle]: "Запись моментов жизни",
+	[Key.diaryCount]: "записей",
+	[Key.diaryMinutesAgo]: " мин. назад",
+	[Key.diaryHoursAgo]: " ч. назад",
+	[Key.diaryDaysAgo]: " д. назад",
+	[Key.diaryNoResults]: "Не найдено подходящих записей",
+	[Key.diaryTips]: "Жизнь как дневник — каждая страница новое начало.",
+
 };
