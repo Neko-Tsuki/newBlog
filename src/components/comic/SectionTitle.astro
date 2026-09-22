@@ -1,0 +1,51 @@
+---
+// 对应规格文档 §8
+interface Props {
+	text: string;
+}
+const { text } = Astro.props;
+---
+
+<h2 class="section-title">
+	<span class="title-text">{text}</span>
+</h2>
+
+<style>
+	.section-title {
+		position: relative;
+		text-align: center;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--primary);
+		margin: 0.5rem 0;
+		letter-spacing: 0.15em;
+	}
+	.section-title::before,
+	.section-title::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		width: 20%;
+		height: 1px;
+		background: linear-gradient(
+			to right,
+			transparent,
+			color-mix(in oklab, var(--primary) 50%, transparent)
+		);
+	}
+	.section-title::before {
+		left: 15%;
+	}
+	.section-title::after {
+		right: 15%;
+		background: linear-gradient(
+			to left,
+			transparent,
+			color-mix(in oklab, var(--primary) 50%, transparent)
+		);
+	}
+	.title-text {
+		padding: 0 1rem;
+		background: var(--page-bg);
+	}
+</style>

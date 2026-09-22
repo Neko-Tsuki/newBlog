@@ -1,0 +1,25 @@
+---
+import type { ComicEvent, ComicEventStatus } from "@/types/comic";
+// 漫展日程的状态分区：「即将到来」/「正在进行中」/「完结撒花」
+//
+// 空分区在服务端就不渲染（hidden），避免出现只有标题没有内容的空块。
+// 页面脚本在筛选时会重新计算 hidden，因此这里的初始 hidden 只影响首屏。
+import EventCardGrid from "./EventCardGrid.astro";
+import SectionTitle from "./SectionTitle.astro";
+
+interface Props {
+	status: ComicEventStatus;
+	title: string;
+	events: ComicEvent[];
+}
+const { status, title, events } = Astro.props;
+---
+
+<section
+	class="event-section"
+	data-section-status={status}
+	hidden={events.length === 0}
+>
+	<SectionTitle text={title} />
+	<EventCardGrid events={events} />
+</section>

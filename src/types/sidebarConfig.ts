@@ -14,7 +14,8 @@ export type WidgetComponentType =
 	| "timeGreeting"
 	| "schedule"
 	| "relationship"
-	| "quoteOfTheDay";
+	| "quoteOfTheDay"
+	| "recentComicEvent";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型

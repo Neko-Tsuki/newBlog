@@ -1,0 +1,154 @@
+---
+// 对应规格文档 §7
+interface Props {
+	stats: { all: number; upcoming: number; ongoing: number; ended: number };
+	cities: string[];
+}
+const { stats, cities } = Astro.props;
+
+const statusFilters = [
+	{ key: "all", label: "全部", count: stats.all },
+	{ key: "upcoming", label: "即将到来", count: stats.upcoming },
+	{ key: "ongoing", label: "进行中", count: stats.ongoing },
+	{ key: "ended", label: "已结束", count: stats.ended },
+];
+
+const cityFilters = [
+	{ key: "all", label: "全部城市" },
+	...cities.map((c) => ({ key: c, label: c })),
+];
+---
+
+<div class="filter-bar-container">
+	<!-- 状态筛选 -->
+	<div class="filter-bar status-filter" data-filter-group="status">
+		{statusFilters.map((f) => (
+			<button
+				class:list={["filter-btn", { active: f.key === "all" }]}
+				data-filter-value={f.key}
+				type="button"
+			>
+				<span class="filter-label">{f.label}</span>
+				<span class="filter-badge">{f.count}</span>
+			</button>
+		))}
+	</div>
+
+	<!-- 城市筛选 -->
+	<div class="filter-bar city-filter" data-filter-group="city">
+		{cityFilters.map((f) => (
+			<button
+				class:list={["filter-btn", { active: f.key === "all" }]}
+				data-filter-value={f.key}
+				type="button"
+			>
+				<span class="filter-label">{f.label}</span>
+			</button>
+		))}
+	</div>
+</div>
+
+<style>
+	.filter-bar-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+	}
+	.filter-bar {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.filter-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.35rem 0.9rem;
+		border-radius: 9999px;
+		background: color-mix(in oklab, var(--btn-regular-bg) 100%, transparent);
+		color: var(--btn-content);
+		border: 1px solid transparent;
+		font-size: 0.85rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		user-select: none;
+	}
+	.filter-btn:hover {
+		background: var(--btn-regular-bg-hover);
+	}
+	.filter-btn.active {
+		background: var(--primary);
+		color: white;
+		box-shadow: 0 2px 8px color-mix(in oklab, var(--primary) 40%, transparent);
+	}
+	/* 暗色下 --primary 是亮色，白字对比度不足，改用深色文字（同 common.css 的 .page-icon 处理） */
+	:global(.dark) .filter-btn.active {
+		color: rgb(0 0 0 / 70%);
+	}
+	.filter-badge {
+		font-size: 0.75rem;
+		padding: 0.05rem 0.45rem;
+		border-radius: 9999px;
+		background: color-mix(in oklab, var(--primary) 15%, transparent);
+		color: var(--primary);
+		font-weight: 600;
+	}
+	.filter-btn.active .filter-badge {
+		background: rgba(255, 255, 255, 0.25);
+		color: white;
+	}
+	:global(.dark) .filter-btn.active .filter-badge {
+		background: rgba(0, 0, 0, 0.15);
+		color: rgb(0 0 0 / 70%);
+	}
+</style>
+
+<script>
+	// 客户端筛选逻辑
+	//
+	// 与规格的两处必要差异（Firefly 用 Swup 做 SPA 切页）：
+	// 1. 事件委托：单个 document 监听器，切页替换 DOM 后依然生效，
+	//    不需要在 swup:contentReplaced 里重新绑定。
+	// 2. 维护完整筛选状态后整体派发：规格只派发变化的那个分组，
+	//    会导致「先选状态、再选城市」时状态筛选被重置。这里改为派发完整状态，
+	//    使状态与城市筛选可以叠加。
+	const FILTER_EVENT = "comic:filter";
+
+	type ComicFilterState = { status: string; city: string };
+
+	function initComicFilters(): void {
+		const w = window as unknown as Record<string, unknown>;
+		if (w.__comicFilterInit) return;
+		w.__comicFilterInit = true;
+
+		const state: ComicFilterState = { status: "all", city: "all" };
+
+		document.addEventListener("click", (e) => {
+			const target = e.target;
+			if (!(target instanceof Element)) return;
+
+			const btn = target.closest<HTMLElement>(".filter-btn");
+			if (!btn) return;
+
+			const group = btn.closest<HTMLElement>(".filter-bar");
+			if (!group) return;
+
+			const groupName = group.dataset.filterGroup;
+			const value = btn.dataset.filterValue;
+			if (groupName !== "status" && groupName !== "city") return;
+			if (value === undefined) return;
+
+			for (const b of group.querySelectorAll(".filter-btn")) {
+				b.classList.remove("active");
+			}
+			btn.classList.add("active");
+
+			state[groupName] = value;
+			window.dispatchEvent(
+				new CustomEvent<ComicFilterState>(FILTER_EVENT, { detail: { ...state } }),
+			);
+		});
+	}
+
+	initComicFilters();
+</script>

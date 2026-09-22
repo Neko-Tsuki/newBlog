@@ -1,0 +1,39 @@
+---
+// 漫展日程页头（card-base 卡片）
+// 对应规格文档 §6
+//
+// 与规格的差异：外观改为 Firefly 各页统一的 card-base 页头
+// （同 src/pages/guestbook.astro），并复用 common.css 的 .page-heading / .page-icon。
+// 这套样式本身已处理明暗主题，且与站内其他页面一致。
+//
+// 依赖 src/styles/pages/common.css，使用方页面需 import 该文件。
+// 注意：不要在本组件里定义 .page-header，会与 common.css 的全局同名类冲突。
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	title: string;
+	subtitle?: string;
+	icon?: string;
+}
+const {
+	title,
+	subtitle,
+	icon = "material-symbols:calendar-month-rounded",
+} = Astro.props;
+---
+
+<div
+	class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32"
+>
+	<div class="card-base z-10 px-9 py-6 relative w-full">
+		<div class="page-heading">
+			<div class="page-icon" aria-hidden="true">
+				<Icon name={icon} />
+			</div>
+			<div>
+				<h2>{title}</h2>
+				{subtitle && <p>{subtitle}</p>}
+			</div>
+		</div>
+	</div>
+</div>

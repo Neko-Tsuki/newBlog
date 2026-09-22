@@ -1,0 +1,36 @@
+---
+import type { ComicEvent } from "@/types/comic";
+// 对应规格文档 §9
+//
+// 与规格的差异：改为纯展示组件，不再自带筛选脚本与 id。
+// 页面现在是按状态分区的，筛选需要同时处理「卡片」和「分区」两级可见性，
+// 因此监听 comic:filter 的逻辑上移到 src/pages/comic-events.astro。
+import EventCard from "./EventCard.astro";
+
+interface Props {
+	events: ComicEvent[];
+}
+const { events } = Astro.props;
+---
+
+<div class="event-card-grid">
+	{events.map((event) => <EventCard event={event} />)}
+</div>
+
+<style>
+	.event-card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	@media (max-width: 1024px) {
+		.event-card-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 640px) {
+		.event-card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

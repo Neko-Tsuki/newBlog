@@ -1,0 +1,440 @@
+---
+// ============================================================
+// Schedule Widget —— 节假日倒计时进度条组件
+// 对应《节假日倒计时进度条组件（Schedule Widget）完整复现》规格
+//
+// 与规格的差异（为接入 Firefly）：
+// 1. 外层改用 WidgetLayout.astro 组件，而非手写 <widget-layout> 裸标签。
+//    卡片外观、标题栏、onload-animation、widget-hide-on-post 等类
+//    由 WidgetLayout 与 SideBar.astro 自动处理，不在此硬编码。
+// 2. 暗色适配改用 Firefly 的 :global(.dark) —— 规格写的
+//    html[data-theme="one-dark"] 在 Firefly 中不存在，永远不会生效。
+// 3. 文字颜色改用 Tailwind 的 neutral 类（同站内其他 widget），
+//    避开 Firefly v7 未定义的 --text-primary / --text-secondary / --text-tertiary。
+// 4. 去掉规格里无人使用且非确定性的 Math.random() data-schedule-id。
+// 5. 客户端刷新覆盖全部四条进度条与节假日倒计时（规格只刷了「今日」，
+//    与其 §4.4 声称的「一分钟刷新已覆盖」不符，跨天后年/月/周会失真）。
+// 6. 定时器加 Swup 守卫，避免每次切页新增一个 setInterval 造成泄漏。
+// ============================================================
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import type { WidgetComponentConfig } from "@/types/config";
+
+interface Holiday {
+	name: string;
+	date: string; // YYYY-MM-DD
+}
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style, widgetConfig } = Astro.props;
+const showTitle = widgetConfig?.showTitle !== false;
+
+// 中国法定节假日。春节/清明/端午/中秋为农历或节气，每年不同，
+// 需要每年手动补充（补充后客户端会自动同步，无需改其他代码）。
+const holidays: Holiday[] = [
+	{ name: "元旦", date: "2026-01-01" },
+	{ name: "春节", date: "2026-02-17" },
+	{ name: "清明节", date: "2026-04-05" },
+	{ name: "劳动节", date: "2026-05-01" },
+	{ name: "端午节", date: "2026-06-19" },
+	{ name: "中秋节", date: "2026-09-25" },
+	{ name: "国庆节", date: "2026-10-01" },
+];
+
+// ============================================================
+// 时间进度计算
+// ============================================================
+const MS_DAY = 86400000;
+const now = new Date();
+
+// ---------- 本年进度 ----------
+const yearStart = new Date(now.getFullYear(), 0, 1);
+const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+const yearTotal = Math.round(
+	(yearEnd.getTime() - yearStart.getTime()) / MS_DAY,
+);
+// 已经过去的天数（含今天）
+const yearPassed =
+	Math.floor((now.getTime() - yearStart.getTime()) / MS_DAY) + 1;
+const yearRemaining = yearTotal - yearPassed;
+const yearPercent = ((yearPassed / yearTotal) * 100).toFixed(1);
+
+// ---------- 本月进度 ----------
+const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+const monthTotal = Math.round(
+	(monthEnd.getTime() - monthStart.getTime()) / MS_DAY,
+);
+const monthPassed =
+	Math.floor((now.getTime() - monthStart.getTime()) / MS_DAY) + 1;
+const monthRemaining = monthTotal - monthPassed;
+const monthPercent = ((monthPassed / monthTotal) * 100).toFixed(1);
+
+// ---------- 本周进度（周一为一周开始） ----------
+const dayOfWeek = now.getDay(); // 0=周日, 1=周一 ... 6=周六
+const daysFromMonday = (dayOfWeek + 6) % 7; // 周一=0, 周日=6
+const weekPassed = daysFromMonday + 1; // 含今天
+const weekRemaining = 7 - weekPassed;
+const weekPercent = ((weekPassed / 7) * 100).toFixed(1);
+
+// ---------- 今日进度 ----------
+const hoursPassed = now.getHours() + now.getMinutes() / 60;
+const hoursRemaining = Math.ceil(24 - hoursPassed);
+const dayPercent = ((hoursPassed / 24) * 100).toFixed(1);
+
+// ---------- 今日日期格式化 ----------
+const weekdays = [
+	"星期日",
+	"星期一",
+	"星期二",
+	"星期三",
+	"星期四",
+	"星期五",
+	"星期六",
+];
+const todayDateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
+
+// ---------- 最近节假日 ----------
+const todayMidnight = new Date(
+	now.getFullYear(),
+	now.getMonth(),
+	now.getDate(),
+);
+
+// 收集所有未来的节假日（含今天）
+const upcomingHolidays = holidays
+	.map((h) => ({ ...h, dateObj: new Date(`${h.date}T00:00:00`) }))
+	.filter((h) => h.dateObj.getTime() >= todayMidnight.getTime())
+	.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+
+// 若无未来节假日（年末），取明年的第一个
+let nearestHoliday = upcomingHolidays[0];
+if (!nearestHoliday) {
+	const nextYearHolidays = holidays
+		.map((h) => {
+			const d = new Date(h.date);
+			d.setFullYear(d.getFullYear() + 1);
+			return { ...h, dateObj: d, date: d.toISOString().slice(0, 10) };
+		})
+		.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+	nearestHoliday = nextYearHolidays[0];
+}
+
+const holidayDaysLeft = nearestHoliday
+	? Math.round(
+			(nearestHoliday.dateObj.getTime() - todayMidnight.getTime()) / MS_DAY,
+		)
+	: 0;
+---
+
+<WidgetLayout
+	id="schedule-widget"
+	name="时间进度"
+	showTitle={showTitle}
+	class={className}
+	style={style}
+>
+	<div class="schedule-container">
+		<!-- ========== 今日日期 ========== -->
+		<div class="today-date text-center mb-4">
+			<span
+				class="text-sm font-medium text-neutral-500 dark:text-neutral-400 today-date-content"
+			>
+				{todayDateStr}
+			</span>
+		</div>
+
+		<!-- ========== 进度区域 ========== -->
+		<div class="progress-section space-y-4">
+			<!-- 本年进度 -->
+			<div class="progress-item flex items-center gap-3">
+				<span
+					class="text-[14px] font-semibold text-(--primary) shrink-0 w-[60px] year-progress"
+				>
+					{yearPercent}%
+				</span>
+				<div class="flex-1 min-w-0">
+					<span
+						class="block text-[13px] leading-snug mb-1 text-neutral-700 dark:text-neutral-300 year-days-left"
+					>
+						本年还剩 {yearRemaining} 天
+					</span>
+					<progress
+						max={yearTotal}
+						value={yearPassed}
+						class="schedule-progress-bar pBar_year"></progress>
+				</div>
+			</div>
+
+			<!-- 本月进度 -->
+			<div class="progress-item flex items-center gap-3">
+				<span
+					class="text-[14px] font-semibold text-(--primary) shrink-0 w-[60px] month-progress"
+				>
+					{monthPercent}%
+				</span>
+				<div class="flex-1 min-w-0">
+					<span
+						class="block text-[13px] leading-snug mb-1 text-neutral-700 dark:text-neutral-300 month-days-left"
+					>
+						本月还剩 {monthRemaining} 天
+					</span>
+					<progress
+						max={monthTotal}
+						value={monthPassed}
+						class="schedule-progress-bar pBar_month"></progress>
+				</div>
+			</div>
+
+			<!-- 本周进度 -->
+			<div class="progress-item flex items-center gap-3">
+				<span
+					class="text-[14px] font-semibold text-(--primary) shrink-0 w-[60px] week-progress"
+				>
+					{weekPercent}%
+				</span>
+				<div class="flex-1 min-w-0">
+					<span
+						class="block text-[13px] leading-snug mb-1 text-neutral-700 dark:text-neutral-300 week-days-left"
+					>
+						本周还剩 {weekRemaining} 天
+					</span>
+					<progress
+						max="7"
+						value={weekPassed}
+						class="schedule-progress-bar pBar_week"></progress>
+				</div>
+			</div>
+
+			<!-- 今日进度 -->
+			<div class="progress-item flex items-center gap-3">
+				<span
+					class="text-[14px] font-semibold text-(--primary) shrink-0 w-[60px] day-progress"
+				>
+					{dayPercent}%
+				</span>
+				<div class="flex-1 min-w-0">
+					<span
+						class="block text-[13px] leading-snug mb-1 text-neutral-700 dark:text-neutral-300 day-hours-left"
+					>
+						今日还剩 {hoursRemaining} 小时
+					</span>
+					<progress
+						max="24"
+						value={hoursPassed.toFixed(2)}
+						class="schedule-progress-bar pBar_day"></progress>
+				</div>
+			</div>
+		</div>
+
+		<!-- ========== 节假日倒计时 ========== -->
+		<div
+			class="holiday-section mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700"
+		>
+			<div class="text-center">
+				<p
+					class="text-[15px] font-semibold mb-1 text-neutral-700 dark:text-neutral-300 nearest-holiday-full"
+				>
+					距离{nearestHoliday?.name}
+				</p>
+				<p
+					class="text-4xl font-bold mb-2 text-(--primary) nearest-holiday-days"
+				>
+					{holidayDaysLeft}
+				</p>
+				<p
+					class="text-xs text-neutral-500 dark:text-neutral-400 nearest-holiday-date"
+				>
+					{nearestHoliday?.date}
+				</p>
+			</div>
+		</div>
+	</div>
+</WidgetLayout>
+
+<style>
+	/* ============================================================
+	   <progress> 元素跨浏览器样式
+	   appearance:none 必须写在最前，否则伪元素规则会被系统样式覆盖
+	   ============================================================ */
+	progress.schedule-progress-bar {
+		display: block;
+		width: 100%;
+		height: 6px;
+		border: none;
+		border-radius: 9999px;
+		/* 轨道底色跟随主题（--content-meta 明暗两套都有定义） */
+		background: color-mix(in oklab, var(--content-meta) 25%, transparent);
+		overflow: hidden;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	/* WebKit / Chromium —— 未填充轨道 */
+	progress.schedule-progress-bar::-webkit-progress-bar {
+		background: color-mix(in oklab, var(--content-meta) 25%, transparent);
+		border-radius: 9999px;
+	}
+
+	/* WebKit / Chromium —— 已填充部分 */
+	progress.schedule-progress-bar::-webkit-progress-value {
+		background: var(--primary);
+		border-radius: 9999px;
+		transition: width 0.4s ease;
+	}
+
+	/* Firefox —— 无独立轨道伪元素，已填充部分走这条 */
+	progress.schedule-progress-bar::-moz-progress-bar {
+		background: var(--primary);
+		border-radius: 9999px;
+		transition: width 0.4s ease;
+	}
+</style>
+
+<script is:inline define:vars={{ holidays }}>
+	(function () {
+		// 定时器与监听器只注册一次，避免 Swup 切页反复叠加
+		if (window.__scheduleWidgetInit) return;
+		window.__scheduleWidgetInit = true;
+
+		var MS_DAY = 86400000;
+		var WEEKDAYS = [
+			"星期日",
+			"星期一",
+			"星期二",
+			"星期三",
+			"星期四",
+			"星期五",
+			"星期六",
+		];
+
+		// 服务端已渲染好首屏，这里重算全部四条进度与节假日，
+		// 使跨天/跨小时后无需重新构建也能保持正确
+		function computeAll() {
+			var now = new Date();
+			var year = now.getFullYear();
+			var month = now.getMonth();
+
+			// 本年
+			var yearStart = new Date(year, 0, 1);
+			var yearEnd = new Date(year + 1, 0, 1);
+			var yearTotal = Math.round((yearEnd - yearStart) / MS_DAY);
+			var yearPassed = Math.floor((now - yearStart) / MS_DAY) + 1;
+			var yearRemaining = yearTotal - yearPassed;
+			var yearPercent = ((yearPassed / yearTotal) * 100).toFixed(1);
+
+			// 本月
+			var monthStart = new Date(year, month, 1);
+			var monthEnd = new Date(year, month + 1, 1);
+			var monthTotal = Math.round((monthEnd - monthStart) / MS_DAY);
+			var monthPassed = Math.floor((now - monthStart) / MS_DAY) + 1;
+			var monthRemaining = monthTotal - monthPassed;
+			var monthPercent = ((monthPassed / monthTotal) * 100).toFixed(1);
+
+			// 本周（周一为一周开始）
+			var weekPassed = ((now.getDay() + 6) % 7) + 1;
+			var weekRemaining = 7 - weekPassed;
+			var weekPercent = ((weekPassed / 7) * 100).toFixed(1);
+
+			// 今日
+			var hoursPassed = now.getHours() + now.getMinutes() / 60;
+			var hoursRemaining = Math.ceil(24 - hoursPassed);
+			var dayPercent = ((hoursPassed / 24) * 100).toFixed(1);
+
+			// 今日日期
+			var todayDateStr =
+				year +
+				"年" +
+				(month + 1) +
+				"月" +
+				now.getDate() +
+				"日 " +
+				WEEKDAYS[now.getDay()];
+
+			// 最近节假日（今天零点对齐，避免时分秒造成天数误差）
+			var todayMidnight = new Date(year, month, now.getDate());
+			var upcoming = holidays
+				.map(function (h) {
+					return { name: h.name, date: h.date, dateObj: new Date(h.date + "T00:00:00") };
+				})
+				.filter(function (h) {
+					return h.dateObj.getTime() >= todayMidnight.getTime();
+				})
+				.sort(function (a, b) {
+					return a.dateObj.getTime() - b.dateObj.getTime();
+				});
+
+			var nearest = upcoming[0];
+			if (!nearest) {
+				var nextYear = holidays
+					.map(function (h) {
+						var d = new Date(h.date);
+						d.setFullYear(d.getFullYear() + 1);
+						return { name: h.name, dateObj: d, date: d.toISOString().slice(0, 10) };
+					})
+					.sort(function (a, b) {
+						return a.dateObj.getTime() - b.dateObj.getTime();
+					});
+				nearest = nextYear[0];
+			}
+
+			var holidayDays = nearest
+				? Math.round((nearest.dateObj.getTime() - todayMidnight.getTime()) / MS_DAY)
+				: 0;
+
+			// 写入所有实例
+			var containers = document.querySelectorAll(".schedule-container");
+			for (var i = 0; i < containers.length; i++) {
+				var root = containers[i];
+
+				setBar(root, ".pBar_year", yearPassed, yearTotal);
+				setBar(root, ".pBar_month", monthPassed, monthTotal);
+				setBar(root, ".pBar_week", weekPassed, 7);
+				setBar(root, ".pBar_day", hoursPassed, 24);
+
+				setText(root, ".year-progress", yearPercent + "%");
+				setText(root, ".month-progress", monthPercent + "%");
+				setText(root, ".week-progress", weekPercent + "%");
+				setText(root, ".day-progress", dayPercent + "%");
+
+				setText(root, ".year-days-left", "本年还剩 " + yearRemaining + " 天");
+				setText(root, ".month-days-left", "本月还剩 " + monthRemaining + " 天");
+				setText(root, ".week-days-left", "本周还剩 " + weekRemaining + " 天");
+				setText(root, ".day-hours-left", "今日还剩 " + hoursRemaining + " 小时");
+
+				setText(root, ".today-date-content", todayDateStr);
+
+				if (nearest) {
+					setText(root, ".nearest-holiday-full", "距离" + nearest.name);
+					setText(root, ".nearest-holiday-days", String(holidayDays));
+					setText(root, ".nearest-holiday-date", nearest.date);
+				}
+			}
+		}
+
+		function setBar(root, selector, value, max) {
+			var bar = root.querySelector(selector);
+			if (!bar) return;
+			bar.max = max;
+			bar.value = value;
+		}
+
+		function setText(root, selector, text) {
+			var el = root.querySelector(selector);
+			if (el) el.textContent = text;
+		}
+
+		// 每分钟刷新：今日进度变化最明显，同时覆盖跨天带来的年/月/周跳变
+		setInterval(function () {
+			if (document.hidden) return;
+			computeAll();
+		}, 60000);
+
+		// Swup 换页后 DOM 被替换，重算一次（监听器本身只注册一次）
+		document.addEventListener("swup:contentReplaced", computeAll);
+	})();
+</script>

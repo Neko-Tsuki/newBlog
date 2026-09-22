@@ -232,6 +232,93 @@ rm -rf /tmp/firefly-hyde
 
 ---
 
+### 漫展日程 (Comic Events) Feature
+
+Custom feature reproducing the spec at `文档/漫展日程页面（Comic Events）完整复现规格文档.md`,
+with wording aligned to the reference site <https://qwq.sigrika.cc/>.
+
+Implementation files:
+
+```
+src/types/comic.ts                     — 类型定义（ComicEvent / ComicTicketTier / ComicFilterState / note）
+src/data/comicEvents.ts                — 漫展数据 + 构建期校验补齐 + 状态推导 + 派生统计
+
+src/components/comic/
+├── PageHeader.astro                   — card-base 卡片页头（依赖 src/styles/pages/common.css）
+├── FilterBar.astro                    — 状态/城市筛选（事件委托，兼容 Swup）
+├── SectionTitle.astro                 — 分区标题
+├── EventSection.astro                 — 状态分区外壳（空分区不渲染）
+├── EventCard.astro                    — 单张活动卡片（接入 LQIP）
+└── EventCardGrid.astro                — 纯展示网格
+
+src/components/widget/RecentComicEvent.astro  — 侧边栏「最近漫展」（切换动画 + 自动轮播 + 每条专属文案）
+src/components/widget/ScheduleWidget.astro    — 侧边栏「时间进度」（四条进度条 + 节假日倒计时）
+src/pages/comic-events.astro                  — 路由 /comic-events/
+public/assets/images/comic-events/*.webp      — 封面图（当前为 1280x720 空白占位图）
+```
+
+**页面结构：按状态分区**
+
+| 分区 | 数据来源 | 说明 |
+|------|---------|------|
+| 即将到来 | `status === "upcoming"` | 空分区不渲染 |
+| 正在进行中 | `status === "ongoing"` | 空分区不渲染 |
+| 完结撒花 | `status === "ended"` | 空分区不渲染 |
+
+- 「全部」tab 下三个分区依次显示；切到某个 tab 只显示对应分区。
+- 筛选逻辑在 `src/pages/comic-events.astro` 的 `<script>` 里（不是 EventCardGrid），
+  因为要同时处理**分区**与**卡片**两级可见性：状态筛选决定分区可见性，
+  城市筛选决定分区内卡片可见性，分区内全被滤掉时连分区一起隐藏。
+- `SectionTitle` 的 `background: var(--page-bg)` 依赖「事件网格直接坐在页面背景上」。
+  若日后把网格移进 `card-base` 卡片，需同步改成 `var(--card-bg)`。
+
+**数据录入（见 `.ai/comicUpdate.md`）**
+
+- 只写 `rawComicEvents`，**不要手写 `status`** —— 由 `computeStatus()` 推导。
+- `arriveDate` / `tags` 可省略，`validateAndNormalize()` 会补齐（`arriveDate` 回退为 `startDate`）。
+- `note` 是侧边栏的**每条专属文案**，支持 `{days}` 占位符（替换为天数绝对值）。
+  留空则回退到组件内置文案。
+- 构建期校验会在终端以喵语气输出问题（缺 city / 日期格式错 / endDate 早于 startDate /
+  **封面文件不存在** / id 重复 等）。封面存在性检查能提前发现 404，务必留意。
+- 派生数据（`comicStats` 徽标数字、`comicCities` 城市项、`comicTags` 标签）全部自动跟随数据，无需手动维护。
+
+**用词（对齐 qwq.sigrika.cc）**
+
+- 卡片标签用 **赴约：**（不是「赶约」）
+- 分区标题用 **正在进行中**（不是「正在进行」）
+- 空状态为喵语气文案
+
+Rules:
+
+* 自定义新增，不在上游 CuteLeaf/Firefly 中，同步时不得删除或覆盖。
+* 侧边栏组件类型为 `recentComicEvent`（**单数**）。旧实现用的 `recentComicEvents`（复数）连同 `src/components/comic-events/`、`src/data/comic-events.ts`、`src/lib/comic-events.ts`、`src/types/comic-event.ts`、`src/pages/comic-events/index.astro` 已于本次替换中删除。
+* 封面图当前是空白占位图。换真图时直接覆盖 `public/assets/images/comic-events/` 下的同名文件即可，无需改代码；建议保持 16:9。
+* `EventCard.astro` / `RecentComicEvent.astro` 的封面走 Firefly 的 LQIP 系统
+  （`getLqipProps(cover, undefined, true)` + `.lqip-placeholder` + `decoding="async"`）。
+  LQIP 数据由构建流程写入 `src/constants/lqips.json`，**新增封面图后需重新构建**才会生成对应条目。
+* `RecentComicEvent.astro` 的自动轮播在系统开启「减少动态效果」时会整体停用（不只是动画）。
+* 若上游出现同名文件，以本地为准。
+
+---
+
+### 旧版结构 → 新版结构（无需确认，直接转换）
+
+同步时若发现 newBlog 仍是旧版目录/样式结构，而 Firefly 已是新版结构：
+
+1. 先检测新版结构的类名/路径是否与 newBlog 现有代码冲突。
+   注意 `dynamic-page-header` / `dynamic-page-icon` 这类**带命名空间前缀**的名字**不算**冲突，要用精确类名判断。
+2. 不冲突 → 直接转换为新结构（`cp` 新版文件过来）。
+3. 有冲突 → 尽量先处理成新结构，再覆盖。
+
+已完成的转换：
+
+* `src/styles/pages/common.css` — 从 Firefly 引入。newBlog 原本**没有** `src/styles/pages/` 目录（样式是扁平的 `src/styles/*.css`），而 `src/components/comic/PageHeader.astro` 依赖它的 `.page-heading` / `.page-icon`。
+  **同步时必须保留该文件**，否则构建会报 `Failed to resolve import "@/styles/pages/common.css"`。
+  该文件依赖 `--radius-large` / `--primary` / `--content-meta`，三者 newBlog 均已定义。
+* `src/components/comic/PageHeader.astro` 在两个仓库中保持**同一份文件**（都走 common.css），避免每次同步重新踩坑。
+
+---
+
 cd C:\Users\TY-Han\Documents\Firefly
 git fetch real-upstream master
 

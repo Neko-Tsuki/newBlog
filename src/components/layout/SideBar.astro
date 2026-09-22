@@ -8,8 +8,9 @@ import Dynamic from "@/components/widget/Dynamic.astro";
 import Music from "@/components/widget/Music.astro";
 import Profile from "@/components/widget/Profile.astro";
 import QuoteOfTheDay from "@/components/widget/QuoteOfTheDay.astro";
+import RecentComicEvent from "@/components/widget/RecentComicEvent.astro";
 import RelationshipTimer from "@/components/widget/RelationshipTimer.astro";
-import Schedule from "@/components/widget/Schedule.astro";
+import ScheduleWidget from "@/components/widget/ScheduleWidget.astro";
 import SidebarTOC from "@/components/widget/SidebarTOC.astro";
 import SiteInfo from "@/components/widget/SiteInfo.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
@@ -58,9 +59,10 @@ const componentMap = {
 	siteInfo: SiteInfo,
 	dynamic: Dynamic,
 	timeGreeting: TimeGreeting,
-	schedule: Schedule,
+	schedule: ScheduleWidget,
 	relationship: RelationshipTimer,
 	quoteOfTheDay: QuoteOfTheDay,
+	recentComicEvent: RecentComicEvent,
 };
 
 // 获取侧边栏位置

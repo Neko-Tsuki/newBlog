@@ -33,6 +33,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
+	// 漫展日程（顶层链接）
+	links.push(LinkPresets.ComicEvents);
+
 	// 动态
 	links.push({
 		name: "动态",
@@ -113,6 +116,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "主页",
 		url: "/",
 		icon: "material-symbols:home",
+	},
+	ComicEvents: {
+		name: "漫展日程",
+		url: "/comic-events/",
+		icon: "material-symbols:calendar-month-rounded",
 	},
 	Dynamic: {
 		name: "动态",

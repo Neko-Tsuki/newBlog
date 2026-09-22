@@ -1,0 +1,448 @@
+---
+// 对应规格文档 §11
+//
+// 与规格的差异（为接入 Firefly 侧边栏体系）：
+// 1. 外层改用 WidgetLayout，标题栏与卡片外观由它统一提供，
+//    因此去掉规格自带的 .card-header 与 .recent-event-card 的背景/边框。
+// 2. 客户端脚本不再 import 数据模块（会把整份数据打进客户端 bundle），
+//    改为 is:inline define:vars 由服务端注入。
+// 3. 分页改为事件委托 + 从 DOM 读取当前下标，兼容 Swup 切页。
+// 4. 切换时给内容区加淡入上浮动画（规格无动画）。
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { comicEvents, daysToNearestEvent } from "@/data/comicEvents";
+import type { WidgetComponentConfig } from "@/types/config";
+import { getLqipProps } from "@/utils/lqip-utils";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widgetConfig?: WidgetComponentConfig;
+}
+
+const { class: className, style, widgetConfig } = Astro.props;
+const showTitle = widgetConfig?.showTitle !== false;
+
+const result = daysToNearestEvent();
+const event = result?.event ?? null;
+const days = result?.days ?? 0;
+
+// 倒计时文案：优先用该条数据自带的 note（{days} 会替换成天数），
+// 否则回退到内置的通用文案
+function renderNote(note: string, days: number): string {
+	return note.replace(/\{days\}/g, String(Math.abs(days)));
+}
+
+let countdownText = "";
+if (event) {
+	if (event.note) {
+		countdownText = renderNote(event.note, days);
+	} else if (days > 0) {
+		countdownText = `还有 ${days} 天！本喵已经开始倒数了喵！`;
+	} else if (days === 0) {
+		countdownText = "就是今天！冲鸭！！";
+	} else {
+		countdownText = `已经过去 ${Math.abs(days)} 天了！时间它不讲武德喵！`;
+	}
+}
+
+const ticketText = event
+	? event.tickets.map((t) => `${t.name}${t.price}元`).join(" | ")
+	: "";
+
+// LQIP 模糊占位（isPublic=true 对应 public/ 下的图片）
+const lqipProps = event
+	? getLqipProps(event.cover, undefined, true)
+	: { style: "" };
+
+// 注入客户端的最小数据集（用于分页切换）
+const clientEvents = comicEvents.map((e) => ({
+	title: e.title,
+	cover: e.cover,
+	startDate: e.startDate,
+	endDate: e.endDate,
+	arriveDate: e.arriveDate,
+	city: e.city,
+	venue: e.venue,
+	ticketText: e.tickets.map((t) => `${t.name}${t.price}元`).join(" | "),
+	note: e.note ?? "",
+}));
+---
+
+<WidgetLayout
+	name="最近漫展"
+	showTitle={showTitle}
+	id="recent-comic-event"
+	class={className}
+	style={style}
+>
+	<div class="recent-event-card" data-event-count={comicEvents.length}>
+		{
+			event ? (
+				<>
+					<div class="event-body">
+						<div class="event-name">
+							<span class="event-icon" aria-hidden="true">
+								🏛️
+							</span>
+							<span>{event.title}</span>
+						</div>
+
+						<div class="event-cover">
+							<div
+								class="lqip-placeholder absolute inset-0 pointer-events-none"
+								style={lqipProps.style}
+								aria-hidden="true"
+							>
+							</div>
+							<img
+								src={event.cover}
+								alt={event.title}
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+
+						<div class="countdown-text">{countdownText}</div>
+
+						<div class="event-details">
+							<div class="detail-item">
+								<span class="detail-icon" aria-hidden="true">
+									📍
+								</span>
+								<span class="detail-text">
+									{event.city}·{event.venue}
+								</span>
+							</div>
+							<div class="detail-item">
+								<span class="detail-icon" aria-hidden="true">
+									📅
+								</span>
+								<span class="detail-text">
+									开展：{event.startDate} ~ {event.endDate}
+								</span>
+							</div>
+							<div class="detail-item">
+								<span class="detail-icon" aria-hidden="true">
+									🅰️
+								</span>
+								<span class="detail-text">赴约：{event.arriveDate}</span>
+							</div>
+							<div class="detail-item">
+								<span class="detail-icon" aria-hidden="true">
+									🎫
+								</span>
+								<span class="detail-text" title={ticketText}>
+									票价：{ticketText}
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="pagination" data-total={comicEvents.length}>
+						<button class="page-prev" type="button" aria-label="上一场">
+							‹
+						</button>
+						<span class="page-dots">
+							{comicEvents.map((_, i) => (
+								<span
+									class:list={["page-dot", { active: i === 0 }]}
+									data-index={i}
+								/>
+							))}
+						</span>
+						<button class="page-next" type="button" aria-label="下一场">
+							›
+						</button>
+					</div>
+
+					<a class="more-link" href="/comic-events/">
+						<span class="dots">•••</span>
+						<span>更多</span>
+					</a>
+				</>
+			) : (
+				<p class="empty-tip">喵？最近好像没有漫展安排……</p>
+			)
+		}
+	</div>
+</WidgetLayout>
+
+<style>
+	.recent-event-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	/* 可切换的内容区：切换时整体淡入上浮 */
+	.event-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.event-body.is-switching {
+		animation: comic-event-switch-in 0.28s ease both;
+	}
+	@keyframes comic-event-switch-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.event-body.is-switching {
+			animation: none;
+		}
+	}
+	.event-name {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--primary);
+		/* 与下方封面图拉开一点距离（叠加 .event-body 的 0.75rem gap，合计约 1rem） */
+		margin-bottom: 0.25rem;
+	}
+	.event-cover {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: 0.5rem;
+		overflow: hidden;
+	}
+	.event-cover img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* 初始透明；加载完成后由 LQIP 脚本置为 1。
+		   切换卡片时 img 已带内联 opacity:1，新图会直接显示 */
+		opacity: 0;
+		transition: opacity 0.5s ease-out;
+	}
+	.countdown-text {
+		text-align: center;
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: #ef4444;
+		line-height: 1.4;
+		padding: 0.5rem 0;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+	/* 暗色下改用更亮的红，保证对比度 */
+	:global(.dark) .countdown-text {
+		color: #f87171;
+		text-shadow: none;
+	}
+	.event-details {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		font-size: 0.82rem;
+		color: var(--content-meta);
+	}
+	.detail-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.4rem;
+	}
+	.detail-icon {
+		flex-shrink: 0;
+	}
+	.detail-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		padding-top: 0.25rem;
+	}
+	.page-prev,
+	.page-next {
+		background: transparent;
+		border: none;
+		color: var(--content-meta);
+		font-size: 1.2rem;
+		cursor: pointer;
+		padding: 0 0.4rem;
+		transition: color 0.2s;
+	}
+	.page-prev:hover,
+	.page-next:hover {
+		color: var(--primary);
+	}
+	.page-dots {
+		display: flex;
+		gap: 0.3rem;
+	}
+	.page-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: color-mix(in oklab, var(--content-meta) 40%, transparent);
+		transition: all 0.2s;
+	}
+	.page-dot.active {
+		background: var(--primary);
+		transform: scale(1.4);
+	}
+	.more-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		font-size: 0.85rem;
+		color: var(--content-meta);
+		text-decoration: none;
+		padding-top: 0.25rem;
+		transition: color 0.2s;
+	}
+	.more-link:hover {
+		color: var(--primary);
+	}
+	.dots {
+		letter-spacing: 0.1em;
+	}
+	.empty-tip {
+		text-align: center;
+		color: var(--content-meta);
+		font-size: 0.85rem;
+	}
+</style>
+
+<script is:inline define:vars={{ clientEvents }}>
+	(function () {
+		// 事件委托 + 从 DOM 读当前下标：
+		// 切页后 DOM 被 Swup 替换，状态自然回到第 0 张，不会与旧下标错位
+		if (window.__recentComicEventInit) return;
+		window.__recentComicEventInit = true;
+
+		var DAY_MS = 86400000;
+
+		function countdownTextFor(startDate, note) {
+			var days = Math.round(
+				(new Date(startDate).getTime() - Date.now()) / DAY_MS
+			);
+			// 优先用该条数据自带的专属文案
+			if (note) return note.replace(/\{days\}/g, String(Math.abs(days)));
+			if (days > 0) return "还有 " + days + " 天！本喵已经开始倒数了喵！";
+			if (days === 0) return "就是今天！冲鸭！！";
+			return "已经过去 " + Math.abs(days) + " 天了！时间它不讲武德喵！";
+		}
+
+		function currentIndex(root) {
+			var dots = root.querySelectorAll(".page-dot");
+			for (var i = 0; i < dots.length; i++) {
+				if (dots[i].classList.contains("active")) return i;
+			}
+			return 0;
+		}
+
+		function updateCard(root, index) {
+			var ev = clientEvents[index];
+			if (!ev) return;
+
+			var body = root.querySelector(".event-body");
+			if (!body) return;
+
+			// 写入新内容
+			var nameEl = root.querySelector(".event-name span:last-child");
+			if (nameEl) nameEl.textContent = ev.title;
+
+			var img = root.querySelector(".event-cover img");
+			if (img) {
+				img.src = ev.cover;
+				img.alt = ev.title;
+			}
+
+			var countdown = root.querySelector(".countdown-text");
+			if (countdown)
+				countdown.textContent = countdownTextFor(ev.startDate, ev.note);
+
+			var details = root.querySelectorAll(".detail-text");
+			if (details.length >= 4) {
+				details[0].textContent = ev.city + "·" + ev.venue;
+				details[1].textContent = "开展：" + ev.startDate + " ~ " + ev.endDate;
+				details[2].textContent = "赴约：" + ev.arriveDate;
+				details[3].textContent = "票价：" + ev.ticketText;
+				details[3].title = ev.ticketText;
+			}
+
+			// 圆点立即更新，保证点击反馈即时
+			var dots = root.querySelectorAll(".page-dot");
+			for (var i = 0; i < dots.length; i++) {
+				dots[i].classList.toggle("active", i === index);
+			}
+
+			// 重放淡入动画：先移除类并强制回流，再加回，否则连续切换不会重新触发
+			body.classList.remove("is-switching");
+			void body.offsetHeight;
+			body.classList.add("is-switching");
+		}
+
+		// 自动切换：每 AUTO_INTERVAL_MS 切到下一场
+		var AUTO_INTERVAL_MS = 5000;
+		// 手动操作后暂停自动切换的时长，避免刚点完就被自动切走
+		var MANUAL_PAUSE_MS = 8000;
+
+		var lastManualAt = 0;
+
+		function prefersReducedMotion() {
+			return (
+				window.matchMedia &&
+				window.matchMedia("(prefers-reduced-motion: reduce)").matches
+			);
+		}
+
+		document.addEventListener("click", function (e) {
+			var target = e.target;
+			if (!target || !target.closest) return;
+
+			var btn = target.closest(".page-prev, .page-next, .page-dot");
+			if (!btn) return;
+
+			var root = btn.closest(".recent-event-card");
+			if (!root) return;
+
+			var total = clientEvents.length;
+			if (total === 0) return;
+
+			var index;
+			if (btn.classList.contains("page-prev")) {
+				index = (currentIndex(root) - 1 + total) % total;
+			} else if (btn.classList.contains("page-next")) {
+				index = (currentIndex(root) + 1) % total;
+			} else {
+				index = parseInt(btn.dataset.index || "0", 10);
+			}
+
+			lastManualAt = Date.now();
+			updateCard(root, index);
+		});
+
+		// 定时器只注册一次；每次触发时重新查询 DOM，
+		// 因此 Swup 换页后自动作用于新的 widget 实例。
+		// 以下情况跳过本轮：系统开启了「减少动态效果」、标签页在后台、
+		// 刚手动操作过、鼠标正悬停在组件上（方便阅读）。
+		setInterval(function () {
+			if (prefersReducedMotion()) return;
+			if (document.hidden) return;
+			if (Date.now() - lastManualAt < MANUAL_PAUSE_MS) return;
+
+			var root = document.querySelector(".recent-event-card");
+			if (!root) return;
+			if (root.matches(":hover")) return;
+
+			var total = clientEvents.length;
+			if (total < 2) return;
+
+			updateCard(root, (currentIndex(root) + 1) % total);
+		}, AUTO_INTERVAL_MS);
+	})();
+</script>

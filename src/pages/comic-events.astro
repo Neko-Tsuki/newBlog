@@ -1,0 +1,116 @@
+---
+// 漫展日程主页面
+// 对应规格文档 §5
+//
+// 与规格的差异：
+// 1. 规格外层再包了一层 <Layout>，但 Firefly 的 MainGridLayout 内部已经 import
+//    并包裹了 Layout.astro，再包一次会重复嵌套；且 MainGridLayout 的 Props
+//    没有 keywords/author，故一并省略。Layout.astro 会自动把 title 拼成
+//    「漫展日程 - <站点名>」。
+// 2. 页头与筛选栏改用 Firefly 各页统一的 card-base 卡片（同 guestbook.astro），
+//    因此需要引入 common.css 提供 .page-heading / .page-icon。
+// 3. 改为按状态分区渲染：即将到来 / 正在进行 / 完结撒花。
+//    空分区服务端直接不渲染；筛选时同时处理卡片与分区两级可见性。
+import EventSection from "@/components/comic/EventSection.astro";
+import FilterBar from "@/components/comic/FilterBar.astro";
+import PageHeader from "@/components/comic/PageHeader.astro";
+import { comicCities, comicStats, eventsByStatus } from "@/data/comicEvents";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import "@/styles/pages/common.css";
+
+const title = "漫展日程";
+const subtitle = "记录主包参加的漫展活动";
+
+// 各分区的数据由状态自动派生，无需手动维护
+const upcomingEvents = eventsByStatus("upcoming");
+const ongoingEvents = eventsByStatus("ongoing");
+const endedEvents = eventsByStatus("ended");
+---
+
+<MainGridLayout title={title} description="主包的漫展日程安排">
+	<div class="comic-events-page">
+		<PageHeader title={title} subtitle={subtitle} />
+
+		<div
+			class="flex w-full rounded-(--radius-large) overflow-hidden relative"
+		>
+			<div class="card-base z-10 px-9 py-6 relative w-full">
+				<FilterBar stats={comicStats} cities={comicCities} />
+			</div>
+		</div>
+
+		<EventSection status="upcoming" title="即将到来" events={upcomingEvents} />
+		<EventSection status="ongoing" title="正在进行中" events={ongoingEvents} />
+		<EventSection status="ended" title="完结撒花" events={endedEvents} />
+
+		<div class="empty-state" id="comic-empty-state" hidden>
+			<p>喵……翻遍了口袋也没找到符合条件的漫展 (´・ω・)</p>
+			<p class="empty-state-hint">换个筛选条件试试？说不定它只是躲起来了喵～</p>
+		</div>
+	</div>
+</MainGridLayout>
+
+<style>
+	.comic-events-page {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.empty-state {
+		padding: 3rem;
+		text-align: center;
+		color: var(--content-meta);
+	}
+	.empty-state-hint {
+		margin-top: 0.5rem;
+		font-size: 0.85rem;
+		opacity: 0.75;
+	}
+</style>
+
+<script>
+	// 筛选需要同时处理「分区」和「卡片」两级可见性：
+	// 1. 状态筛选决定哪些分区可见
+	// 2. 城市筛选决定分区内哪些卡片可见；分区内全被滤掉时连分区一起隐藏
+	// 3. 所有分区都不可见时显示全局空状态
+	type ComicFilterState = { status?: string; city?: string };
+
+	const w = window as unknown as Record<string, unknown>;
+	if (!w.__comicEventsFilterInit) {
+		w.__comicEventsFilterInit = true;
+
+		const applyFilter = (status?: string, city?: string): void => {
+			let anyVisible = false;
+
+			const sections = document.querySelectorAll<HTMLElement>(".event-section");
+			for (const section of sections) {
+				const sectionStatus = section.dataset.sectionStatus;
+				const statusOk =
+					!status || status === "all" || sectionStatus === status;
+				if (!statusOk) {
+					section.hidden = true;
+					continue;
+				}
+
+				let visibleInSection = 0;
+				const cards = section.querySelectorAll<HTMLElement>(".event-card");
+				for (const card of cards) {
+					const cityOk = !city || city === "all" || card.dataset.city === city;
+					card.style.display = cityOk ? "" : "none";
+					if (cityOk) visibleInSection++;
+				}
+
+				section.hidden = visibleInSection === 0;
+				if (visibleInSection > 0) anyVisible = true;
+			}
+
+			const empty = document.getElementById("comic-empty-state");
+			if (empty) empty.hidden = anyVisible;
+		};
+
+		window.addEventListener("comic:filter", (e) => {
+			const { status, city } = (e as CustomEvent<ComicFilterState>).detail ?? {};
+			applyFilter(status, city);
+		});
+	}
+</script>
