@@ -89,7 +89,8 @@ export const siteConfig: SiteConfig = {
 		// 4. 网络图片: { type: "url", value: "https://example.com/logo.png", alt: "Logo" }
 		logo: {
 			type: "image",
-			value: "assets/images/navbar.png",
+			// 与站点 favicon 同一张图（src/assets/images/favicon.png）
+			value: "assets/images/favicon.png",
 			alt: "Site-Logo",
 		},
 		// 导航栏标题
