@@ -1,10 +1,15 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
-import { footerConfig, profileConfig } from "@/config";
+import { footerConfig, profileConfig, siteConfig } from "@/config";
 import { url } from "@/utils/url-utils";
 
-const currentYear = new Date().getFullYear();
+// 年份按站点时区（siteConfig.timezone）取，而不是构建机的本地时区：
+// 部署平台的构建机跑在 UTC，元旦前后构建会让页脚年份比访客的年份小一年
+const currentYear = new Intl.DateTimeFormat("en-CA", {
+	timeZone: siteConfig.timezone,
+	year: "numeric",
+}).format(new Date());
 
 // 读取FooterConfig.html文件内容
 let customFooterHtml = "";

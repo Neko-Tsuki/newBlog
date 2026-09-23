@@ -8,6 +8,8 @@
 //    改为 is:inline define:vars 由服务端注入。
 // 3. 分页改为事件委托 + 从 DOM 读取当前下标，兼容 Swup 切页。
 // 4. 切换时给内容区加淡入上浮动画（规格无动画）。
+// 5. 首屏与 Swup 切页后按访客的系统时间重算倒计时文案：服务端渲染的是
+//    构建那天算出来的天数，不重算会一直停在构建日（同 ScheduleWidget）。
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import { comicEvents, daysToNearestEvent } from "@/data/comicEvents";
 import type { WidgetComponentConfig } from "@/types/config";
@@ -425,6 +427,26 @@ const clientEvents = comicEvents.map((e) => ({
 			lastManualAt = Date.now();
 			updateCard(root, index);
 		});
+
+		// 按访客的系统时间刷新倒计时文案：
+		// 服务端渲染的天数是构建那天算出来的，静态站点不重新构建就一直停在
+		// 那天。不能等 5 秒自动轮播或用户点击才纠正 —— 首屏那张卡片就是错的。
+		function refreshCountdowns() {
+			var roots = document.querySelectorAll(".recent-event-card");
+			for (var i = 0; i < roots.length; i++) {
+				var root = roots[i];
+				var ev = clientEvents[currentIndex(root)];
+				var el = root.querySelector(".countdown-text");
+				if (ev && el) el.textContent = countdownTextFor(ev.startDate, ev.note);
+			}
+		}
+
+		refreshCountdowns();
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", refreshCountdowns);
+		}
+		// Swup 换页会把组件换回服务端渲染的那份，再刷一次
+		document.addEventListener("swup:contentReplaced", refreshCountdowns);
 
 		// 定时器只注册一次；每次触发时重新查询 DOM，
 		// 因此 Swup 换页后自动作用于新的 widget 实例。
