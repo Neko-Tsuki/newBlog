@@ -11,7 +11,8 @@ export const site = {
   name: "尘尘落落格",
   desc: "在代码的世界里修行，在幻想的境界里生活",
   url: "https://blog.shika-mori.top",
-  avatar: "https://blog.shika-mori.top/favicon/favicon.ico",
+  // 友链图标统一用站点 favicon（与网站图标保持一致）
+  avatar: "https://blog.shika-mori.top/favicon/icon-192.png",
   email: "bok-fiddle-rigging@duck.com",
 };
 
@@ -57,7 +58,7 @@ export const notes = [
             { label: "站点名称", value: site.name },
             { label: "站点描述", value: site.desc },
             { label: "站点链接", value: site.url },
-            { label: "头像链接", value: site.avatar },
+            { label: "图标链接", value: site.avatar },
           ].map((item) => (
             <div class="flex items-center justify-between gap-2 rounded-lg bg-black/5 dark:bg-white/5 px-3 py-2">
               <div class="min-w-0">

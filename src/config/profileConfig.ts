@@ -19,25 +19,22 @@ export const profileConfig: ProfileConfig = {
 	// 访问https://icones.js.org/ 获取图标代码，
 	// 如果想使用尚未包含相应的图标集，则需要安装它
 	// `pnpm add @iconify-json/<icon-set-name>`
-	// showName: true 时显示图标和名称，false 时只显示图标
+	// 链接按 Banner 风格渲染：横向宽按钮、常显名称（showName 开关已不再使用）
 	links: [
 		{
 			name: "NyaOne (Fediverse)",
 			icon: "simple-icons:mastodon",
 			url: "https://nya.one/@Tsuki",
-			showName: false,
 		},
 		{
 			name: "GitHub",
 			icon: "simple-icons:github",
 			url: "https://github.com/Neko-Tsuki",
-			showName: false,
 		},
 		{
 			name: "RSS",
 			icon: "fa7-solid:rss",
 			url: "/rss",
-			showName: false,
 		},
 	],
 };
