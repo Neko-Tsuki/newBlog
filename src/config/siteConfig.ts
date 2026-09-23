@@ -53,14 +53,29 @@ export const siteConfig: SiteConfig = {
 
 	// Favicon 配置
 	// 如果启用了OpenGraph图片功能，数组中需要包含png格式的favicon图标
+	// 透明底图标，明暗主题共用一套；矢量源 public/favicon/icon.svg 也放在同目录备用。
+	// 顺序有讲究：Layout 取「第一个 png」作为 apple-touch-icon，所以 180 要排在最前面
 	favicon: [
 		{
-			// 图标文件路径
-			src: "/assets/images/favicon.ico",
-			// 可选，指定主题 'light' | 'dark'
-			// theme: "light",
-			// 可选，图标大小
-			// sizes: "32x32",
+			// 多尺寸 ico（16/32/48），老浏览器兜底
+			src: "/favicon/icon.ico",
+			sizes: "any",
+		},
+		{
+			src: "/favicon/icon-180.png",
+			sizes: "180x180",
+		},
+		{
+			src: "/favicon/icon-192.png",
+			sizes: "192x192",
+		},
+		{
+			src: "/favicon/icon-128.png",
+			sizes: "128x128",
+		},
+		{
+			src: "/favicon/icon-32.png",
+			sizes: "32x32",
 		},
 	],
 
