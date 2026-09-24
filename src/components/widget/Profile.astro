@@ -52,22 +52,24 @@ const className = Astro.props.class;
     <div class="text-center text-neutral-400 mb-2.5 transition">
       {profileConfig.bio}
     </div>
-        <div class="flex flex-wrap gap-2 justify-center mb-1">
+        <div class="profile-links">
             {profileConfig.links.map((item) => {
-                // Banner 风格：横向宽按钮，常显名称，一行放不下自动换行
-                const linkClass =
-                    "btn-regular rounded-lg h-10 gap-2 px-4 font-bold active:scale-95 whitespace-nowrap";
+                // 图标 / 横幅两种模式共用同一份 DOM，由 html[data-profile-link-mode] 上的
+                // CSS（src/styles/profile.css）切换形态，这样才能在显示设置面板里即时切换。
+                // data-show-name 只对「仅图标」模式有意义：该模式下逐条决定是否显示名称。
+                const showName = item.showName ? "true" : "false";
                 if (item.url.startsWith("mailto:")) {
                     const encodedEmail = encodeMailto(item.url);
                     return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={MAILTO_ONCLICK_SCRIPT},
-                                class={linkClass}>
-                        <Icon name={item.icon} class="text-[1.25rem]"></Icon>
-                        <span>{item.name}</span>
+                                class="profile-link btn-regular rounded-lg active:scale-95" data-show-name={showName}>
+                        <Icon name={item.icon} class="profile-link-icon"></Icon>
+                        <span class="profile-link-name">{item.name}</span>
                     </a>
                 } else {
-                    return <a rel="me" aria-label={item.name} href={item.url} target="_blank" class={linkClass}>
-                        <Icon name={item.icon} class="text-[1.25rem]"></Icon>
-                        <span>{item.name}</span>
+                    return <a rel="me" aria-label={item.name} href={item.url} target="_blank"
+                                class="profile-link btn-regular rounded-lg active:scale-95" data-show-name={showName}>
+                        <Icon name={item.icon} class="profile-link-icon"></Icon>
+                        <span class="profile-link-name">{item.name}</span>
                     </a>
                 }
             })}

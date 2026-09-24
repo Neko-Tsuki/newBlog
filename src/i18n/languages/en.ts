@@ -394,6 +394,11 @@ export const en: Translation = {
 	[Key.cardBorder]: "Card Border & Shadow",
 	[Key.cardFollowTheme]: "Card Follow Theme Color",
 
+	// Profile Link Style
+	[Key.profileLinkMode]: "Profile Link Style",
+	[Key.profileLinkModeIcon]: "Icons",
+	[Key.profileLinkModeBanner]: "Banner",
+
 	// Post List Layout
 	[Key.postListLayout]: "Post List Layout",
 	[Key.postListLayoutList]: "List",
@@ -534,5 +539,4 @@ export const en: Translation = {
 	[Key.diaryDaysAgo]: "d ago",
 	[Key.diaryNoResults]: "No matching diary entries found",
 	[Key.diaryTips]: "Life is like a diary - every page is a new beginning.",
-
 };

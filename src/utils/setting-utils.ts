@@ -13,10 +13,12 @@ import type {
 	LIGHT_DARK_MODE,
 	WALLPAPER_MODE,
 } from "@/types/config";
+import type { ProfileLinkDisplayMode } from "@/types/profileConfig";
 import {
 	backgroundWallpaper,
 	displaySettingsConfig,
 	expressiveCodeConfig,
+	profileConfig,
 	sakuraConfig,
 	siteConfig,
 } from "../config";
@@ -950,4 +952,41 @@ export function setCardFollowThemeEnabled(enabled: boolean): void {
 	} else {
 		document.body.classList.remove("card-follow-theme-hue");
 	}
+}
+
+// Profile 链接显示模式函数
+// 模式写在 <html data-profile-link-mode> 上，样式由 src/styles/profile.css 接管
+export function getDefaultProfileLinkMode(): ProfileLinkDisplayMode {
+	return profileConfig.linkDisplayMode ?? "icon";
+}
+
+export function getStoredProfileLinkMode(): ProfileLinkDisplayMode {
+	if (typeof localStorage === "undefined") {
+		return getDefaultProfileLinkMode();
+	}
+	const stored = localStorage.getItem("profileLinkDisplayMode");
+	if (stored !== "icon" && stored !== "banner") {
+		return getDefaultProfileLinkMode();
+	}
+	return stored;
+}
+
+export function applyProfileLinkModeToDocument(
+	mode: ProfileLinkDisplayMode,
+): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	document.documentElement.setAttribute("data-profile-link-mode", mode);
+}
+
+export function setProfileLinkMode(mode: ProfileLinkDisplayMode): void {
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.setItem !== "function"
+	) {
+		return;
+	}
+	localStorage.setItem("profileLinkDisplayMode", mode);
+	applyProfileLinkModeToDocument(mode);
 }

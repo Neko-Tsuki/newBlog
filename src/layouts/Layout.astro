@@ -537,6 +537,17 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
       })();
     </script>
 
+    {/* Profile 链接显示模式：首帧前按 localStorage 覆盖默认配置，避免先按默认模式画一帧再跳变 */}
+    <script is:inline define:vars={{
+      defaultProfileLinkMode: profileConfig.linkDisplayMode ?? "icon",
+    }}>
+      (function() {
+        var stored = localStorage.getItem("profileLinkDisplayMode");
+        var mode = stored === "icon" || stored === "banner" ? stored : defaultProfileLinkMode;
+        document.documentElement.setAttribute("data-profile-link-mode", mode);
+      })();
+    </script>
+
     <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}
     <ConfigCarrier />

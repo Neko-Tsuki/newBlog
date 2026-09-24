@@ -14,12 +14,19 @@ export const profileConfig: ProfileConfig = {
 	// 个人签名
 	bio: "恰咯~这里是尘尘！\n是一只普普通通的小透明~",
 
+	// 链接显示模式
+	// "icon"   = 仅图标：紧凑方形按钮
+	// "banner" = 横幅：横向宽按钮、常显名称，一行放不下自动换行（本站当前使用）
+	// 这里只是默认值，显示设置面板的「外观 → Profile 链接样式」可运行时切换
+	linkDisplayMode: "banner",
+
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
 	// 访问https://icones.js.org/ 获取图标代码，
 	// 如果想使用尚未包含相应的图标集，则需要安装它
 	// `pnpm add @iconify-json/<icon-set-name>`
-	// 链接按 Banner 风格渲染：横向宽按钮、常显名称（showName 开关已不再使用）
+	// showName 只在「仅图标」模式下生效：true 显示图标和名称，false 只显示图标
+	// 「横幅」模式下恒显示名称，showName 被忽略
 	links: [
 		{
 			name: "NyaOne (Fediverse)",

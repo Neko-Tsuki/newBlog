@@ -392,6 +392,11 @@ export const ja: Translation = {
 	[Key.cardBorder]: "カードのボーダーと影",
 	[Key.cardFollowTheme]: "カードのテーマカラー追随",
 
+	// プロフィールリンクのスタイル
+	[Key.profileLinkMode]: "プロフィールリンク",
+	[Key.profileLinkModeIcon]: "アイコンのみ",
+	[Key.profileLinkModeBanner]: "バナー",
+
 	// 投稿リストレイアウト
 	[Key.postListLayout]: "投稿リストレイアウト",
 	[Key.postListLayoutList]: "リスト",
@@ -532,5 +537,4 @@ export const ja: Translation = {
 	[Key.diaryDaysAgo]: "日前",
 	[Key.diaryNoResults]: "該当する日記が見つかりません",
 	[Key.diaryTips]: "人生は日記のようなもの、毎ページが新しい始まりです。",
-
 };

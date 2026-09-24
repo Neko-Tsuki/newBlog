@@ -385,6 +385,11 @@ export const zh_CN: Translation = {
 	[Key.cardBorder]: "卡片边框和阴影",
 	[Key.cardFollowTheme]: "卡片跟随主题色",
 
+	// Profile 链接样式
+	[Key.profileLinkMode]: "Profile 链接样式",
+	[Key.profileLinkModeIcon]: "仅图标",
+	[Key.profileLinkModeBanner]: "横幅",
+
 	// 文章布局
 	[Key.postListLayout]: "文章布局",
 	[Key.postListLayoutList]: "列表",
@@ -522,5 +527,4 @@ export const zh_CN: Translation = {
 	[Key.diaryDaysAgo]: "天前",
 	[Key.diaryNoResults]: "没有找到匹配的日记",
 	[Key.diaryTips]: "生活就像日记，每页都是新的开始。",
-
 };

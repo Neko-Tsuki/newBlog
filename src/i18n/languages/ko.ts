@@ -392,6 +392,11 @@ export const ko: Translation = {
 	[Key.cardBorder]: "카드 테두리와 그림자",
 	[Key.cardFollowTheme]: "카드 테마 색상 따르기",
 
+	// 프로필 링크 스타일
+	[Key.profileLinkMode]: "프로필 링크 스타일",
+	[Key.profileLinkModeIcon]: "아이콘만",
+	[Key.profileLinkModeBanner]: "배너",
+
 	// Post List Layout
 	[Key.postListLayout]: "게시글 목록 레이아웃",
 	[Key.postListLayoutList]: "목록형",
@@ -531,5 +536,4 @@ export const ko: Translation = {
 	[Key.diaryDaysAgo]: "일 전",
 	[Key.diaryNoResults]: "일치하는 일기 항목이 없습니다",
 	[Key.diaryTips]: "인생은 일기와 같습니다. 매 페이지가 새로운 시작입니다.",
-
 };
