@@ -57,7 +57,10 @@ const className = Astro.props.class;
                 // 图标 / 横幅两种模式共用同一份 DOM，由 html[data-profile-link-mode] 上的
                 // CSS（src/styles/profile.css）切换形态，这样才能在显示设置面板里即时切换。
                 // data-show-name 只对「仅图标」模式有意义：该模式下逐条决定是否显示名称。
-                const showName = item.showName ? "true" : "false";
+                // 只有一条链接时恒显示名称 —— 原版该情形走单独的分支、忽略 showName，
+                // 这里保持同样行为，避免单链接配置升级后按钮突然变成纯图标。
+                const showName =
+                    item.showName || profileConfig.links.length === 1 ? "true" : "false";
                 if (item.url.startsWith("mailto:")) {
                     const encodedEmail = encodeMailto(item.url);
                     return <a rel="me" aria-label={item.name} href="#" data-encoded-email={encodedEmail} onclick={MAILTO_ONCLICK_SCRIPT},

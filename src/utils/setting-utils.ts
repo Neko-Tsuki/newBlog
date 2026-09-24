@@ -961,14 +961,16 @@ export function getDefaultProfileLinkMode(): ProfileLinkDisplayMode {
 }
 
 export function getStoredProfileLinkMode(): ProfileLinkDisplayMode {
-	if (typeof localStorage === "undefined") {
-		return getDefaultProfileLinkMode();
+	try {
+		const stored = localStorage.getItem("profileLinkDisplayMode");
+		if (stored === "icon" || stored === "banner") {
+			return stored;
+		}
+	} catch {
+		// 存储不可用（被禁用 / 隐私模式，访问 localStorage 本身就可能抛 SecurityError）
+		// 或非浏览器环境，退回配置默认值
 	}
-	const stored = localStorage.getItem("profileLinkDisplayMode");
-	if (stored !== "icon" && stored !== "banner") {
-		return getDefaultProfileLinkMode();
-	}
-	return stored;
+	return getDefaultProfileLinkMode();
 }
 
 export function applyProfileLinkModeToDocument(
@@ -981,12 +983,12 @@ export function applyProfileLinkModeToDocument(
 }
 
 export function setProfileLinkMode(mode: ProfileLinkDisplayMode): void {
-	if (
-		typeof localStorage === "undefined" ||
-		typeof localStorage.setItem !== "function"
-	) {
-		return;
-	}
-	localStorage.setItem("profileLinkDisplayMode", mode);
+	// 先应用到文档再持久化：存储不可用时切换也要即时生效，
+	// 否则面板显示已切换、Profile 却还是旧模式
 	applyProfileLinkModeToDocument(mode);
+	try {
+		localStorage.setItem("profileLinkDisplayMode", mode);
+	} catch {
+		// 存储被禁用或写入超额（QuotaExceededError）时忽略，只影响「刷新后是否记住」
+	}
 }
