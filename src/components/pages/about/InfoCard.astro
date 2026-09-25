@@ -33,7 +33,9 @@ const interactive = href
 		<Icon name={icon} class="text-[1.2rem]" />
 	</span>
 	<span class="min-w-0">
-		<span class="block font-bold text-(--deep-text) leading-snug">{title}</span>
+		<span class="block font-bold text-(--deep-text) dark:text-(--btn-content) leading-snug">
+			{title}
+		</span>
 		{
 			desc && (
 				<span class="block text-sm text-(--content-meta) mt-0.5 leading-snug">{desc}</span>
