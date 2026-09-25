@@ -151,6 +151,7 @@ src/
 | `public/assets/images/comic-events/*` | 漫展封面图 |
 | `src/styles/pages/common.css` | 各列表页共用样式，`comic/PageHeader.astro` 依赖它 |
 | `.gitignore` | Custom ignores |
+| `README.md`, `README.en.md` | 已改写为博客自己的说明；上游那两份是主题说明书（徽章/Fork 引导全指向 CuteLeaf/Firefly） |
 | `AGENTS.md` | Repo-specific guidelines |
 | `.github/workflows/*` | Local CI/CD workflows — never sync from upstream |
 
