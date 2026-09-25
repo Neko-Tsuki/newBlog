@@ -187,7 +187,9 @@ html.dark {
   }
 
   .tk-tag-green {
-    @apply bg-(--btn-regular-bg) dark:bg-(--primary) dark:text-(--deep-text);
+    /* 暗色下底色是 --primary（浅色强调色），文字必须用恒为深色的 --on-primary，
+       不能用会翻转的 --deep-text，否则亮字压亮底 */
+    @apply bg-(--btn-regular-bg) dark:bg-(--primary) dark:text-(--on-primary);
   }
 }
 

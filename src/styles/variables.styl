@@ -27,6 +27,10 @@
   
   --deep-text: oklch(0.25 0.02 var(--hue))
   --title-active: oklch(0.6 0.1 var(--hue))
+
+  /* 铺在强调色（--primary）上的文字色。--primary 亮暗都是浅色，故恒用深色、不随主题翻转。
+     注意与 --deep-text 区分：后者是正文/标题色，暗色下会翻转为亮色。 */
+  --on-primary: oklch(0.25 0.02 var(--hue))
   
   --line-divider: rgba(0, 0, 0, 0.08)
   --line-color: rgba(0, 0, 0, 0.1)
@@ -113,6 +117,9 @@
   --line-color: rgba(255, 255, 255, 0.1)
   --meta-divider: rgba(255, 255, 255, 0.2)
   --content-meta: rgba(255, 255, 255, 0.6)
+
+  /* 正文/标题色：亮色为深色，暗色需翻转为亮色，否则压在暗底上看不见 */
+  --deep-text: oklch(0.75 0.02 var(--hue))
   
   --muted: oklch(0.25 0.015 var(--hue))
   --selection-bg: oklch(0.40 0.08 var(--hue))
