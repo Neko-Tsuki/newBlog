@@ -13,12 +13,19 @@ description: 更新「漫展日程」页面的活动条目。当用户提供漫�
 ## 数据文件
 
 ```
-src/data/comicEvents.ts
+src/data/comicEvents.ts          ← 只放数据，录入改这个
+src/utils/comic-utils.ts         ← 派生逻辑，一般不用动
 ```
 
-结构：`rawComicEvents`（字面量数组，**不含 `status`**）→ 经 `computeStatus()` 映射后导出为 `comicEvents`。
+**`src/data/comicEvents.ts`**：导出 `rawComicEvents`（字面量数组，**不含 `status`**）与类型 `RawComicEvent`。除了活动条目，这个文件不放别的。
 
-`comicStats`（筛选栏徽标数字）与 `comicCities`（城市筛选项）都由 `comicEvents` 自动派生，**改数据后无需手动同步**。
+**`src/utils/comic-utils.ts`**：import 上面的数据再加工，导出页面用的东西：
+
+- `comicEvents` —— 校验补齐 + 补上 `computeStatus()` 推导的 `status`
+- `comicStats`（筛选栏徽标数字）、`comicCities`（城市筛选项）、`comicTags`
+- `eventsByStatus()`、`daysToNearestEvent()`
+
+这些**全部自动派生，改数据后无需手动同步**。消费者（`src/pages/comic-events.astro`、`src/components/widget/RecentComicEvent.astro`）都从 `@/utils/comic-utils` 引入。
 
 ## 字段
 
@@ -35,7 +42,13 @@ src/data/comicEvents.ts
 | `tickets` | ✅ | `{ name, price }[]`，如 `[{ name: "普票", price: 78 }]` |
 | `description` | ❌ | 描述（当前页面未渲染） |
 | `tags` | ❌ | 标签数组（当前页面未渲染，但会汇总进 `comicTags`） |
-| `note` | ❌ | 侧边栏「最近漫展」的**专属文案**，支持 `{days}` 占位符。留空则用内置文案 |
+| `noteUpcoming` | ❌ | 侧边栏「最近漫展」文案，**活动未结束时**（含进行中）用。支持 `{days}` 占位符，= 距开展天数 |
+| `noteEnded` | ❌ | 同上，**活动结束后**用。`{days}` = 距开展已过去的天数 |
+
+> 两条 note 按 `computeStatus()` 的结果二选一，**不是**按天数正负判断。
+> 对应字段留空则回退到组件内置的通用文案（「还有 X 天！」/「已经过去 X 天了！」）。
+> 注意 `{days}` 是相对 `startDate` 算的：活动进行中时它表示「距开展已过几天」，
+> 所以 `noteUpcoming` 里写「还有 {days} 天」在活动进行中会读起来别扭。
 
 **不要手写 `status`** —— 它由 `computeStatus()` 按 `startDate`/`endDate` 与当前时间自动推导，手写会随日期失真。
 

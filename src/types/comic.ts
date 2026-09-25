@@ -22,11 +22,14 @@ export interface ComicEvent {
 	description?: string;
 	tags?: string[];
 	/**
-	 * 侧边栏「最近漫展」的专属文案。
-	 * 支持 {days} 占位符，会被替换成距离开展的天数（绝对值）。
-	 * 留空则回退到组件内置的通用文案。
+	 * 侧边栏「最近漫展」的专属文案，按「活动是否已结束」二选一。
+	 * 两者都支持 {days} 占位符，替换成天数的绝对值（相对 startDate 计算）。
+	 * 对应字段留空时，回退到组件内置的通用文案。
 	 */
-	note?: string;
+	/** 未结束时用（含未开始与进行中）：{days} = 距开展的天数 */
+	noteUpcoming?: string;
+	/** 结束后用：{days} = 距开展已过去的天数 */
+	noteEnded?: string;
 }
 
 export interface ComicFilterState {

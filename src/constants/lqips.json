@@ -50,5 +50,11 @@
   "public:assets/images/comic-events/comicup-32.webp": "d4d4d4d4d4d4d4d4d4",
   "public:assets/images/comic-events/cicaf-22.webp": "d4d4d4d4d4d4d4d4d4",
   "public:assets/images/comic-events/bilibili-world-2026.webp": "d4d4d4d4d4d4d4d4d4",
-  "src:assets/images/favicon.png": "7eb9e86faae29ec9e7"
+  "src:assets/images/favicon.png": "7eb9e86faae29ec9e7",
+  "public:assets/images/comic-events/wuhan-tho10.webp": "242325202225523749",
+  "public:assets/images/about-refactor/before-table.webp": "eaf0f5f0f6f9f7fcfc",
+  "public:assets/images/about-refactor/before-dark-broken.webp": "1d242d21242c1b2028",
+  "public:assets/images/about-refactor/after-stack.webp": "ebf2f4f4f8f9eff5f7",
+  "public:assets/images/about-refactor/after-hero.webp": "34523f55695ccfdbd9",
+  "public:assets/images/about-refactor/after-dark.webp": "13171f1d20270e171a"
 }

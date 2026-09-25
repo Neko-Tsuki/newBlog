@@ -99,7 +99,7 @@ src/
 
 | Feature | Entry | Data / Notes |
 |---------|-------|--------------|
-| 漫展日程 Comic Events | `src/pages/comic-events.astro` → `/comic-events/` | 数据在 `src/data/comicEvents.ts`；侧边栏 `RecentComicEvent`。更新条目见 `.claude/skills/update-comic-events/SKILL.md` |
+| 漫展日程 Comic Events | `src/pages/comic-events.astro` → `/comic-events/` | 数据在 `src/data/comicEvents.ts`（只放条目），派生逻辑在 `src/utils/comic-utils.ts`；侧边栏 `RecentComicEvent`。更新条目见 `.claude/skills/update-comic-events/SKILL.md` |
 | 时间进度 Schedule | 侧边栏 `ScheduleWidget.astro` | 四条进度条 + 节假日倒计时；节假日表在组件内，需每年补充 |
 | 动态 Dynamic | `src/pages/dynamic/` | 数据源必须为本地模式 `apiUrl: "/api/dynamic.json"`, `memos.enable: false` |
 | 日记 Diary | `src/pages/diary.astro` → `/diary/` | 内容为 `src/content/diary/*.md` |
@@ -143,7 +143,8 @@ src/
 | `public/assets/images/sponsor/*` | Payment QR codes |
 | `src/styles/twikoo.css` | Custom style overrides |
 | `src/styles/fancybox-custom.css` | Custom lightbox styles |
-| `src/data/comicEvents.ts` | 漫展数据（用户维护的条目） |
+| `src/data/comicEvents.ts` | 漫展数据源（用户维护的条目，只放数据） |
+| `src/utils/comic-utils.ts` | 漫展日程的派生逻辑（状态推导 / 校验补齐 / 统计筛选） |
 | `src/components/comic/*` | 漫展日程页面组件 |
 | `src/components/widget/RecentComicEvent.astro` | 侧边栏「最近漫展」 |
 | `src/components/widget/ScheduleWidget.astro` | 侧边栏「时间进度」（节假日表需每年补充） |

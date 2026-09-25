@@ -11,8 +11,12 @@
 // 5. 首屏与 Swup 切页后按访客的系统时间重算倒计时文案：服务端渲染的是
 //    构建那天算出来的天数，不重算会一直停在构建日（同 ScheduleWidget）。
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
-import { comicEvents, daysToNearestEvent } from "@/data/comicEvents";
 import type { WidgetComponentConfig } from "@/types/config";
+import {
+	comicEvents,
+	computeStatus,
+	daysToNearestEvent,
+} from "@/utils/comic-utils";
 import { getLqipProps } from "@/utils/lqip-utils";
 
 interface Props {
@@ -34,10 +38,15 @@ function renderNote(note: string, days: number): string {
 	return note.replace(/\{days\}/g, String(Math.abs(days)));
 }
 
+// 按「活动是否已结束」二选一：未结束（含进行中）用 noteUpcoming，
+// 已结束用 noteEnded。对应字段留空则回退到下面的通用文案。
+const isEnded = event ? computeStatus(event) === "ended" : false;
+const note = isEnded ? event?.noteEnded : event?.noteUpcoming;
+
 let countdownText = "";
 if (event) {
-	if (event.note) {
-		countdownText = renderNote(event.note, days);
+	if (note) {
+		countdownText = renderNote(note, days);
 	} else if (days > 0) {
 		countdownText = `还有 ${days} 天！本喵已经开始倒数了喵！`;
 	} else if (days === 0) {
@@ -66,7 +75,9 @@ const clientEvents = comicEvents.map((e) => ({
 	city: e.city,
 	venue: e.venue,
 	ticketText: e.tickets.map((t) => `${t.name}${t.price}元`).join(" | "),
-	note: e.note ?? "",
+	// 两条 note 都注入，由客户端按访客本地时间判断该用哪条
+	noteUpcoming: e.noteUpcoming ?? "",
+	noteEnded: e.noteEnded ?? "",
 }));
 ---
 
@@ -228,15 +239,10 @@ const clientEvents = comicEvents.map((e) => ({
 		text-align: center;
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: #ef4444;
+		/* 跟随主题色（--primary 会随 --hue 变、也会随亮暗翻转），不再硬编码红色 */
+		color: var(--primary);
 		line-height: 1.4;
 		padding: 0.5rem 0;
-		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-	}
-	/* 暗色下改用更亮的红，保证对比度 */
-	:global(.dark) .countdown-text {
-		color: #f87171;
-		text-shadow: none;
 	}
 	.event-details {
 		display: flex;
@@ -327,10 +333,13 @@ const clientEvents = comicEvents.map((e) => ({
 
 		var DAY_MS = 86400000;
 
-		function countdownTextFor(startDate, note) {
+		function countdownTextFor(ev) {
 			var days = Math.round(
-				(new Date(startDate).getTime() - Date.now()) / DAY_MS
+				(new Date(ev.startDate).getTime() - Date.now()) / DAY_MS
 			);
+			// 按「活动是否已结束」二选一，判据与服务端 computeStatus() 保持一致
+			var ended = Date.now() > new Date(ev.endDate).getTime();
+			var note = ended ? ev.noteEnded : ev.noteUpcoming;
 			// 优先用该条数据自带的专属文案
 			if (note) return note.replace(/\{days\}/g, String(Math.abs(days)));
 			if (days > 0) return "还有 " + days + " 天！本喵已经开始倒数了喵！";
@@ -365,7 +374,7 @@ const clientEvents = comicEvents.map((e) => ({
 
 			var countdown = root.querySelector(".countdown-text");
 			if (countdown)
-				countdown.textContent = countdownTextFor(ev.startDate, ev.note);
+				countdown.textContent = countdownTextFor(ev);
 
 			var details = root.querySelectorAll(".detail-text");
 			if (details.length >= 4) {
@@ -437,7 +446,7 @@ const clientEvents = comicEvents.map((e) => ({
 				var root = roots[i];
 				var ev = clientEvents[currentIndex(root)];
 				var el = root.querySelector(".countdown-text");
-				if (ev && el) el.textContent = countdownTextFor(ev.startDate, ev.note);
+				if (ev && el) el.textContent = countdownTextFor(ev);
 			}
 		}
 
