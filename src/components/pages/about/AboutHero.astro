@@ -1,0 +1,92 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import { profileConfig } from "@/config/profileConfig";
+
+interface HeroRole {
+	icon?: string;
+	label: string;
+}
+
+interface HeroLink {
+	icon: string;
+	name: string;
+	url: string;
+}
+
+interface Props {
+	/** 显示名，默认取 profileConfig.name */
+	name?: string;
+	/** 一句签名 */
+	tagline?: string;
+	/** 身份标签 */
+	roles?: HeroRole[];
+	/** 社交入口 */
+	links?: HeroLink[];
+}
+
+const {
+	name = profileConfig.name,
+	tagline,
+	roles = [],
+	links = [],
+} = Astro.props;
+---
+
+<div class="not-prose card-base p-5 sm:p-6">
+	<div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+		<div
+			class="shrink-0 w-24 h-24 rounded-2xl overflow-hidden bg-(--btn-regular-bg)"
+		>
+			<ImageWrapper
+				src={profileConfig.avatar || ""}
+				alt={name}
+				class="w-full h-full"
+				loading="eager"
+				widths={[200]}
+				sizes="96px"
+			/>
+		</div>
+
+		<div class="flex-1 min-w-0 text-center sm:text-left">
+			<div class="text-xl font-bold text-(--deep-text)">{name}</div>
+
+			{
+				roles.length > 0 && (
+					<div class="flex flex-wrap gap-2 justify-center sm:justify-start mt-2.5">
+						{roles.map((role) => (
+							<span class="tag-item inline-flex items-center gap-1.5 px-3 py-1 text-sm">
+								{role.icon && <Icon name={role.icon} class="text-[0.9rem]" />}
+								{role.label}
+							</span>
+						))}
+					</div>
+				)
+			}
+
+			{tagline && <p class="mt-3 text-sm text-(--content-meta) italic">“{tagline}”</p>}
+		</div>
+	</div>
+
+	{
+		links.length > 0 && (
+			<div class="flex flex-wrap gap-2 justify-center sm:justify-start mt-5 pt-5 border-t border-(--line-divider)">
+				{links.map((link) => {
+					const isMail = link.url.startsWith("mailto:");
+					return (
+						<a
+							href={link.url}
+							target={isMail ? undefined : "_blank"}
+							rel={isMail ? undefined : "noopener noreferrer"}
+							aria-label={link.name}
+							class="btn-regular rounded-lg h-9 px-3 gap-2 text-sm font-medium active:scale-95"
+						>
+							<Icon name={link.icon} class="text-[1.1rem]" />
+							<span>{link.name}</span>
+						</a>
+					);
+				})}
+			</div>
+		)
+	}
+</div>

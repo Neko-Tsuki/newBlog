@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	icon: string;
+	title: string;
+	/** 副标题 / 说明 */
+	desc?: string;
+	/** 给了 href 就渲染成可点卡片 */
+	href?: string;
+}
+
+const { icon, title, desc, href } = Astro.props;
+
+// 有链接渲染 <a>，没有就渲染 <div>；href 为 undefined 时 Astro 不会输出该属性
+const Tag = href ? "a" : "div";
+const base =
+	"flex items-start gap-3 rounded-(--radius-large) p-4 bg-(--btn-regular-bg) transition-colors duration-200";
+const interactive = href
+	? "no-underline hover:bg-(--btn-regular-bg-hover) active:bg-(--btn-regular-bg-active) active:scale-[0.98]"
+	: "";
+---
+
+<Tag
+	href={href}
+	target={href ? "_blank" : undefined}
+	rel={href ? "noopener noreferrer" : undefined}
+	class:list={[base, interactive]}
+>
+	<span
+		class="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center bg-(--card-bg) text-(--primary)"
+	>
+		<Icon name={icon} class="text-[1.2rem]" />
+	</span>
+	<span class="min-w-0">
+		<span class="block font-bold text-(--deep-text) leading-snug">{title}</span>
+		{
+			desc && (
+				<span class="block text-sm text-(--content-meta) mt-0.5 leading-snug">{desc}</span>
+			)
+		}
+	</span>
+</Tag>

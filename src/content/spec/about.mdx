@@ -3,114 +3,28 @@ title: 关于我
 description: 在代码的世界里修行，在幻想的境界里生活。
 ---
 
-import { Icon } from "astro-icon/components";
+import AboutHero from "@/components/pages/about/AboutHero.astro";
+import ContactCard from "@/components/pages/about/ContactCard.astro";
+import InfoCard from "@/components/pages/about/InfoCard.astro";
 
-export function ContactCard({ icon, title, subtitle, href }) {
-  const isIconify = icon && icon.includes(':');
+{/* 页面标题已由布局的 sr-only h1 与横幅承担，这里用名片代替重复的 H1 */}
+<AboutHero
+  name="尘尘 (LuluChan)"
+  tagline="在代码的世界里修行，在幻想的境界里生活。"
+  roles={[
+    { icon: "fa7-solid:pen-nib", label: "个人势 Blogger" },
+    { icon: "fa7-solid:shirt", label: "永远在路上的 Coser" },
+    { icon: "fa7-solid:bug", label: "全不沾开发者" },
+  ]}
+  links={[
+    { icon: "fa7-brands:github", name: "GitHub", url: "https://github.com/Neko-Tsuki" },
+    { icon: "simple-icons:mastodon", name: "Fediverse", url: "https://nya.one/@hokori" },
+    { icon: "fa7-brands:x-twitter", name: "X", url: "https://x.com/Luchan_Moeri" },
+    { icon: "fa7-regular:envelope", name: "Email", url: "mailto:yumorichan@duck.com" },
+  ]}
+/>
 
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group relative block no-underline rounded-[28px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-2 active:scale-[0.96]"
-    >
-      {/* 外部光晕层：模拟 Apple 的悬浮深度感 */}
-      <div className="
-        absolute -inset-px rounded-[28px] opacity-0 group-hover:opacity-100 
-        bg-gradient-to-b from-zinc-200/50 to-transparent 
-        dark:from-zinc-700/50 dark:to-transparent 
-        transition-opacity duration-500
-      " />
-
-      {/* 核心容器 */}
-      <div className="
-        relative
-        overflow-hidden
-        h-full
-        p-7
-        rounded-[28px]
-        border
-        border-zinc-200/40
-        dark:border-zinc-800/40
-        bg-white/50
-        dark:bg-zinc-900/50
-        backdrop-blur-2xl
-        shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-        group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]
-        dark:group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]
-        transition-all
-        duration-700
-      ">
-        
-        {/* 图标：改为更接近 iOS App 的圆角矩形比例 */}
-        <div className="
-          w-14 
-          h-14 
-          flex 
-          items-center 
-          justify-center 
-          rounded-[18px] 
-          mb-8 
-          bg-white/80 
-          dark:bg-zinc-800/80 
-          shadow-inner
-          ring-1
-          ring-black/5
-          dark:ring-white/5
-          group-hover:scale-110 
-          group-hover:rotate-[2deg]
-          transition-all 
-          duration-500
-        ">
-          {isIconify ? (
-            <Icon name={icon} className="w-7 h-7 text-zinc-800 dark:text-zinc-200" />
-          ) : (
-            <span className="text-3xl font-apple-emoji" role="img">{icon}</span>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="
-            text-[19px] 
-            font-bold 
-            tracking-tight
-            text-zinc-900 
-            dark:text-zinc-50
-          ">
-            {title}
-          </h3>
-
-          <p className="
-            text-[15px] 
-            leading-relaxed
-            text-zinc-500 
-            dark:text-zinc-400
-            font-medium
-          ">
-            {subtitle}
-          </p>
-        </div>
-
-        {/* 底部微小的装饰线条，增加精密感 */}
-        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-zinc-200/50 dark:via-zinc-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-      </div>
-    </a>
-  );
-}
-
-# 🏮 关于我 / About Me
-
-Hi！我是 **尘尘 (LuluChan)**。  
-一个在早上 9:07 分会和猫讨论量子披萨配方的：
-
-- 📝 个人势 **Blogger**  
-- 👗 永远在路上的 **Coser**  
-- 💻 永远在修复 Bug 和写 Bug 的 **全不沾开发者**  
-
-> **“在代码的世界里修行，在幻想的境界里生活。”**
-
----
+Hi！我是尘尘，一个在早上 9\:07 分会和猫讨论量子披萨配方的家伙 —— 写点博客、出点 cos，顺手把 Bug 从一个地方挪到另一个地方。
 
 ## 🎮 律动与幻想 (Interests)
 
@@ -120,8 +34,6 @@ Hi！我是 **尘尘 (LuluChan)**。
 
 深受 **《东方 Project》** 的影响。无论是博丽神社的日常，还是对 **琪露诺** 等角色的喜爱，都构成了我创作灵感的源泉。
 
----
-
 ## 🚀 从 Hexo 到 Astro (The Journey)
 
 经过一个月的“大搬家”，我正式从 Hexo 迁徙到了 **Astro**。
@@ -130,78 +42,73 @@ Hi！我是 **尘尘 (LuluChan)**。
 
 并不是 Hexo 不够优秀，而是 Astro 给了我一种“全知全能”的错觉。在这里，没有预设的束缚，每一个页面、每一行 CSS 都可以完全自定义。在折腾主题的过程中，我不小心点满了许多~~邪道~~前端技能点。虽然它不像 Hexo 那样“开箱即用”，但这种 **亲手构建** 的快感正是开发者所追求的。
 
----
-
 ## 🛠️ 关于本站 (Tech Stack)
 
-本站是基于 **Astro** 框架构建的个性化试验田，采用了 [Firefly](https://github.com/CuteLeaf/Firefly) 模板。
+本站是基于 **Astro** 构建的个性化试验田，采用了 [Firefly](https://github.com/CuteLeaf/Firefly) 模板。
 
-- **核心框架**: Astro (Modern & Fast)  
-- **视觉风格**: 基于 [Fuwari](https://github.com/saicaca/fuwari) 的二次进化  
-- **评论系统**: Waline (定制化样式)
+<div className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-3 my-5">
+  <InfoCard icon="simple-icons:astro" title="Astro" desc="核心框架 · Modern & Fast" href="https://astro.build" />
+  <InfoCard icon="fa7-solid:fire" title="Firefly" desc="主题模板" href="https://github.com/CuteLeaf/Firefly" />
+  <InfoCard icon="fa7-solid:palette" title="Fuwari" desc="视觉风格 · 二次进化" href="https://github.com/saicaca/fuwari" />
+  <InfoCard icon="fa7-solid:comments" title="Waline" desc="评论系统 · 定制化样式" href="https://waline.js.org" />
+</div>
 
-> ::github{repo="CuteLeaf/Firefly"}  
-> ::github{repo="saicaca/fuwari"}
+<div className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-3 my-5">
 
----
+::github{repo="CuteLeaf/Firefly"}
 
-## 🌟 附加功能与引用 (Additional Features & Credits)
+::github{repo="saicaca/fuwari"}
+
+</div>
+
+## 🌟 附加功能与致谢 (Features & Credits)
 
 本站在 Firefly 主题基础上，从 [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde) 整合了以下侧边栏功能模块：
 
-| 功能 | 说明 | 来源 |
-|------|------|------|
-| ⏰ **时间问候** | 根据时段显示问候语 + 随机背景图 | Firefly-hyde |
-| 💬 **今日一言** | 每日随机展示一句名言 | Firefly-hyde |
-| 📅 **日期进度** | 年/月/周进度条 + 节假日倒计时 | Firefly-hyde |
-| 🤖 **AI 摘要** | 文章页打字机效果的 AI 摘要展示 | Firefly-hyde |
-| 👋 **欢迎弹窗** | 首页访客位置识别欢迎提示 | Firefly-hyde |
-| 📝 **动态-日记** | 微博式短内容发布，支持图片、搜索筛选与内联评论 | Firefly-hyde |
+<div className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-3 my-5">
+  <InfoCard icon="fa7-solid:clock" title="时间问候" desc="根据时段显示问候语 + 随机背景图" />
+  <InfoCard icon="fa7-solid:quote-left" title="今日一言" desc="每日随机展示一句名言" />
+  <InfoCard icon="fa7-solid:calendar-day" title="日期进度" desc="年 / 月 / 周进度条 + 节假日倒计时" />
+  <InfoCard icon="fa7-solid:robot" title="AI 摘要" desc="文章页打字机效果的 AI 摘要展示" />
+  <InfoCard icon="fa7-solid:hand" title="欢迎弹窗" desc="首页访客位置识别欢迎提示" />
+  <InfoCard icon="fa7-solid:pen-to-square" title="动态-日记" desc="微博式短内容发布，支持图片、搜索筛选与内联评论" />
+</div>
 
-此外，本站启用了 **时间问候 (TimeGreeting)** 组件与 **动态-日记** 功能——前者根据时段自动切换问候语与背景，后者提供了类似微博的短内容记录体验。
-
-> 所有整合的功能均基于 MIT 开源协议，感谢 [sin_13](https://cnb.cool/sin_13) 的 Firefly-hyde 项目提供灵感与参考实现。
+以上模块均基于 MIT 开源协议，感谢 [sin_13](https://cnb.cool/sin_13) 的 Firefly-hyde 项目提供灵感与参考实现。
 
 ### 🎪 漫展日程
 
-**漫展日程** 页面的设计思路来自 [潮鸣](https://qwq.sigrika.cc/)。看到 ta 把逛展记录整理成这样一个页面，觉得很对胃口，于是在 Firefly 上重新实现了一版——活动条目、状态与城市筛选、侧边栏「最近漫展」以及自动轮播。
+**漫展日程** 页面的设计思路来自 [潮鸣](https://qwq.sigrika.cc/)。看到 ta 把逛展记录整理成这样一个页面，觉得很对胃口，于是在 Firefly 上重新实现了一版 —— 活动条目、状态与城市筛选、侧边栏「最近漫展」以及自动轮播。
 
 > **感谢 [潮鸣](https://qwq.sigrika.cc/) 提供「漫展日程」的思路与灵感。**
 
----
-
 ## 📫 联络渠道 (Contact)
 
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-
-<ContactCard
-  icon="fa7-brands:github"
-  title="GitHub"
-  subtitle="Kitamori · 开源项目与代码仓库"
-  href="https://github.com/Neko-Tsuki"
-/>
-
-<ContactCard
-  icon="fa7-solid:rss"
-  title="Fediverse"
-  subtitle="@Hokori · 在联邦宇宙找到我"
-  href="https://nya.one/@hokori"
-/>
-
-<ContactCard
-  icon="fa7-brands:x-twitter"
-  title="X (Twitter)"
-  subtitle="@Luchan_Moeri · 技术碎碎念"
-  href="https://x.com/Luchan_Moeri"
-/>
-
-<ContactCard
-  icon="fa7-regular:envelope"
-  title="Email"
-  subtitle="yumorichan@duck.com"
-  href="mailto:yumorichan@duck.com"
-/>
-
+<div className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-3 my-5">
+  <ContactCard
+    icon="fa7-brands:github"
+    title="GitHub"
+    subtitle="Kitamori · 开源项目与代码仓库"
+    href="https://github.com/Neko-Tsuki"
+  />
+  <ContactCard
+    icon="simple-icons:mastodon"
+    title="Fediverse"
+    subtitle="@Hokori · 在联邦宇宙找到我"
+    href="https://nya.one/@hokori"
+  />
+  <ContactCard
+    icon="fa7-brands:x-twitter"
+    title="X (Twitter)"
+    subtitle="@Luchan_Moeri · 技术碎碎念"
+    href="https://x.com/Luchan_Moeri"
+  />
+  <ContactCard
+    icon="fa7-regular:envelope"
+    title="Email"
+    subtitle="yumorichan@duck.com"
+    href="mailto:yumorichan@duck.com"
+  />
 </div>
 
 ---
