@@ -138,6 +138,8 @@ export const siteConfig: SiteConfig = {
 		booknav: false,
 		// 日记页面开关（本地自定义）
 		diary: true,
+		// 项目展示页开关（上游 6.16.8 新增；按其他可选页面的习惯默认关掉，要用改成 true 并加导航项）
+		projects: false,
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
@@ -322,6 +324,14 @@ export const siteConfig: SiteConfig = {
 		// 支持通配符 *，例如：["i0.hdslb.com", "*.bilibili.com"]
 		// 可解决指定域名图片加载时的 403 问题（如防盗链图片）
 		noReferrerDomains: [],
+	},
+
+	// ── 订阅 (RSS / Atom) 配置 ──────────────────────────────────（上游 6.16.8 新增）
+	feed: {
+		// 订阅条目内容模式：
+		// - "full": 包含文章正文全文（默认）
+		// - "summary": 仅包含文章摘要/描述，不含正文，体积更小
+		contentMode: "full",
 	},
 
 	// 站点语言，在本配置文件顶部SITE_LANG定义

@@ -70,6 +70,24 @@ type ZiyuanData =
 			title: string;
 			quotes: { text: string; author: string }[];
 	  };
+type ProjectLink = {
+	label: string;
+	icon: string;
+	value: string;
+};
+
+type ProjectData = {
+	title: string;
+	published: Date;
+	draft: boolean;
+	order?: number;
+	description: string;
+	image: string;
+	tags: string[];
+	link: ProjectLink[];
+	status: string;
+	lang: string;
+};
 
 type ContentCollection<T> = CollectionConfig<
 	ZodType<T>,
@@ -177,16 +195,43 @@ const ziyuanCollection: ContentCollection<ZiyuanData> = defineCollection({
 	]),
 });
 
+const projectsCollection: ContentCollection<ProjectData> = defineCollection({
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+	schema: z.object({
+		title: z.string(),
+		published: z.date(),
+		draft: z.boolean().optional().default(false),
+		order: z.number().optional(),
+		description: z.string().optional().default(""),
+		image: z.string().optional().default(""),
+		tags: z.array(z.string()).optional().default([]),
+		link: z
+			.array(
+				z.object({
+					label: z.string(),
+					icon: z.string().optional().default(""),
+					value: z.string(),
+				}),
+			)
+			.optional()
+			.default([]),
+		status: z.string().optional().default(""),
+		lang: z.string().optional().default(""),
+	}),
+});
+
 export const collections: {
 	dynamic: typeof dynamicCollection;
 	posts: typeof postsCollection;
 	spec: typeof specCollection;
 	ziyuan: typeof ziyuanCollection;
 	diary: typeof diaryCollection;
+	projects: typeof projectsCollection;
 } = {
 	dynamic: dynamicCollection,
 	posts: postsCollection,
 	spec: specCollection,
 	ziyuan: ziyuanCollection,
 	diary: diaryCollection,
+	projects: projectsCollection,
 };

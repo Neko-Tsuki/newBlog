@@ -98,6 +98,7 @@ export type SiteConfig = {
 		dynamic: boolean; // 动态页面开关
 		anime: boolean; // 追番页面开关（自定义，Bilibili + TMDB）
 		diary: boolean; // 日记页面开关（自定义）
+		projects: boolean; // 项目展示页开关
 	};
 
 	// 追番配置（自定义页面，Bilibili + TMDB，兼容旧 anime 追番页）
@@ -256,5 +257,15 @@ export type SiteConfig = {
 		 * 仅影响匹配域名的图片标签，不影响其他链接的 referrer 行为
 		 */
 		noReferrerDomains?: string[];
+	};
+
+	// 订阅 (RSS / Atom) 配置
+	feed?: {
+		/**
+		 * 订阅条目内容模式：
+		 * - "full": 包含文章正文全文（默认）
+		 * - "summary": 仅包含文章摘要/描述，不含正文
+		 */
+		contentMode?: "full" | "summary";
 	};
 };
