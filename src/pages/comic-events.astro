@@ -3,16 +3,15 @@
 // 对应规格文档 §5
 //
 // 与规格的差异：
-// 1. 规格外层再包了一层 <Layout>，但 Firefly 的 MainGridLayout 内部已经 import
-//    并包裹了 Layout.astro，再包一次会重复嵌套；且 MainGridLayout 的 Props
-//    没有 keywords/author，故一并省略。Layout.astro 会自动把 title 拼成
-//    「漫展日程 - <站点名>」。
+// 1. 规格外层再包了一层 <Layout>，但 Firefly 的 MainGridLayout 内部已 import 并包裹
+//    Layout.astro，再包一次会重复嵌套；其 Props 也没有 keywords/author，故一并省略。
+//    Layout.astro 会自动把 title 拼成「漫展日程 - <站点名>」。
 // 2. 页头与筛选栏改用 Firefly 各页统一的 card-base 卡片（同 guestbook.astro），
 //    因此需要引入 common.css 提供 .page-heading / .page-icon。
-// 3. 改为按状态分区渲染：即将到来 / 正在进行 / 完结撒花。
-//    空分区服务端直接不渲染；筛选时同时处理卡片与分区两级可见性。
-// 4. 分区归属与状态徽标在客户端按访客本地时间重算一遍：静态产物里烤的是
-//    构建那天的状态，构建之后日期再走也不会自己变（详见下方脚本注释）。
+// 3. 改为按状态分区渲染（即将到来 / 正在进行 / 完结撒花），空分区服务端直接不渲染；
+//    筛选时同时处理卡片与分区两级可见性。
+// 4. 分区归属与状态徽标在客户端按访客本地时间重算：静态产物里烤的是构建那天的状态，
+//    构建之后日期再走也不会自己变（详见下方脚本注释）。
 import EventSection from "@/components/comic/EventSection.astro";
 import FilterBar from "@/components/comic/FilterBar.astro";
 import PageHeader from "@/components/comic/PageHeader.astro";
@@ -71,14 +70,12 @@ const endedEvents = eventsByStatus("ended");
 </style>
 
 <script>
-	// 静态产物里烤的是「构建那天」的状态：构建之后日期再走，分区归属和状态徽标
-	// 都不会自己变（侧边栏「最近漫展」同理，见 RecentComicEvent.astro 注释 5）。
-	// 所以首屏与 Swup 切页后都按访客的本地时间重算一遍。
+	// 静态产物里烤的是「构建那天」的状态：构建之后日期再走，分区归属和状态徽标都不会
+	// 自己变（侧边栏「最近漫展」同理，见 RecentComicEvent.astro 注释 5）。所以首屏与
+	// Swup 切页后都按访客的本地时间重算一遍。
 	//
-	// 筛选需要同时处理「分区」和「卡片」两级可见性：
-	// 1. 状态筛选决定哪些分区可见
-	// 2. 城市筛选决定分区内哪些卡片可见；分区内全被滤掉时连分区一起隐藏
-	// 3. 所有分区都不可见时显示全局空状态
+	// 筛选需要同时处理「分区」和「卡片」两级可见性：状态筛选决定哪些分区可见，城市筛选
+	// 决定分区内哪些卡片可见；分区内全被滤掉时连分区一起隐藏，全不可见时显示全局空状态。
 	type ComicEventStatus = "upcoming" | "ongoing" | "ended";
 	type ComicFilterState = { status: string; city: string };
 

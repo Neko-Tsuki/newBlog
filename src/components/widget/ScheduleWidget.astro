@@ -1,24 +1,9 @@
 ---
-// ============================================================
-// Schedule Widget —— 节假日倒计时进度条组件
-// 对应《节假日倒计时进度条组件（Schedule Widget）完整复现》规格
-//
-// 与规格的差异（为接入 Firefly）：
-// 1. 外层改用 WidgetLayout.astro 组件，而非手写 <widget-layout> 裸标签。
-//    卡片外观、标题栏、onload-animation、widget-hide-on-post 等类
-//    由 WidgetLayout 与 SideBar.astro 自动处理，不在此硬编码。
-// 2. 暗色适配改用 Firefly 的 :global(.dark) —— 规格写的
-//    html[data-theme="one-dark"] 在 Firefly 中不存在，永远不会生效。
-// 3. 文字颜色改用 Tailwind 的 neutral 类（同站内其他 widget），
-//    避开 Firefly v7 未定义的 --text-primary / --text-secondary / --text-tertiary。
-// 4. 去掉规格里无人使用且非确定性的 Math.random() data-schedule-id。
-// 5. 客户端刷新覆盖全部四条进度条与节假日倒计时（规格只刷了「今日」，
-//    与其 §4.4 声称的「一分钟刷新已覆盖」不符，跨天后年/月/周会失真）。
-// 6. 定时器加 Swup 守卫，避免每次切页新增一个 setInterval 造成泄漏。
-// 7. 服务端渲染只是兜底值：构建机的时区未必等于访客的时区（部署平台多为
-//    UTC），所以页面加载时立刻按访客的系统时间重算一次，而不是等 60 秒的
-//    定时器；服务端那部分也改成在东八区挂钟这一帧里算，免得构建机时区漏进页面。
-// ============================================================
+// 节假日倒计时进度条组件，规格见《节假日倒计时进度条组件（Schedule Widget）完整复现》。
+// 与规格的差异（为接入 Firefly）：外层改用 WidgetLayout，卡片外观、标题栏、动画
+// 由它和 SideBar 处理；暗色用 :global(.dark)（规格的 html[data-theme="one-dark"]
+// 在 Firefly 不存在）；文字色避开 v7 未定义的 --text-primary/secondary/tertiary，
+// 改用 Tailwind neutral 类；客户端刷新覆盖全部四条进度与节假日，而非只刷「今日」。
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import type { WidgetComponentConfig } from "@/types/config";
 
@@ -48,17 +33,14 @@ const holidays: Holiday[] = [
 	{ name: "国庆节", date: "2026-10-01" },
 ];
 
-// ============================================================
 // 时间进度计算
-// ============================================================
 const MS_DAY = 86400000;
 // 东八区偏移：站点按北京时间展示，节假日也都是中国的
 const BEIJING_OFFSET_MS = 8 * 60 * 60 * 1000;
 
 // 平移后的时间点，其 UTC 字段即北京时间的年/月/日/星期/时/分。
-// 这样构建机时区就不会漏进渲染结果 —— 部署平台（Vercel / Cloudflare）
-// 的构建机跑在 UTC，直接用 new Date() 读它的挂钟，页面上的日期会比
-// 访客看到的时间早一天（09-22 17:00 UTC 构建，访客此刻已是 09-23）。
+// 构建机（Vercel / Cloudflare）跑在 UTC，直接读它的挂钟会让页面上的
+// 日期比访客看到的时间早一天（09-22 17:00 UTC 构建，访客此刻已是 09-23）。
 const now = new Date(Date.now() + BEIJING_OFFSET_MS);
 
 const year = now.getUTCFullYear();
@@ -73,7 +55,6 @@ const dayStamp = (ymd: string): number => {
 	return Date.UTC(y, m - 1, d);
 };
 
-// ---------- 本年进度 ----------
 const yearStart = Date.UTC(year, 0, 1);
 const yearEnd = Date.UTC(year + 1, 0, 1);
 const yearTotal = Math.round((yearEnd - yearStart) / MS_DAY);
@@ -82,7 +63,6 @@ const yearPassed = Math.floor((now.getTime() - yearStart) / MS_DAY) + 1;
 const yearRemaining = yearTotal - yearPassed;
 const yearPercent = ((yearPassed / yearTotal) * 100).toFixed(1);
 
-// ---------- 本月进度 ----------
 const monthStart = Date.UTC(year, month, 1);
 const monthEnd = Date.UTC(year, month + 1, 1);
 const monthTotal = Math.round((monthEnd - monthStart) / MS_DAY);
@@ -90,17 +70,14 @@ const monthPassed = Math.floor((now.getTime() - monthStart) / MS_DAY) + 1;
 const monthRemaining = monthTotal - monthPassed;
 const monthPercent = ((monthPassed / monthTotal) * 100).toFixed(1);
 
-// ---------- 本周进度（周一为一周开始） ----------
 const daysFromMonday = (dayOfWeek + 6) % 7; // 周一=0, 周日=6
 const weekPassed = daysFromMonday + 1; // 含今天
 const weekRemaining = 7 - weekPassed;
 const weekPercent = ((weekPassed / 7) * 100).toFixed(1);
 
-// ---------- 今日进度 ----------
 const hoursRemaining = Math.ceil(24 - hoursPassed);
 const dayPercent = ((hoursPassed / 24) * 100).toFixed(1);
 
-// ---------- 今日日期格式化 ----------
 const weekdays = [
 	"星期日",
 	"星期一",
@@ -112,7 +89,6 @@ const weekdays = [
 ];
 const todayDateStr = `${year}年${month + 1}月${dayOfMonth}日 ${weekdays[dayOfWeek]}`;
 
-// ---------- 最近节假日 ----------
 const todayMidnight = Date.UTC(year, month, dayOfMonth);
 
 // 收集所有未来的节假日（含今天）
@@ -147,7 +123,6 @@ const holidayDaysLeft = nearestHoliday
 	style={style}
 >
 	<div class="schedule-container">
-		<!-- ========== 今日日期 ========== -->
 		<div class="today-date text-center mb-4">
 			<span
 				class="text-sm font-medium text-neutral-500 dark:text-neutral-400 today-date-content"
@@ -156,7 +131,6 @@ const holidayDaysLeft = nearestHoliday
 			</span>
 		</div>
 
-		<!-- ========== 进度区域 ========== -->
 		<div class="progress-section space-y-4">
 			<!-- 本年进度 -->
 			<div class="progress-item flex items-center gap-3">
@@ -239,7 +213,6 @@ const holidayDaysLeft = nearestHoliday
 			</div>
 		</div>
 
-		<!-- ========== 节假日倒计时 ========== -->
 		<div
 			class="holiday-section mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700"
 		>
@@ -265,10 +238,7 @@ const holidayDaysLeft = nearestHoliday
 </WidgetLayout>
 
 <style>
-	/* ============================================================
-	   <progress> 元素跨浏览器样式
-	   appearance:none 必须写在最前，否则伪元素规则会被系统样式覆盖
-	   ============================================================ */
+	/* <progress> 跨浏览器样式：appearance:none 必须写在最前，否则伪元素规则会被系统样式覆盖 */
 	progress.schedule-progress-bar {
 		display: block;
 		width: 100%;
@@ -320,14 +290,12 @@ const holidayDaysLeft = nearestHoliday
 			"星期六",
 		];
 
-		// 服务端已渲染好首屏，这里重算全部四条进度与节假日，
-		// 使跨天/跨小时后无需重新构建也能保持正确
+		// 重算全部四条进度与节假日，使跨天/跨小时后无需重新构建也能保持正确
 		function computeAll() {
 			var now = new Date();
 			var year = now.getFullYear();
 			var month = now.getMonth();
 
-			// 本年
 			var yearStart = new Date(year, 0, 1);
 			var yearEnd = new Date(year + 1, 0, 1);
 			var yearTotal = Math.round((yearEnd - yearStart) / MS_DAY);
@@ -335,7 +303,6 @@ const holidayDaysLeft = nearestHoliday
 			var yearRemaining = yearTotal - yearPassed;
 			var yearPercent = ((yearPassed / yearTotal) * 100).toFixed(1);
 
-			// 本月
 			var monthStart = new Date(year, month, 1);
 			var monthEnd = new Date(year, month + 1, 1);
 			var monthTotal = Math.round((monthEnd - monthStart) / MS_DAY);
@@ -348,12 +315,10 @@ const holidayDaysLeft = nearestHoliday
 			var weekRemaining = 7 - weekPassed;
 			var weekPercent = ((weekPassed / 7) * 100).toFixed(1);
 
-			// 今日
 			var hoursPassed = now.getHours() + now.getMinutes() / 60;
 			var hoursRemaining = Math.ceil(24 - hoursPassed);
 			var dayPercent = ((hoursPassed / 24) * 100).toFixed(1);
 
-			// 今日日期
 			var todayDateStr =
 				year +
 				"年" +

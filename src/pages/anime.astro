@@ -10,12 +10,10 @@ import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import type { StandardizedAnime } from "@/types/anime";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
 
-// 检查页面是否启用
 if (!siteConfig.pages.anime) {
 	return Astro.redirect("/404/");
 }
 
-// 获取构建时间
 const buildTime = formatDateI18nWithTime(new Date());
 
 // 追番配置
@@ -24,8 +22,6 @@ const TMDB_API_KEY = animeConfig?.tmdb?.apiKey;
 const TMDB_LIST_ID = animeConfig?.tmdb?.listId;
 const BILIBILI_UID = animeConfig?.bilibili?.uid;
 const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
-
-// ============ 类型定义 ============
 
 interface TmdbItem {
 	id: number;
@@ -53,8 +49,6 @@ interface BilibiliItem {
 	season_id: number;
 	new_ep?: { index_show?: string };
 }
-
-// ============ 数据获取 ============
 
 /** 从本地缓存读取 TMDB 数据，读取失败返回空数组 */
 function readTmdbLocalCache(): TmdbItem[] {
@@ -159,7 +153,6 @@ if (BILIBILI_UID) {
 			return items;
 		}
 
-		// 并发获取追番和追剧
 		const [animeItems, dramaItems] = await Promise.all([
 			fetchBilibiliByType(1),
 			fetchBilibiliByType(2),
@@ -173,9 +166,6 @@ if (BILIBILI_UID) {
 	}
 }
 
-// ============ 数据标准化 ============
-
-// 标准化 TMDB 数据
 let animeList: StandardizedAnime[] = tmdbItems.map((anime) => {
 	const title = anime.title || anime.name || "";
 	const originalTitle = anime.original_title || anime.original_name || "";
@@ -222,7 +212,6 @@ if (bilibiliItems.length > 0) {
 	animeList = [...animeList, ...bilibiliMapped];
 }
 
-// 统计数据
 const totalCount = animeList.length;
 const tmdbAverageRating =
 	tmdbItems.length > 0
@@ -270,7 +259,6 @@ const isConfigured = !!(BILIBILI_UID || (TMDB_API_KEY && TMDB_LIST_ID));
         </div>
 
         {!isConfigured ? (
-          /* 未配置提示 */
           <div class="text-center py-16">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
               <Icon is:inline name="material-symbols:settings" class="text-[2rem] text-(--btn-content)" />

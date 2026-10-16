@@ -1,12 +1,6 @@
 import { siteConfig } from "../config";
 
-/**
- * Format relative time for diary moments
- * @param dateString ISO date string
- * @param minutesAgo text for minutes
- * @param hoursAgo text for hours
- * @param daysAgo text for days
- */
+/** Format relative time for diary moments; dateString must be an ISO string, the *Ago params are the localized suffix texts */
 export function formatRelativeTime(
 	dateString: string,
 	minutesAgo: string,

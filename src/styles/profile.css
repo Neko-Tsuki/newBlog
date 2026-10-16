@@ -2,7 +2,7 @@
  *
  * 模式由 <html data-profile-link-mode> 决定，默认值来自 profileConfig.linkDisplayMode，
  * 首帧前由 Layout.astro 的内联脚本按 localStorage 覆盖，之后可在显示设置面板里即时切换。
- * 两种模式共用同一份 DOM，只靠这里的 CSS 改形态，避免切换时重排组件。
+ * 两种模式共用同一份 DOM，只靠 CSS 改形态，避免切换时重排组件。
  */
 
 .profile-links {
@@ -13,7 +13,7 @@
 	margin-bottom: 0.25rem;
 }
 
-/* ── 基础样式 = 仅图标模式（原版行为）：紧凑方形按钮，只留图标 ────────── */
+/* 基础样式 = 仅图标模式（原版行为）：紧凑方形按钮，只留图标 */
 
 .profile-link {
 	flex: 0 0 auto;
@@ -44,7 +44,7 @@
 	display: inline;
 }
 
-/* ── 横幅模式：横向宽按钮、常显名称 ────────────────────────────────── */
+/* 横幅模式：横向宽按钮、常显名称 */
 
 /* flex: 1 1 auto —— 换行先按内容宽度决定，同一行的按钮再拉伸铺满剩余空间。
  * 于是侧边栏窄到放不下两个按钮时会自动从一行两个变成一行一个，
@@ -72,7 +72,6 @@
  * 负 margin 抵掉卡片的 p-3，圆角由 card-base 的 overflow-hidden 裁出来。 */
 
 .profile-birthday-banner {
-	/* 抵掉卡片 padding：p-3 = 0.75rem */
 	margin: -0.75rem -0.75rem 0.7rem;
 	padding: 0.4rem 0.5rem; /* 侧边距压小，省下的横向空间直接决定它会不会换行 */
 	font-size: 0.75rem;

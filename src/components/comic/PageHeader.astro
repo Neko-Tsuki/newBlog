@@ -2,10 +2,8 @@
 // 漫展日程页头（card-base 卡片）
 // 对应规格文档 §6
 //
-// 与规格的差异：外观改为 Firefly 各页统一的 card-base 页头
-// （同 src/pages/guestbook.astro），并复用 common.css 的 .page-heading / .page-icon。
-// 这套样式本身已处理明暗主题，且与站内其他页面一致。
-//
+// 与规格的差异：外观改为 Firefly 各页统一的 card-base 页头（同 guestbook.astro），
+// 复用 common.css 的 .page-heading / .page-icon（已处理明暗主题，且与站内其他页一致）。
 // 依赖 src/styles/pages/common.css，使用方页面需 import 该文件。
 // 注意：不要在本组件里定义 .page-header，会与 common.css 的全局同名类冲突。
 import { Icon } from "astro-icon/components";

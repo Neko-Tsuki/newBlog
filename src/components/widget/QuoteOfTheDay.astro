@@ -71,12 +71,10 @@ const quote = quotes[randomIndex] || { text: "暂无名言", author: "" };
 		margin-top: 0.25rem;
 	}
 
-	/* 深色模式优化 */
 	:global(html.dark) .quote-text {
 		color: #fff;
 	}
 
-	/* 悬停效果 */
 	:global(.quote-content:hover .quote-text) {
 		color: var(--primary);
 		transition: color 0.2s ease;

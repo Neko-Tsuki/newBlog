@@ -29,7 +29,6 @@ Usage: pnpm new-diary <filename>`)
 
 let fileName = args[0]
 
-// Add .md extension if not present
 const fileExtensionRegex = /\.(md)$/i
 if (!fileExtensionRegex.test(fileName)) {
   fileName += ".md"

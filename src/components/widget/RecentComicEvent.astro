@@ -8,8 +8,8 @@
 //    改为 is:inline define:vars 由服务端注入。
 // 3. 分页改为事件委托 + 从 DOM 读取当前下标，兼容 Swup 切页。
 // 4. 切换时给内容区加淡入上浮动画（规格无动画）。
-// 5. 首屏与 Swup 切页后按访客的系统时间重算倒计时文案：服务端渲染的是
-//    构建那天算出来的天数，不重算会一直停在构建日（同 ScheduleWidget）。
+// 5. 首屏与 Swup 切页后按访客的系统时间重算倒计时文案：服务端渲染的是构建那天
+//    算出来的天数，不重算会一直停在构建日（同 ScheduleWidget）。
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import type { WidgetComponentConfig } from "@/types/config";
 import {
@@ -39,14 +39,12 @@ const initialIndex = event
 	? comicEvents.findIndex((e) => e.id === event.id)
 	: 0;
 
-// 倒计时文案：优先用该条数据自带的 note（{days} 会替换成天数），
-// 否则回退到内置的通用文案
+// 倒计时文案：优先用该条数据自带的 note（{days} 会替换成天数），否则回退到内置的通用文案
 function renderNote(note: string, days: number): string {
 	return note.replace(/\{days\}/g, String(Math.abs(days)));
 }
 
-// 按「活动是否已结束」二选一：未结束（含进行中）用 noteUpcoming，
-// 已结束用 noteEnded。对应字段留空则回退到下面的通用文案。
+// 按「活动是否已结束」二选一：未结束（含进行中）用 noteUpcoming，已结束用 noteEnded
 const isEnded = event ? computeStatus(event) === "ended" : false;
 const note = isEnded ? event?.noteEnded : event?.noteUpcoming;
 
@@ -193,7 +191,6 @@ const clientEvents = comicEvents.map((e) => ({
 		flex-direction: column;
 		gap: 0.75rem;
 	}
-	/* 可切换的内容区：切换时整体淡入上浮 */
 	.event-body {
 		display: flex;
 		flex-direction: column;
@@ -246,7 +243,7 @@ const clientEvents = comicEvents.map((e) => ({
 		text-align: center;
 		font-size: 1.25rem;
 		font-weight: 700;
-		/* 跟随主题色（--primary 会随 --hue 变、也会随亮暗翻转），不再硬编码红色 */
+		/* 跟随主题色（--primary 会随 --hue 变、也会随亮暗翻转） */
 		color: var(--primary);
 		line-height: 1.4;
 		padding: 0.5rem 0;
@@ -347,7 +344,6 @@ const clientEvents = comicEvents.map((e) => ({
 			// 按「活动是否已结束」二选一，判据与服务端 computeStatus() 保持一致
 			var ended = Date.now() > new Date(ev.endDate).getTime();
 			var note = ended ? ev.noteEnded : ev.noteUpcoming;
-			// 优先用该条数据自带的专属文案
 			if (note) return note.replace(/\{days\}/g, String(Math.abs(days)));
 			if (days > 0) return "还有 " + days + " 天！本喵已经开始倒数了喵！";
 			if (days === 0) return "就是今天！冲鸭！！";
@@ -369,7 +365,6 @@ const clientEvents = comicEvents.map((e) => ({
 			var body = root.querySelector(".event-body");
 			if (!body) return;
 
-			// 写入新内容
 			var nameEl = root.querySelector(".event-name span:last-child");
 			if (nameEl) nameEl.textContent = ev.title;
 
@@ -404,7 +399,6 @@ const clientEvents = comicEvents.map((e) => ({
 			body.classList.add("is-switching");
 		}
 
-		// 自动切换：每 AUTO_INTERVAL_MS 切到下一场
 		var AUTO_INTERVAL_MS = 5000;
 		// 手动操作后暂停自动切换的时长，避免刚点完就被自动切走
 		var MANUAL_PAUSE_MS = 8000;
@@ -464,10 +458,9 @@ const clientEvents = comicEvents.map((e) => ({
 		// Swup 换页会把组件换回服务端渲染的那份，再刷一次
 		document.addEventListener("swup:contentReplaced", refreshCountdowns);
 
-		// 定时器只注册一次；每次触发时重新查询 DOM，
-		// 因此 Swup 换页后自动作用于新的 widget 实例。
-		// 以下情况跳过本轮：系统开启了「减少动态效果」、标签页在后台、
-		// 刚手动操作过、鼠标正悬停在组件上（方便阅读）。
+		// 定时器只注册一次，每次触发时重新查询 DOM，Swup 换页后自动作用于新的 widget 实例。
+		// 以下情况跳过本轮：系统开启了「减少动态效果」、标签页在后台、刚手动操作过、
+		// 鼠标正悬停在组件上（方便阅读）。
 		setInterval(function () {
 			if (prefersReducedMotion()) return;
 			if (document.hidden) return;

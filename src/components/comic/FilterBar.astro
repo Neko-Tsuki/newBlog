@@ -20,7 +20,6 @@ const cityFilters = [
 ---
 
 <div class="filter-bar-container">
-	<!-- 状态筛选 -->
 	<div class="filter-bar status-filter" data-filter-group="status">
 		{statusFilters.map((f) => (
 			<button
@@ -34,7 +33,6 @@ const cityFilters = [
 		))}
 	</div>
 
-	<!-- 城市筛选 -->
 	<div class="filter-bar city-filter" data-filter-group="city">
 		{cityFilters.map((f) => (
 			<button
@@ -104,14 +102,10 @@ const cityFilters = [
 </style>
 
 <script>
-	// 客户端筛选逻辑
-	//
 	// 与规格的两处必要差异（Firefly 用 Swup 做 SPA 切页）：
-	// 1. 事件委托：单个 document 监听器，切页替换 DOM 后依然生效，
-	//    不需要在 swup:contentReplaced 里重新绑定。
-	// 2. 维护完整筛选状态后整体派发：规格只派发变化的那个分组，
-	//    会导致「先选状态、再选城市」时状态筛选被重置。这里改为派发完整状态，
-	//    使状态与城市筛选可以叠加。
+	// 1. 事件委托：单个 document 监听器，切页替换 DOM 后依然生效，不需要在 swup:contentReplaced 里重新绑定。
+	// 2. 维护完整筛选状态后整体派发：规格只派发变化的那个分组，会导致「先选状态、再选城市」
+	//    时状态筛选被重置；这里派发完整状态，使状态与城市筛选可以叠加。
 	const FILTER_EVENT = "comic:filter";
 
 	type ComicFilterState = { status: string; city: string };

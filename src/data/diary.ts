@@ -1,5 +1,4 @@
 // 日记数据配置
-// 用于管理日记页面的数据
 
 export interface DiaryItem {
 	id: number;
@@ -13,7 +12,7 @@ export interface DiaryItem {
 	tags?: string[];
 	// 图片展示配置
 	imageDisplay?: {
-		type: "carousel" | "grid"; // 显示类型：轮播图或网格布局
+		type: "carousel" | "grid";
 		autoPlay?: boolean; // 是否自动播放（仅carousel模式），默认 true
 		interval?: number; // 自动播放间隔（毫秒），默认 4000ms
 		showIndicator?: boolean; // 是否显示位置指示器（仅carousel模式），默认 true
@@ -37,7 +36,6 @@ export const getDiaryList = (
 	return sortedData;
 };
 
-// 获取所有标签
 export const getAllTags = (data: DiaryItem[]): string[] => {
 	const tags = new Set<string>();
 	data.forEach((item) => {

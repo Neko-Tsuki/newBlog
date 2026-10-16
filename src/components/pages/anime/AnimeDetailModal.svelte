@@ -72,7 +72,6 @@ function getTypeColor(seasonType: number): string {
 		tabindex="-1"
 	>
 		<div class="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-xl sm:rounded-2xl bg-(--card-bg) border border-(--line-divider) shadow-2xl animate-in scale-90 sm:scale-100">
-			<!-- 关闭按钮 -->
 			<button
 				class="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
 				onclick={onclose}
@@ -85,7 +84,6 @@ function getTypeColor(seasonType: number): string {
 
 			<!-- 内容区域 -->
 			<div class="flex flex-col md:flex-row">
-				<!-- 海报 -->
 				<div class="relative w-full md:w-64 lg:w-72 shrink-0 h-48 sm:h-64 md:aspect-auto md:h-auto bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
 					{#if anime.poster}
 						<div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
@@ -111,9 +109,7 @@ function getTypeColor(seasonType: number): string {
 					{/if}
 				</div>
 
-				<!-- 详情 -->
 				<div class="flex-1 p-4 sm:p-6 overflow-y-auto max-h-[60vh] md:max-h-none">
-					<!-- 标题 -->
 					<h2 class="mb-1 text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
 						{anime.title}
 					</h2>
@@ -146,7 +142,6 @@ function getTypeColor(seasonType: number): string {
 						</span>
 					</div>
 
-					<!-- 简介 -->
 					{#if anime.overview}
 						<div class="mb-6">
 							<h3 class="mb-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">{i18n(I18nKey.animeSynopsis)}</h3>
@@ -156,7 +151,6 @@ function getTypeColor(seasonType: number): string {
 						</div>
 					{/if}
 
-					<!-- 跳转按钮 -->
 					<a
 						href={anime.link}
 						target="_blank"

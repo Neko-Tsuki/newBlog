@@ -7,11 +7,11 @@
 	import { profileConfig, siteConfig } from "@/config";
 
 	// 运动参数。一轮总时长 = SPAWN_WINDOW_MS + RISE_MS + TAIL_FADE_MS ≈ 4.9 秒
-	const BALLOON_COUNT = 36; // 一轮总共放多少个
+	const BALLOON_COUNT = 36;
 	const SPAWN_WINDOW_MS = 1100; // 错峰入场铺开的总时长
 	const RISE_MS = 3400; // 单个气球从底部升到顶部之外所需时间
 	const TAIL_FADE_MS = 400; // 最后一个气球离场后整层淡出的时长
-	const SWAY_PX = 46; // 水平摇摆幅度上限
+	const SWAY_PX = 46;
 	const Z_INDEX = 100; // 与樱花同层；pointer-events:none，不挡操作
 	const STORAGE_KEY = "birthdayBalloonShown";
 
@@ -30,11 +30,11 @@
 		xRatio: number; // 水平基准位置（0-1）
 		spawnAt: number; // 入场延迟（毫秒）
 		sway: number; // 水平摇摆幅度
-		swayPhase: number; // 摇摆相位
-		swaySpeed: number; // 摇摆快慢
+		swayPhase: number;
+		swaySpeed: number;
 		tilt: number; // 倾斜角（弧度）
 		tiltSpeed: number;
-		scale: number; // 尺寸系数
+		scale: number;
 		color: string;
 		highlightOnLeft: boolean;
 	};
@@ -59,7 +59,7 @@
 	/** 配置值容忍 "MM-DD" 与 "YYYY-MM-DD" 两种写法，避免写错格式就静默失效 */
 	function normalizeBirthday(raw: string | undefined): string {
 		const value = (raw ?? "").trim();
-		if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value.slice(5); // 带年份时只用月日
+		if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value.slice(5);
 		return /^\d{2}-\d{2}$/.test(value) ? value : "";
 	}
 

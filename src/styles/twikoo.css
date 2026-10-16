@@ -7,7 +7,7 @@
 
 html.dark {
   --tk-text: #d1d5db;
-  --code-block-text: #d1d5db; /* 在深色模式下使用更亮的颜色 */
+  --code-block-text: #d1d5db;
 }
 
 .tk-comments {
@@ -45,7 +45,6 @@ html.dark {
   @apply order-2;
 }
 
-/* 表情和图片按钮样式优化 */
 .tk-owo,
 .tk-upload {
   @apply rounded-lg p-2 hover:bg-(--btn-plain-bg-hover) transition-colors duration-200
@@ -109,7 +108,6 @@ html.dark {
   }
 }
 
-/* 隐藏预览按钮 */
 .tk-preview {
   display: none !important;
 }
@@ -196,9 +194,7 @@ html.dark {
 /* Content & Preview */
 .tk-content,
 .tk-preview-container {
-  /* by @microsic
-    Make the picture type emoticons display without wrapping
-  */
+  /* by @microsic: make picture type emoticons display without wrapping */
   img {
     @apply inline align-bottom!;
   }
@@ -261,9 +257,7 @@ html.dark {
   @apply border-[1px] border-(--line-divider) rounded-lg mt-1 bg-(--btn-regular-bg) text-(--btn-content) hover:text-(--primary) hover:bg-(--btn-regular-bg-hover);
 }
 
-/* by @SirTamago
-Make the emoji component display correctly when there are too many emoji packs
-*/
+/* by @SirTamago: make the emoji component display correctly when there are too many emoji packs */
 .card-base {
   overflow: visible;
 }

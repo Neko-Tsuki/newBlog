@@ -50,7 +50,6 @@ let filterOptions = $derived(() => {
 		const st = item.season_type || 1;
 		typeMap.set(st, (typeMap.get(st) || 0) + 1);
 	}
-	// 按 season_type 排序
 	return Array.from(typeMap.entries())
 		.sort(([a], [b]) => a - b)
 		.map(([type, count]) => ({

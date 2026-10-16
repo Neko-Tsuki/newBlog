@@ -2,9 +2,8 @@
 import type { ComicEvent } from "@/types/comic";
 // 对应规格文档 §9
 //
-// 与规格的差异：改为纯展示组件，不再自带筛选脚本与 id。
-// 页面现在是按状态分区的，筛选需要同时处理「卡片」和「分区」两级可见性，
-// 因此监听 comic:filter 的逻辑上移到 src/pages/comic-events.astro。
+// 与规格的差异：改为纯展示组件（不再自带筛选脚本与 id），监听 comic:filter 的逻辑
+// 上移到 src/pages/comic-events.astro —— 页面按状态分区后需同时处理卡片与分区两级可见性。
 import EventCard from "./EventCard.astro";
 
 interface Props {

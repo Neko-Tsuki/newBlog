@@ -8,9 +8,8 @@ interface Props {
 }
 const { event } = Astro.props;
 
-// 接入 Firefly 的 LQIP 系统：构建期已为封面算好模糊渐变占位，
-// 图片加载完成后由 layout-init 的 initImageLoadFadeIn 淡出。
-// 第三个参数 isPublic=true 对应 public/ 下的图片（key 前缀为 public:）。
+// 接入 Firefly 的 LQIP 系统：构建期已为封面算好模糊渐变占位，图片加载完成后
+// 由 layout-init 的 initImageLoadFadeIn 淡出；第三个参数 isPublic=true 对应 public/ 下的图片。
 const lqipProps = getLqipProps(event.cover, undefined, true);
 
 const statusLabels: Record<string, string> = {

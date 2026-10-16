@@ -73,7 +73,6 @@ const style = Astro.props.style;
     
     if (diff < 0) return;
 
-    // 计算年月日时分秒的差值
     let years = now.getFullYear() - startDate.getFullYear();
     let months = now.getMonth() - startDate.getMonth();
     let days = now.getDate() - startDate.getDate();
@@ -120,12 +119,10 @@ const style = Astro.props.style;
     update('seconds', seconds.toString().padStart(2, '0'));
   }
 
-  // 立即运行并每秒更新
   updateRelationshipTimer();
   if (!window.relationshipTimerInterval) {
     window.relationshipTimerInterval = setInterval(updateRelationshipTimer, 1000);
   }
 
-  // 监听 Swup 页面切换
   document.addEventListener('swup:content:replace', updateRelationshipTimer);
 </script>

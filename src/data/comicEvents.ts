@@ -1,13 +1,10 @@
 // 漫展数据源 —— 只放活动条目本身，加/改活动改这里就行
 //
-// 处理逻辑（状态推导、构建期校验补齐、派生统计与筛选器）都在
-// @/utils/comic-utils，那边会 import 本文件的 rawComicEvents 再加工。
-// 所以这里不要写 status：它由 computeStatus() 按日期与当前时间推导，
-// 手写会随日期失真。
+// 状态推导、构建期校验补齐、派生统计与筛选器都在 @/utils/comic-utils。
+// 这里不要写 status：它由 computeStatus() 按日期与当前时间推导，手写会随日期失真。
 //
-// 封面图：public/assets/images/comic-events/<id>.webp
-// 目前是 1280x720 灰底占位图，换真图直接覆盖同名文件即可，无需改代码。
-// 构建时若文件不存在会在终端报警（见 comic-utils 的 validateAndNormalize）。
+// 封面图：public/assets/images/comic-events/<id>.webp，换真图直接覆盖同名文件即可，
+// 无需改代码；构建时若文件不存在会在终端报警（见 comic-utils 的 validateAndNormalize）。
 
 import type { ComicEvent } from "@/types/comic";
 
@@ -30,7 +27,7 @@ export const rawComicEvents: RawComicEvent[] = [
 		arriveDate: "2026-10-06",
 		city: "武汉",
 		venue: "湖北武汉客厅",
-		// 未结束时显示（现在这条就是，活动在 10/06）
+		// 未结束时显示
 		noteUpcoming: "还有 {days} 天！绯红月就要升起来啦，咱的行头还没翻出来喵……",
 		// 结束后显示
 		noteEnded:

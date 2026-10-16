@@ -55,7 +55,6 @@ function getTypeColor(seasonType: number): string {
 	role="button"
 	tabindex="0"
 >
-	<!-- 海报 -->
 	<div class="relative aspect-2/3 overflow-hidden bg-neutral-100 dark:bg-neutral-800">
 		{#if anime.poster}
 			<div class="lqip-placeholder absolute inset-0 pointer-events-none" style="background: var(--muted)" aria-hidden="true"></div>
@@ -110,17 +109,14 @@ function getTypeColor(seasonType: number): string {
 
 	<!-- 底部信息 -->
 	<div class="p-3">
-		<!-- 标题 -->
 		<h3 class="mb-1 line-clamp-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100" title={anime.title}>
 			{anime.title}
 		</h3>
-		<!-- 原文标题 -->
 		{#if anime.originalTitle && anime.originalTitle !== anime.title}
 			<p class="mb-2 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-400" title={anime.originalTitle}>
 				{anime.originalTitle}
 			</p>
 		{/if}
-		<!-- 底部信息行 -->
 		<div class="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
 			<span>{anime.epStatus || anime.date?.slice(0, 4) || ""}</span>
 		</div>
