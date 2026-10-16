@@ -1,1312 +1,421 @@
-# Upstream Sync Workflow — Firefly → newBlog (Protected Custom Environment)
+# Upstream Sync Workflow — Firefly → newBlog
 
-## Prerequisites
+## 拓扑
 
-* Upstream remote `firefly` → `C:\Users\TY-Han\Documents\Firefly` (local fork)
-* Real upstream: `CuteLeaf/Firefly` on GitHub (via `real-upstream` remote in Firefly repo)
-* Your fork: `Neko-Tsuki/Firefly` on GitHub (via `origin` in Firefly repo)
+| remote | 地址 | 用途 |
+|---|---|---|
+| `origin` | `git@github.com:Neko-Tsuki/newBlog.git` | 个人博客，推送目标 |
+| `upstream` | `https://github.com/CuteLeaf/Firefly.git` | 上游主题，只读 |
 
----
-
-## Protected Areas (DO NOT MODIFY)
-
-The following files and directories are user-managed custom environments.
-
-When synchronizing upstream Firefly changes:
-
-* DO NOT overwrite
-* DO NOT delete
-* DO NOT migrate
-* DO NOT refactor
-* DO NOT automatically merge
-
-these areas.
+- 分支：`master`。部署：Cloudflare Workers (Assets)，**push 到 `master` 自动部署**。
+- 包管理：pnpm（`only-allow` 强制）。格式化/检查：Biome（tab 缩进 + 双引号）。
+- 环境：Node ≥ 22.23、pnpm 11。仓库就在 `~/文档/newBlog`，没有本地 Firefly 克隆，也不需要建。
 
 ---
 
-### Blog Admin System
+## 同步方式：git merge（2026-10-17 起）
 
-Protected:
+2026-10-17 的 `46d35dda` 是一次**真正的 `git merge upstream/master`**（上游 v6.16.8，280 个提交），
+从这天起两边**恢复共享历史**。
 
-```
-public/admin/
-```
+在此之前长期双向分叉：本地领先 129、上游领先 280，共同祖先停在 **v6.13.7**。原因是 2026-07 ~ 2026-09
+的 12 次同步都走「复制上游文件 → 提交成自己的 commit」，git 里没有同步记录，于是上游的新改动
+以本地 commit 的形式存在。
 
-Rules:
-
-* The existing Blog `/admin/` page must remain unchanged.
-* Any upstream file with the same path must be ignored.
-* Any upstream modification related to admin pages must only be reported.
-* Never replace the current admin implementation.
-
----
-
-### Sveltia CMS
-
-Protected:
-
-```
-public/admin/config.yml
-public/admin/index.html
-```
-
-Rules:
-
-* Sveltia CMS is the active CMS system. Current version: `0.172.4` (CDN `@sveltia/cms@0.172.4`).
-* Config at `public/admin/config.yml` defines collections. Collection names must be unique (e.g., `posts` + `posts-legacy`, not `posts` + `posts`).
-* Admin page at `public/admin/index.html` is a static HTML page (no Astro processing). Script must NOT have `type="module"`.
-* Do not modify the CMS config during upstream sync.
-* Do not migrate to another CMS.
-
-If upstream contains CMS-related changes:
-
-* Skip those changes.
-* Report the differences only.
-* Keep the current local configuration.
+**所以：现在的同步就是 `git merge upstream/master`。** 本文档 2026-10-17 之前描述的
+「`_backup/` 备份 → rsync/`cp` 覆盖框架目录 → 恢复定制内容 → 重套修正」流程**已废弃**，
+它的问题是会**静默丢掉不在保护清单上的本地改动**——已经发生过一次：
+`Calendar.astro` 的构建期内联优化（`39daff91`）被 `236c0325` 整文件覆盖回运行时 fetch。
 
 ---
 
-### Dynamic Content
+## 同步流程
 
-Protected:
+### 0. 前提
 
+```bash
+git -C ~/文档/newBlog status --short     # 工作区必须干净；有改动先提交或 stash
 ```
-src/content/dynamic/*
+
+### 1. 留回退点
+
+```bash
+git tag -f pre-sync-$(date +%F) HEAD
 ```
 
-Rules:
+出问题可以 `git merge --abort`（未提交时）或 `git reset --hard pre-sync-<日期>`。
 
-* Dynamic content is user-managed and must never be deleted or overwritten during sync.
-* The upstream `src/content/dynamic` directory must not be copied.
-* If upstream removes or replaces the dynamic module, local dynamic content must remain untouched.
-* Restore from backup after framework sync.
-* **Dynamic data source must always be set to local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) during sync, unless an explicit override is specified. Do not switch to third-party APIs or Memos without explicit instructions.**
-* **Never sync dynamic content (`.md` files in `src/content/dynamic/`) from other repositories during upstream sync. Local dynamic content and implementation files are user-managed and must remain unchanged.**
-* **Never sync diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
+### 2. 拉上游，先看**真实** delta
+
+```bash
+git fetch upstream master
+git rev-list --count HEAD..upstream/master          # 上游领先多少
+git rev-list --count upstream/master..HEAD          # 本地领先多少
+```
+
+**别被提交数吓到。** 提交数不等于工作量。先找到**上次同步到的上游版本**——本地
+`package.json` 里的 `version` 就是它：
+
+```bash
+git show HEAD:package.json | grep '"version"'
+git log --oneline upstream/master --grep="版本号至 <上面的版本>"
+git diff --stat <那个上游提交> upstream/master      # 这才是这次真正要搬的量
+```
+
+例：2026-10-17 那次本地是 6.16.7、上游 6.16.8，`HEAD..upstream/master` 有 280 个提交，
+但真实 delta 只有 **113 个文件**。
+
+### 3. Merge
+
+```bash
+git merge upstream/master --no-ff --no-commit
+git status --porcelain | grep -E '^(UU|DU|UD|AA|AU|UA|DD)' | awk '{print $1}' | sort | uniq -c
+```
+
+冲突类型速查：`UU` 双方改 / `DU` 我方删他方改 / `UD` 我方改他方删 / `AA` 双方各自新增 / `UA` 他方新增。
+
+### 4. 解冲突：**换掉错的 merge base** ← 关键
+
+git 用的 base 是共同祖先（v6.13.7），但本地内容其实 ≈ **上游上次同步到的版本**。
+从 v6.13.7 看，两边都像大改过同一批文件，于是炸出上百个「同步历史噪音」冲突。
+
+正解：对每个冲突文件做三方合并，base 取**上游上次同步到的版本**（第 2 步查到的那个提交）。
+
+```bash
+BASE=<上游上次同步到的提交>
+git status --porcelain | grep -E '^(UU|AA|UA|DU|UD|AU|DD)' | awk '{print $2}' | while read -r f; do
+  case "$f" in *.avif|*.png|*.jpg|*.jpeg|*.webp|*.ico|*.woff*|*.ttf|*.gif)   # 二进制取本地
+    git checkout --ours -- "$f" && git add -- "$f"; continue ;;
+  esac
+  git show "$BASE:$f"           > /tmp/r-base   2>/dev/null || : > /tmp/r-base
+  git show ":2:$f"              > /tmp/r-ours   2>/dev/null || : > /tmp/r-ours
+  git show ":3:$f"              > /tmp/r-theirs 2>/dev/null || : > /tmp/r-theirs
+  if git merge-file -p /tmp/r-ours /tmp/r-base /tmp/r-theirs > /tmp/r-out 2>/dev/null; then
+    cp /tmp/r-out "$f" && git add -- "$f"
+  else
+    echo "需手工: $f"
+  fi
+done
+```
+
+`DU`（我方删、他方改）一律**保持删除**——基本都是上游的示例文章/仓库文档：
+
+```bash
+grep '^DU' /tmp/conf.txt | awk '{print $2}' | while read -r f; do git rm -q --force --ignore-unmatch "$f"; done
+```
+
+实测效果：2026-10-17 那次 **114 → 13**，剩下 13 个逐个手工（见下）。
+
+### 5. 核对**自动合并**的文件 ← 关键
+
+第 4 步只管冲突文件。但 git 的**自动合并同样用了错的 base**，一样会制造静默损坏：
+把本地从旧版复制来的内容和上游本次改动**叠加**，于是出现**重复的配置键**、
+**少一个闭合括号**、**新字段被插进错误的嵌套层级**。
+
+2026-10-17 实际踩到的：
+
+| 文件 | 症状 |
+|---|---|
+| `src/config/musicConfig.ts` | `showInSidebar` 整块重复（`pnpm check` 直接报 ts(1117)） |
+| `src/config/expressiveCodeConfig.ts` | `pluginLanguageLogo` 整块重复 |
+| `src/content.config.ts` | `ziyuanCollection` 少了 `});` |
+| `src/types/siteConfig.ts` | 上游的 `projects: boolean` 被插进 `anime?: {...}` 内部 |
+
+**判据：上游根本没改过的文件，合并结果必须逐字节等于本地。** 靠这条能一次揪出全部这类损坏：
+
+```bash
+git diff --cached --name-only | while read -r f; do
+  git cat-file -e "HEAD:$f" 2>/dev/null || continue
+  if [ -z "$(git diff "$BASE" upstream/master -- "$f" 2>/dev/null)" ]; then
+    git diff --quiet HEAD -- "$f" 2>/dev/null || { git checkout HEAD -- "$f"; git add -- "$f"; echo "还原: $f"; }
+  fi
+done
+```
+
+再对**所有**改动文件重算一次「以 `$BASE` 为 base」的三方合并，和当前内容比对，
+不一致的就是需要人工过目的（其中会包含你刻意手改的那几个）：
+
+```bash
+git diff --cached --name-only | while read -r f; do
+  case "$f" in *.avif|*.png|*.jpg|*.webp|*.ico|*.lock|pnpm-lock.yaml) continue ;; esac
+  git show "$BASE:$f" >/tmp/a 2>/dev/null || : >/tmp/a
+  git show "HEAD:$f"  >/tmp/b 2>/dev/null || : >/tmp/b
+  git show "upstream/master:$f" >/tmp/c 2>/dev/null || : >/tmp/c
+  if cmp -s /tmp/a /tmp/c; then cmp -s /tmp/b "$f" || echo "MISMATCH $f"; continue; fi
+  git merge-file -p /tmp/b /tmp/a /tmp/c > /tmp/o 2>/dev/null \
+    && cmp -s /tmp/o "$f" || echo "REVIEW $f"
+done
+```
+
+### 6. 丢掉上游的仓库文档与示例内容
+
+上游仓库自带的这些东西不要，删掉（合并常会把它们带回来）：
+
+```text
+.github/                        — 本地 CI 独立管理，永不从上游同步
+docs/                           — 上游的多语言 README 与截图
+CLAUDE.md  CONTRIBUTING.md      — 上游自己的贡献文档
+src/content/posts/*             — 上游示例文章（code-examples / draft / mdx-example / video / guide/ …）
+src/content/spec/about.md       — 本地用自己的 about.mdx
+src/content/projects/*          — 上游示例项目条目
+public/gallery/**               — 上游示例相册
+```
+
+判断方法：
+
+```bash
+git diff --cached --name-status --diff-filter=A | awk '{print $2}' \
+  | grep -vE "^(src/(components|layouts|plugins|utils|types|styles|i18n|config|pages|icons|assets)/|astro.config|package.json|pnpm-lock)"
+```
+
+### 7. 验证（全绿才能提交）
+
+```bash
+pnpm install        # 上游可能升了依赖（例：astro 7.2→7.3、@astrojs/mdx 7→8）
+pnpm check          # 期望 0 errors / 0 warnings / 0 hints
+pnpm type-check     # 期望无输出
+pnpm build          # 期望 [build] Complete!
+```
+
+再跑**受保护区 diff 检查**（下面「受保护清单」那批路径），期望全部 `未改动`：
+
+```bash
+for p in public/admin src/pages/admin .github src/content/dynamic src/content/diary \
+         src/data/diary.ts src/components/comic \
+         src/components/widget/ScheduleWidget.astro \
+         src/components/widget/RecentComicEvent.astro; do
+  git diff --cached --quiet HEAD -- "$p" && echo "OK  $p" || echo "改动! $p"
+done
+```
+
+**功能性回归**（合并会动布局、CSS 令牌、侧边栏注册，静态检查看不出来）：把时钟拨到与构建日不同的时间，
+跑构建产物里真实的内联脚本，确认客户端重算仍然生效。至少要覆盖：
+
+- **展会信息模块** — `/comic-events/` 分区归属随访客时间变化、状态徽标、筛选徽标数字、筛选链路
+- **日历倒计时模块** — 侧边栏「时间进度」四条进度条被客户端重算、最近节假日填充；
+  「日历」真的去拉 `/api/allPostMeta.json` 并渲染出格子
+- 侧边栏四个定制组件（`timeGreeting` / `schedule` / `calendar` / `recentComicEvent`）都还在
+
+### 8. 提交与推送
+
+```bash
+git add -A
+git commit -m "chore: sync upstream Firefly v<X.Y.Z>"
+git push origin master
+```
+
+提交信息用 Conventional Commits，**英文、全小写、无 emoji、无句号、72 字符内**，细节写进 body。
+merge 提交保留两个父提交，不要 squash——下次同步就靠这条历史。
 
 ---
 
-### GitHub Actions / CI Workflows
+## 受保护清单（合并后逐项确认未改动）
 
-Protected:
+这些是用户管理的自定义环境：同步时**不得覆盖、不得删除、不得迁移、不得重构、不得自动合并**。
 
-```
-.github/
-.github/workflows/*
-```
+### Admin / CMS
 
-Rules:
-
-* The entire `.github/` directory is permanently excluded from upstream sync.
-* Never copy, overwrite, merge, or restore `.github/` from upstream.
-* Never create `.github/` if it does not exist locally.
-* Upstream CI workflow changes must be ignored entirely.
-* Local CI configuration is managed independently.
-
----
-
-### Firefly-hyde Custom Widgets
-
-Custom widgets copied from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde) (fork by sin_13).
-
-Source files:
-
-```
-src/components/widget/AiSummary.astro         — AI 摘要（文章页，已禁用）
-src/components/widget/QuoteOfTheDay.astro     — 每日一言（侧边栏，已禁用）
-src/components/widget/WelcomeToast.astro      — 欢迎弹窗（布局级，已禁用）
-src/components/widgets/TimeGreeting.astro     — 时间问候（侧边栏，已启用）
-src/components/widget/Schedule.astro          — 日期进度（侧边栏，已启用）
-src/components/widget/RelationshipTimer.astro — 恋爱倒计时（侧边栏，已禁用）
-src/content/ziyuan/quote.md                   — 每日一言数据源
+```text
+public/admin/                — 整个 Blog Admin 系统，上游同名文件一律忽略
+public/admin/config.yml      — Sveltia CMS 配置（collection 名必须唯一）
+public/admin/index.html      — 静态 HTML，不经 Astro 处理，script 不得带 type="module"
 ```
 
----
+Sveltia CMS 版本固定 `0.172.4`。上游若有 CMS 改动：跳过，只报告。
 
-### 动态 (Moments/Dynamic) Feature
+### CI
 
-Custom feature for displaying moments/status updates, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
-
-Implementation files:
-
-```
-src/components/pages/dynamic/
-├── DynamicFeed.svelte           — 动态列表组件（Svelte 响应式）
-├── DynamicItem.astro            — 单条动态项组件
-├── DynamicItemTemplate.astro    — 动态模板渲染
-├── DynamicGallery.astro         — 图片画廊组件
-├── DynamicInlineComments.astro  — 内联评论组件
-├── dynamic-gallery.ts           — 画廊交互脚本
-└── dynamic-inline-comments.ts   — 评论交互脚本
-
-src/components/widget/
-├── Dynamic.astro                — 动态页面入口组件
-└── DynamicSidebar.svelte        — 动态侧边栏组件
-
-src/config/dynamicConfig.ts      — 动态功能配置
-src/types/dynamicConfig.ts       — 动态配置类型定义
-src/content.config.ts            — 内容集合定义（含 dynamic collection）
-src/utils/dynamic-utils.ts       — 动态工具函数
-src/utils/memos-adapter.ts       — Memos API 适配器
-src/styles/dynamic.css           — 动态页面样式
-
-scripts/new-dynamic.js           — 新建动态脚本
-
-src/i18n/languages/*             — 动态功能 i18n 键值（各语言文件）
+```text
+.github/  .github/workflows/*
 ```
 
-Rules:
+永久排除。**不要从上游复制、覆盖、合并、还原，本地没有时也不要创建。**
 
-* These are custom additions not present in upstream CuteLeaf/Firefly.
-* During upstream sync, these files must NOT be deleted or overwritten.
-* Restore from backup after framework sync if accidentally removed.
-* **Enabled by default**: TimeGreeting, Schedule
-* **Disabled by default**: AiSummary, QuoteOfTheDay, WelcomeToast, RelationshipTimer
+### 动态 (Dynamic)
 
----
+```text
+src/content/dynamic/*                    — 内容，绝不跨仓库同步
+src/components/pages/dynamic/            — DynamicFeed.svelte / DynamicItem.astro /
+                                           DynamicItemTemplate.astro / DynamicGallery.astro /
+                                           DynamicInlineComments.astro / dynamic-gallery.ts /
+                                           dynamic-inline-comments.ts
+src/components/widget/Dynamic.astro
+src/components/widget/DynamicSidebar.svelte
+src/config/dynamicConfig.ts  src/types/dynamicConfig.ts
+src/utils/dynamic-utils.ts   src/utils/memos-adapter.ts
+src/styles/dynamic.css       scripts/new-dynamic.js
+```
 
-### 动态 Rules
+数据源**必须保持本地模式**：`apiUrl: "/api/dynamic.json"`、`memos.enable: false`。
 
-* Dynamic feature components, config, styles, and utilities are protected additions.
-* During upstream sync, these implementation files must NOT be deleted or overwritten.
-* **Dynamic content** (`src/content/dynamic/*`) is separately protected — see "Dynamic Content" section.
-* **Data source must be local mode** after sync: `apiUrl: "/api/dynamic.json"`, `memos.enable: false`.
-* Do not switch to third-party APIs or Memos without explicit instructions.
+### 日记 (Diary)
 
-To update from Firefly-hyde:
+```text
+src/pages/diary.astro
+src/data/diary.ts                        — 绝不跨仓库同步
+src/content/diary/*.md                   — 文件即条目，绝不跨仓库同步
+src/components/features/diary/           — index.ts / types.ts / MomentCard.astro
+src/components/atoms/                    — index.ts / FilterTabs.astro
+src/utils/timeFormat.ts
+public/js/filter-tabs-handler.js
+```
+
+### 漫展日程 (Comic Events)
+
+规格文档：`文档/漫展日程页面（Comic Events）完整复现规格文档.md`，用词对齐 <https://qwq.sigrika.cc/>。
+
+```text
+src/types/comic.ts
+src/data/comicEvents.ts                  — 只放条目，不写 status
+src/utils/comic-utils.ts                 — 状态推导 / 校验补齐 / 统计筛选
+src/components/comic/                    — PageHeader / FilterBar / SectionTitle /
+                                           EventSection / EventCard / EventCardGrid
+src/pages/comic-events.astro             — 路由 /comic-events/
+src/components/widget/RecentComicEvent.astro   — 侧边栏「最近漫展」
+src/components/widget/ScheduleWidget.astro     — 侧边栏「时间进度」
+public/assets/images/comic-events/*.webp       — 封面图
+```
+
+- **分区按状态自动派生**：即将到来 / 正在进行中 / 完结撒花，空分区不渲染。
+- 筛选逻辑在 `src/pages/comic-events.astro` 的 `<script>` 里（不在 EventCardGrid），
+  因为要同时处理**分区**与**卡片**两级可见性。
+- 页面脚本会按**访客本地时间**重算状态（分区归属、状态徽标、筛选徽标数字），
+  首屏与 `swup:contentReplaced` 后各一次——静态产物烤的是构建那天的状态。
+- 数据录入见 `.ai/comicUpdate.md` 与 `.claude/skills/update-comic-events/SKILL.md`。
+- `SectionTitle` 的 `background: var(--page-bg)` 依赖「事件网格直接坐在页面背景上」；
+  若把网格移进 `card-base` 卡片，要同步改成 `var(--card-bg)`。
+- 侧边栏组件类型是 `recentComicEvent`（**单数**）。
+
+### Firefly-hyde 定制组件
+
+来源：[Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde)（sin_13 的 fork）。
+
+```text
+src/components/widget/AiSummary.astro          — AI 摘要（文章页，已禁用）
+src/components/widget/QuoteOfTheDay.astro      — 每日一言（侧边栏，已禁用）
+src/components/widgets/WelcomeToast.astro      — 欢迎弹窗（已禁用）
+src/components/widgets/TimeGreeting.astro      — 时间问候（侧边栏，已启用）
+src/components/widget/ScheduleWidget.astro     — 时间进度（侧边栏，已启用）
+src/components/widget/RelationshipTimer.astro  — 恋爱倒计时（已禁用）
+src/content/ziyuan/quote.md                    — 每日一言数据源
+```
+
+注意 `widget/` 与 `widgets/` 是**两个目录**，别混。`ScheduleWidget.astro` 是**替换**上游旧
+`Schedule.astro` 的存在（上游 6.16.8 已无该文件），`SideBar.astro` 的 componentMap 里映到 `schedule` 键。
+
+更新方式（上游仓库不管这些，只能从 Firefly-hyde 手动搬）：
 
 ```bash
 git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
-# Check for new/changed files in src/components/widget/ and src/components/widgets/
-# Manually copy any desired changes
+# 看 src/components/widget/ 与 src/components/widgets/ 有没有想要的改动，手动搬
+# 日记相关的还要看 src/pages/diary.astro、src/data/diary.ts、src/components/features/diary/
 rm -rf /tmp/firefly-hyde
 ```
 
+### 侧边栏注册（三处联动，最容易漏）
+
+改/加侧边栏组件要同时动三个地方，漏一个就是构建失败或组件不显示：
+
+```text
+src/config/sidebarConfig.ts      — rightComponents 里的条目（type / enable / position / 页面显隐）
+src/types/sidebarConfig.ts       — WidgetComponentType 联合类型 + specificConfig
+src/components/layout/SideBar.astro — componentMap：type 字符串 → 组件 的唯一绑定点
+```
+
+合并后要确认这四个条目还在且 `enable: true`：`timeGreeting` / `schedule` / `calendar` / `recentComicEvent`。
+
+### 其他不得被覆盖
+
+```text
+src/content/posts/*                — 你的文章
+src/content/spec/about.mdx  friends.mdx  guestbook.md
+src/assets/images/*                — 头像 / 壁纸 / favicon 原图 / navbar logo
+public/assets/css/waline-custom.css  twikoo-custom.css
+public/favicon/*  public/pio/*  public/gallery/*  public/assets/images/sponsor/*
+src/styles/twikoo.css  fancybox-custom.css
+src/styles/pages/common.css        — comic/PageHeader.astro 依赖它的 .page-heading / .page-icon
+src/config/*                       — 用户取值（见下）
+.gitignore  README.md  README.en.md  AGENTS.md  .ai/
+```
+
+`src/config/*` 里**必须保留的用户取值**：
+
+- `siteConfig.ts`：`title` / `subtitle` / `site_url` / `description` / `themeColor` / `siteStartDate` /
+  `timezone` / `pages.*` / `favicon`
+- `profileConfig.ts`：`avatar` / `name` / `bio` / `links`
+- `friendsConfig.ts`：全部友链
+- `commentConfig.ts`：`type: "waline"` / `waline.serverURL`
+- `backgroundWallpaper.ts`：壁纸路径与 credit
+- `navBarConfig.ts`：自定义导航结构
+- `sidebarConfig.ts`：四个定制组件条目
+- `expressiveCodeConfig.ts` / `musicConfig.ts`：本地取值
+
+### 设计令牌（容易被上游覆盖）
+
+```text
+src/styles/variables.styl   — 暗色 :root.dark 下的 --deep-text 覆盖（本地新增）
+                              --on-primary（本地新增）
+src/styles/main.css         — .card-base / .lqip-placeholder / 壁纸模式的卡片背景
+```
+
+`--deep-text` 的暗色覆盖丢了，漫展卡片标题、关于页标题在暗色下会变成深字压暗底、几乎看不见。
+
 ---
 
-### 日记 (Diary) Feature
+## 已知修正项（merge 后一般不需要，出问题再查）
 
-Custom feature for displaying diary pages, adapted from [Firefly-hyde](https://cnb.cool/sin_13/Firefly-hyde).
+merge 方式下这些多半会被自动合好；如果构建报错，按症状查：
 
-Implementation files:
+| 症状 | 修法 |
+|---|---|
+| `CompilerError: Unexpected token` | `{...}` 表达式里的 HTML 注释要写成 `{/* … */}`。重点看 `src/pages/anime.astro`、`src/layouts/MainGridLayout.astro`、`src/components/layout/NavMenuPanel.astro` |
+| `Unable to load the "local" icon set` | 裸图标名要加 set 前缀（`github` → `simple-icons:github`，`rss` → `fa7-solid:rss`） |
+| `Cannot use assets with a binding in an assets-only Worker` | `wrangler.jsonc` 要保持 Workers Assets 最小配置：`name` / `compatibility_date: "2025-01-01"` / `compatibility_flags: ["nodejs_compat"]` / `assets.directory: "./dist"`；别加 KV / Images / D1 / assets binding |
+| `Failed to resolve import "@/styles/pages/common.css"` | `src/styles/pages/common.css` 被删了，恢复它 |
+| 目录滚动条 / TOC 行为不对 | `sidebarToc` 用 `hideOnNonPostPage: true`，不是 `showOnNonPostPage: false` |
+| Waline 样式崩 | `src/components/comment/Waline.astro` 里 CDN `waline.css` 必须**先**加载、`waline-custom.css` **后**加载。自定义 CSS 是覆盖层，**不是**替代品，不能删 CDN 那条 |
+| 页面头样式不对 | `astro.config.mjs` 的 astro-icon `include` 里要有 `"svg-spinners": ["*"]` |
 
-```
-src/pages/diary.astro                — 日记页面路由 (/diary/)
-
-src/data/diary.ts                    — 日记数据源（类型定义 + 排序/标签提取函数）
-
-src/content/diary/*.md               — 日记内容（每篇一个 markdown 文件）
-
-src/components/features/diary/
-├── index.ts                         — 组件导出
-├── types.ts                         — 日记类型定义
-└── MomentCard.astro                 — 日记卡片组件（支持图片轮播/网格、视频）
-
-src/components/atoms/
-├── index.ts                         — 原子组件导出
-└── FilterTabs.astro                 — 标签筛选组件
-
-src/utils/timeFormat.ts              — 相对时间格式化工具
-
-public/js/filter-tabs-handler.js     — 标签筛选交互脚本
-```
-
-Rules:
-
-* Diary feature components, data, and styles are custom additions from Firefly-hyde.
-* During upstream sync, these files must NOT be deleted or overwritten.
-* Restore from backup after framework sync if accidentally removed.
-* **Enabled by default**: Diary page (`siteConfig.pages.diary: true`).
-* **Diary content uses file-based model**: diary entries are markdown files in `src/content/diary/`. Each markdown file = one diary entry. Frontmatter supports `published`, `location`, `tags`, `images` (URL array), `video`, `mood`, `imageDisplay`, etc.
-* **Never sync diary content (`src/content/diary/`) or diary data (`src/data/diary.ts`) from other repositories. Local diary entries are user-managed and must not be overwritten.**
-* **Never sync dynamic content (`src/content/dynamic/*`) from other repositories — see "Dynamic Content" section for details.**
-
-To update from Firefly-hyde:
-
-```bash
-git clone --depth 1 https://cnb.cool/sin_13/Firefly-hyde.git /tmp/firefly-hyde
-# Check for new/changed files in src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/
-# Manually copy any desired changes
-rm -rf /tmp/firefly-hyde
-```
-
----
-
-### 漫展日程 (Comic Events) Feature
-
-Custom feature reproducing the spec at `文档/漫展日程页面（Comic Events）完整复现规格文档.md`,
-with wording aligned to the reference site <https://qwq.sigrika.cc/>.
-
-Implementation files:
-
-```
-src/types/comic.ts                     — 类型定义（ComicEvent / ComicTicketTier / ComicFilterState / note）
-src/data/comicEvents.ts                — 漫展数据 + 构建期校验补齐 + 状态推导 + 派生统计
-
-src/components/comic/
-├── PageHeader.astro                   — card-base 卡片页头（依赖 src/styles/pages/common.css）
-├── FilterBar.astro                    — 状态/城市筛选（事件委托，兼容 Swup）
-├── SectionTitle.astro                 — 分区标题
-├── EventSection.astro                 — 状态分区外壳（空分区不渲染）
-├── EventCard.astro                    — 单张活动卡片（接入 LQIP）
-└── EventCardGrid.astro                — 纯展示网格
-
-src/components/widget/RecentComicEvent.astro  — 侧边栏「最近漫展」（切换动画 + 自动轮播 + 每条专属文案）
-src/components/widget/ScheduleWidget.astro    — 侧边栏「时间进度」（四条进度条 + 节假日倒计时）
-src/pages/comic-events.astro                  — 路由 /comic-events/
-public/assets/images/comic-events/*.webp      — 封面图（当前为 1280x720 空白占位图）
-```
-
-**页面结构：按状态分区**
-
-| 分区 | 数据来源 | 说明 |
-|------|---------|------|
-| 即将到来 | `status === "upcoming"` | 空分区不渲染 |
-| 正在进行中 | `status === "ongoing"` | 空分区不渲染 |
-| 完结撒花 | `status === "ended"` | 空分区不渲染 |
-
-- 「全部」tab 下三个分区依次显示；切到某个 tab 只显示对应分区。
-- 筛选逻辑在 `src/pages/comic-events.astro` 的 `<script>` 里（不是 EventCardGrid），
-  因为要同时处理**分区**与**卡片**两级可见性：状态筛选决定分区可见性，
-  城市筛选决定分区内卡片可见性，分区内全被滤掉时连分区一起隐藏。
-- `SectionTitle` 的 `background: var(--page-bg)` 依赖「事件网格直接坐在页面背景上」。
-  若日后把网格移进 `card-base` 卡片，需同步改成 `var(--card-bg)`。
-
-**数据录入（见 `.ai/comicUpdate.md`）**
-
-- 只写 `rawComicEvents`，**不要手写 `status`** —— 由 `computeStatus()` 推导。
-- `arriveDate` / `tags` 可省略，`validateAndNormalize()` 会补齐（`arriveDate` 回退为 `startDate`）。
-- `note` 是侧边栏的**每条专属文案**，支持 `{days}` 占位符（替换为天数绝对值）。
-  留空则回退到组件内置文案。
-- 构建期校验会在终端以喵语气输出问题（缺 city / 日期格式错 / endDate 早于 startDate /
-  **封面文件不存在** / id 重复 等）。封面存在性检查能提前发现 404，务必留意。
-- 派生数据（`comicStats` 徽标数字、`comicCities` 城市项、`comicTags` 标签）全部自动跟随数据，无需手动维护。
-
-**用词（对齐 qwq.sigrika.cc）**
-
-- 卡片标签用 **赴约：**（不是「赶约」）
-- 分区标题用 **正在进行中**（不是「正在进行」）
-- 空状态为喵语气文案
-
-Rules:
-
-* 自定义新增，不在上游 CuteLeaf/Firefly 中，同步时不得删除或覆盖。
-* 侧边栏组件类型为 `recentComicEvent`（**单数**）。旧实现用的 `recentComicEvents`（复数）连同 `src/components/comic-events/`、`src/data/comic-events.ts`、`src/lib/comic-events.ts`、`src/types/comic-event.ts`、`src/pages/comic-events/index.astro` 已于本次替换中删除。
-* 封面图当前是空白占位图。换真图时直接覆盖 `public/assets/images/comic-events/` 下的同名文件即可，无需改代码；建议保持 16:9。
-* `EventCard.astro` / `RecentComicEvent.astro` 的封面走 Firefly 的 LQIP 系统
-  （`getLqipProps(cover, undefined, true)` + `.lqip-placeholder` + `decoding="async"`）。
-  LQIP 数据由构建流程写入 `src/constants/lqips.json`，**新增封面图后需重新构建**才会生成对应条目。
-* `RecentComicEvent.astro` 的自动轮播在系统开启「减少动态效果」时会整体停用（不只是动画）。
-* 若上游出现同名文件，以本地为准。
-
----
+另外：`Calendar.astro` 历史上被上游同步冲掉过一次构建期内联优化（现在走运行时
+`fetch("/api/allPostMeta.json")`）。如果发现日历每次都要请求这个接口且想改回内联，属于**有意决策**，改完记在这里。
 
 ### 旧版结构 → 新版结构（无需确认，直接转换）
 
-同步时若发现 newBlog 仍是旧版目录/样式结构，而 Firefly 已是新版结构：
+若上游已是新版目录/样式结构而本地还是旧的：先检测新版类名/路径是否与本地冲突
+（`dynamic-page-header` 这类**带命名空间前缀**的名字**不算**冲突，要用精确类名判断）→
+不冲突就直接转 → 有冲突先处理成新结构再合。
 
-1. 先检测新版结构的类名/路径是否与 newBlog 现有代码冲突。
-   注意 `dynamic-page-header` / `dynamic-page-icon` 这类**带命名空间前缀**的名字**不算**冲突，要用精确类名判断。
-2. 不冲突 → 直接转换为新结构（`cp` 新版文件过来）。
-3. 有冲突 → 尽量先处理成新结构，再覆盖。
-
-已完成的转换：
-
-* `src/styles/pages/common.css` — 从 Firefly 引入。newBlog 原本**没有** `src/styles/pages/` 目录（样式是扁平的 `src/styles/*.css`），而 `src/components/comic/PageHeader.astro` 依赖它的 `.page-heading` / `.page-icon`。
-  **同步时必须保留该文件**，否则构建会报 `Failed to resolve import "@/styles/pages/common.css"`。
-  该文件依赖 `--radius-large` / `--primary` / `--content-meta`，三者 newBlog 均已定义。
-* `src/components/comic/PageHeader.astro` 在两个仓库中保持**同一份文件**（都走 common.css），避免每次同步重新踩坑。
+已完成的转换：`src/styles/pages/`（上游 6.16.8 也拆到了这个目录）。
 
 ---
 
-cd C:\Users\TY-Han\Documents\Firefly
-git fetch real-upstream master
-
-# Check new commits
-git log --oneline origin/master..real-upstream/master
-
-# If new commits exist, merge
-git merge real-upstream/master --no-edit
-git push origin master
-```
-
-If there are no new commits (`origin/master` == `real-upstream/master`), skip to Step 5.
-
----
-
-## Step 2: Fetch into newBlog
-
-```powershell
-# In newBlog repo
-cd C:\Users\TY-Han\Documents\newBlog
-git fetch firefly master
-
-# Check what's new
-git log --oneline HEAD..firefly/master
-git log --oneline HEAD..firefly/master --no-merges
-```
-
----
-
-## Step 3: Backup Custom Content
-
-Always backup before copying upstream files.
-
-```powershell
-mkdir -Force _backup/config
-mkdir -Force _backup/content/posts
-mkdir -Force _backup/content/spec
-mkdir -Force _backup/content/dynamic
-mkdir -Force _backup/styles
-mkdir -Force _backup/public
-mkdir -Force _backup/admin
-mkdir -Force _backup/cms
-```
-
-Backup normal custom content:
-
-```powershell
-Copy-Item -Recurse -Force src/config/* _backup/config/
-Copy-Item -Recurse -Force src/content/posts/* _backup/content/posts/
-Copy-Item -Recurse -Force src/content/spec/* _backup/content/spec/
-Copy-Item -Recurse -Force src/content/dynamic/* _backup/content/dynamic/
-Copy-Item -Force src/styles/twikoo.css _backup/styles/
-Copy-Item -Force src/styles/fancybox-custom.css _backup/styles/
-Copy-Item -Recurse -Force src/assets/images/* _backup/
-Copy-Item -Recurse -Force public/assets/css/* _backup/public/
-Copy-Item -Force src/i18n/languages/zh_CN.ts _backup/
-```
-
-Backup protected Admin:
-
-```powershell
-Copy-Item -Recurse -Force public/admin/* _backup/admin/
-```
-
-Backup CMS config:
-
-```powershell
-Copy-Item -Force public/admin/config.yml _backup/cms/ -ErrorAction SilentlyContinue
-Copy-Item -Force public/admin/index.html _backup/cms/ -ErrorAction SilentlyContinue
-```
-
----
-
-## Step 4: Copy Framework Files
-
-Copy upstream framework files.
-
-Protected areas must be excluded.
-
-```powershell
-cp -Recurse -Force ../Firefly/src/components/* src/components/
-cp -Recurse -Force ../Firefly/src/layouts/* src/layouts/
-cp -Recurse -Force ../Firefly/src/plugins/* src/plugins/
-cp -Recurse -Force ../Firefly/src/utils/* src/utils/
-cp -Recurse -Force ../Firefly/src/types/* src/types/
-cp -Recurse -Force ../Firefly/src/styles/* src/styles/
-cp -Recurse -Force ../Firefly/src/i18n/* src/i18n/
-cp -Recurse -Force ../Firefly/src/config/* src/config/
-```
-
----
-
-### Copy Pages Except Admin
-
-Do NOT copy:
-
-```
-src/pages/admin/
-.github/
-```
-
-Use:
-
-```powershell
-Get-ChildItem ../Firefly/src/pages |
-Where-Object {$_.Name -ne "admin"} |
-Copy-Item -Destination src/pages -Recurse -Force
-```
-
----
-
-Continue copying:
-
-```powershell
-cp -Recurse -Force ../Firefly/src/content/* src/content/
-cp -Recurse -Force ../Firefly/public/* public/
-cp -Force ../Firefly/package.json .
-cp -Force ../Firefly/astro.config.mjs .
-cp -Force ../Firefly/tsconfig.json .
-cp -Force ../Firefly/src/content.config.ts src/
-cp -Force ../Firefly/src/env.d.ts src/
-```
-
----
-
-Protected files check:
-
-```powershell
-git diff -- src/pages/admin
-git diff -- public/admin
-git diff -- public/admin
-git diff -- .github
-```
-
-Expected:
-
-```
-No changes
-```
-
-If changes exist:
-
-Stop synchronization and restore protected files.
-
-## Step 5: Restore Custom Content
-
-### Restore blog posts and spec pages
-
-```powershell
-# Remove upstream example posts
-@(
-"code-examples.md",
-"draft.md",
-"encrypted-demo.md",
-"firefly-layout-system.md",
-"firefly.md",
-"katex-math-example.md",
-"markdown-extended.md",
-"markdown-mermaid.md",
-"markdown-plantuml.md",
-"markdown-tutorial.md",
-"mdx-example.mdx",
-"video.md"
-) | % { Remove-Item -Force "src/content/posts/$_" -ErrorAction SilentlyContinue }
-
-Remove-Item -Recurse -Force "src/content/posts/guide" -ErrorAction SilentlyContinue
-
-# Remove upstream spec pages
-Remove-Item -Force "src/content/spec/about.md" -ErrorAction SilentlyContinue
-
-# Restore user content
-Copy-Item -Recurse -Force _backup/content/posts/* src/content/posts/
-Copy-Item -Recurse -Force _backup/content/spec/* src/content/spec/
-Copy-Item -Recurse -Force _backup/content/dynamic/* src/content/dynamic/
-```
-
----
-
-### Restore config files (user values must be preserved)
-
-```powershell
-Copy-Item -Recurse -Force _backup/config/* src/config/
-```
-
-Then manually re-merge ONLY if upstream has NEW structural fields:
-
-* new keys
-* renamed keys
-* type changes
-* required configuration changes
-
-Check:
-
-```powershell
-git diff HEAD -- src/config/*.ts
-```
-
-Only merge structural changes.
-
-User-defined values must remain unchanged.
-
----
-
-### Restore styles, images, public assets
-
-```powershell
-Copy-Item -Force _backup/styles/twikoo.css src/styles/
-Copy-Item -Force _backup/styles/fancybox-custom.css src/styles/
-
-Copy-Item -Recurse -Force _backup/images/* src/assets/images/
-
-Copy-Item -Recurse -Force _backup/public/* public/assets/css/
-
-Copy-Item -Force _backup/zh_CN.ts src/i18n/languages/zh_CN.ts
-```
-
----
-
-### Restore Protected Admin and CMS
-
-Admin pages and CMS must always be restored after synchronization.
-
-```powershell
-# Restore Admin
-Copy-Item -Recurse -Force _backup/admin/* public/admin/
-```
-
-Restore Sveltia CMS:
-
-```powershell
-# Restore Sveltia CMS configuration
-Copy-Item -Force _backup/cms/config.yml public/admin/ -ErrorAction SilentlyContinue
-
-Copy-Item -Force _backup/cms/index.html public/admin/ -ErrorAction SilentlyContinue
-```
-
-After restore:
-
-Verify:
-
-```powershell
-git diff -- public/admin
-```
-
-Expected:
-
-```text
-No changes
-```
-
----
-
-# Step 6: Post-Sync Fixes
-
-## 6a. Remove files upstream deleted
-
-```powershell
-git diff --name-only --diff-filter=A HEAD..firefly/master
-```
-
-Delete files that no longer exist upstream:
-
-```text
-FontManager.astro → replaced by FontSetup.astro
-
-ArchivePanel.svelte → replaced by ArchivePanel.astro
-
-[...slug].png.ts → renamed to [...slug].ts
-
-mermaid-render-script.js → replaced by diagram-panzoom-script.js
-```
-
-Do NOT remove:
-
-```text
-public/admin/
-```
-
-These are protected user files.
-
----
-
-## 6b. Fix JSX HTML comments inside ternaries
-
-Search:
-
-```text
-{/* comment */}
-```
-
-in `.astro` files.
-
-Patterns:
-
-Inside `{...}` expressions:
-
-```html
-<!-- text -->
-```
-
-should become:
-
-```astro
-{/* text */}
-```
-
-Affected files (check each sync):
-
-```text
-src/pages/anime.astro
-
-src/layouts/MainGridLayout.astro
-
-src/components/layout/NavMenuPanel.astro
-```
-
----
-
-## 6c. Fix icon prefixes
-
-Check for bare icon names without prefixes.
-
-Examples:
-
-```text
-nyaone
-```
-
-replace with:
-
-```text
-simple-icons:mastodon
-```
-
-or install:
-
-```text
-@iconify-json/ic
-```
-
-Other examples:
-
-```text
-github
-```
-
-→
-
-```text
-simple-icons:github
-```
-
-```text
-rss
-```
-
-→
-
-```text
-fa7-solid:rss
-```
-
----
-
-## 6d. Fix wrangler.jsonc
-
-Keep minimal for Workers Assets mode:
-
-```jsonc
-{
-	"name": "firefly",
-	"compatibility_date": "2025-01-01",
-	"compatibility_flags": ["nodejs_compat"],
-	"assets": {
-		"directory": "./dist"
-	}
-}
-```
-
-Do not add bindings:
-
-```text
-KV
-Images
-D1
-Assets binding
-```
-
-unless the deployment architecture is intentionally changed.
-
----
-
-## 6e. Fix sidebarTOC config
-
-Use:
-
-```ts
-hideOnNonPostPage: true
-```
-
-NOT:
-
-```ts
-showOnNonPostPage: false
-```
-
----
-
-## 6f. Waline CSS — CDN base + local override
-
-In:
-
-```text
-src/components/comment/Waline.astro
-```
-
-Keep:
-
-```astro
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
-<link rel="stylesheet" href="/assets/css/waline-custom.css" />
-```
-
-Rules:
-
-* CDN CSS loads FIRST.
-* Custom CSS loads SECOND.
-* Custom CSS is an override layer.
-
-Never remove CDN CSS.
-
----
-
-## 6g. CMS Protection
-
-* CMS configuration is user-managed and located at `public/admin/`.
-* Do not remove, modify, or migrate CMS files during sync.
-* Config file: `public/admin/config.yml` (YAML format with collections, fields, backend settings).
-* Admin page: `public/admin/index.html` (static HTML, not Astro-processed).
-* If upstream contains CMS-related changes, skip them and report only.
-
----
-
-## 6h. Add svg-spinners to astro-icon config
-
-In:
-
-```text
-astro.config.mjs
-```
-
-Add:
-
-```ts
-"svg-spinners": ["*"]
-```
-
-to icon include.
-
----
-
-# Step 7: Install & Build
-
-```powershell
-pnpm install
-
-pnpm build
-```
-
-Build must pass:
-
-```text
-[build] Complete!
-```
-
-Check errors:
-
-```text
-CompilerError: Unexpected token
-→ JSX comment issue (Step 6b)
-
-Unable to load the "local" icon set
-→ icon prefix issue (Step 6c)
-
-Cannot use assets with a binding
-→ wrangler.jsonc issue (Step 6d)
-```
-
----
-
-## Protected Area Final Verification
-
-Before commit:
-
-```powershell
-git diff -- src/pages/admin
-git diff -- public/admin
-git diff -- .github
-```
-
-Expected:
-
-```text
-No changes
-```
-
-If changes exist:
-
-```text
-Abort commit.
-
-Restore protected files.
-
-Review manually.
-```
-
----
-
-# Step 8: Cleanup & Commit
-
-```powershell
-Remove-Item -Recurse -Force _backup
-
-git add -A
-
-git commit -m "chore: sync upstream Firefly v{VERSION} and fix build issues"
-
-git push origin master
-```
-## Linux Environment Setup
-
-This workflow supports Linux development environments.
-
-Before executing any synchronization operation, detect the current operating system.
-
-If running on Linux:
-
-* Use Bash commands instead of PowerShell.
-* Use Linux filesystem paths.
-* Do not execute Windows-specific commands.
-* Preserve existing user environment configuration.
-
----
-
-## Supported Linux Environments
-
-Recommended:
-
-* Fedora
-* Ubuntu
-* Debian
-* Arch Linux
-
-Required tools:
-
-```bash
-git
-node
-pnpm
-npm
-rsync
-```
-
-Optional:
-
-```bash
-gh
-wrangler
-```
-
----
-
-# Step L1: Check Environment
-
-Run:
-
-```bash
-uname -a
-
-which git
-which node
-which pnpm
-```
-
-Expected:
-
-```text
-git    -> installed
-node   -> installed
-pnpm   -> installed
-```
-
-If missing:
-
-Stop workflow.
-
-Report missing dependencies.
-
-Do not install automatically unless user allows it.
-
----
-
-# Step L2: Install Node.js Environment
-
-Recommended:
-
-Use Node.js LTS.
-
-Check:
-
-```bash
-node -v
-
-npm -v
-```
-
-Expected:
-
-```text
-Node >= 20
-npm >= 10
-```
-
-If using nvm:
-
-```bash
-command -v nvm
-```
-
-Install Node:
-
-```bash
-nvm install --lts
-
-nvm use --lts
-```
-
----
-
-# Step L3: Install pnpm
-
-Check:
-
-```bash
-pnpm -v
-```
-
-If missing:
-
-```bash
-corepack enable
-
-corepack prepare pnpm@latest --activate
-```
-
-Verify:
-
-```bash
-pnpm -v
-```
-
----
-
-# Step L4: Install Git Tools
-
-Check:
-
-```bash
-git --version
-```
-
-Configure user:
-
-```bash
-git config --global user.name
-
-git config --global user.email
-```
-
-If missing:
-
-```bash
-git config --global user.name "YOUR_NAME"
-
-git config --global user.email "YOUR_EMAIL"
-```
-
----
-
-# Step L5: Install Cloudflare Wrangler
-
-Required only for Cloudflare deployment.
-
-Check:
-
-```bash
-wrangler --version
-```
-
-Install:
-
-```bash
-pnpm add -g wrangler
-```
-
-Login:
-
-```bash
-wrangler login
-```
-
-Do not modify Cloudflare configuration automatically.
-
----
-
-# Step L6: Repository Path Configuration
-
-Linux example:
-
-```bash
-~/Projects/
-├── Firefly/
-└── newBlog/
-```
-
-Configure paths:
-
-```bash
-cd ~/Projects/newBlog
-```
-
-Check upstream:
-
-```bash
-git remote -v
-```
-
-Expected:
-
-```text
-firefly   ~/Projects/Firefly
-origin    GitHub repository
-```
-
-If missing:
-
-```bash
-git remote add firefly ~/Projects/Firefly
-```
-
----
-
-# Step L7: Linux File Permission Check
-
-Before synchronization:
-
-Check:
-
-```bash
-ls -la
-```
-
-Ensure current user owns project files:
-
-```bash
-sudo chown -R $USER:$USER .
-```
-
-Do NOT use:
-
-```bash
-chmod 777
-```
-
-Avoid unsafe permission changes.
-
----
-
-# Step L8: Linux Backup Commands
-
-Linux equivalent:
-
-```bash
-mkdir -p _backup/config
-mkdir -p _backup/content/posts
-mkdir -p _backup/content/spec
-mkdir -p _backup/content/dynamic
-mkdir -p _backup/styles
-mkdir -p _backup/public
-mkdir -p _backup/admin
-```
-
-Backup:
-
-```bash
-cp -r src/config/* _backup/config/
-
-cp -r src/content/posts/* _backup/content/posts/
-
-cp -r src/content/spec/* _backup/content/spec/
-
-cp -r src/content/dynamic/* _backup/content/dynamic/
-
-cp -r src/pages/admin/* _backup/admin/pages/
-
-cp -r public/admin/* _backup/admin/public/
-```
-
-CMS:
-
-```bash
-cp public/admin/config.yml _backup/cms/ 2>/dev/null || true
-cp public/admin/index.html _backup/cms/ 2>/dev/null || true
-```
-
----
-
-# Step L9: Linux Synchronization Commands
-
-Use:
-
-```bash
-rsync -av \
---exclude="admin" \
-../Firefly/src/pages/ \
-src/pages/
-```
-
-The following directories are allowed:
-
-```text
-src/components/
-src/layouts/
-src/plugins/
-src/utils/
-src/types/
-src/styles/
-src/i18n/
-src/config/
-```
-
-Example:
-
-```bash
-rsync -av ../Firefly/src/components/ src/components/
-
-rsync -av ../Firefly/src/layouts/ src/layouts/
-
-rsync -av ../Firefly/src/plugins/ src/plugins/
-```
-
-Never sync:
-
-```text
-src/pages/admin/
-public/admin/
-.github/
-src/content/dynamic/
-```
-
----
-
-# Step L10: Linux Build Verification
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Build:
-
-```bash
-pnpm build
-```
-
-Expected:
-
-```text
-[build] Complete!
-```
-
-Check protected files:
-
-```bash
-git diff -- src/pages/admin
-
-git diff -- public/admin
-
-git diff -- public/admin
-
-git diff -- public/admin
-
-git diff -- .github
-```
-
-Expected:
-
-```text
-No changes
-```
-
----
-
-# Step L11: Linux Cleanup
-
-Remove backup:
-
-```bash
-rm -rf _backup
-```
-
-Commit:
-
-```bash
-git add -A
-
-git commit \
--m "chore: sync upstream Firefly and fix build issues"
-
-git push origin master
-```
-
----
-
-# Linux Environment Rules
-
-When running on Linux:
-
-* Prefer `rsync` over `cp`.
-* Prefer relative paths.
-* Never use `sudo` unless required.
-* Never change system-wide configuration.
-* Never modify user's shell configuration.
-* Never overwrite protected files.
-* Always verify Git diff before commit.
-* **Firefly-hyde custom widgets** (AiSummary, QuoteOfTheDay, WelcomeToast, TimeGreeting, Schedule, RelationshipTimer) under `src/components/widget/`, `src/components/widgets/`, and `src/content/ziyuan/` are protected additions — do not delete or overwrite during upstream sync.
-* **Dynamic data source must always be in local mode (`apiUrl: "/api/dynamic.json"`, `memos.enable: false`) after sync, unless explicitly overridden.**
-
-
----
-
-# Summary Checklist
-
-* [ ] No new upstream commits? → Skip entire process
-* [ ] Backed up custom configs, posts, spec, styles, images, public, zh_CN
-* [ ] Backed up admin pages
-* [ ] Backed up dynamic content
-* [ ] Protected Sveltia CMS configuration
-* [ ] Copied framework directories from Firefly/
-* [ ] Skipped `src/pages/admin/`
-* [ ] Skipped `.github/` (never synced)
-* [ ] Restored custom content
-* [ ] Restored Admin system
-* [ ] Restored CMS configuration
-* [ ] Config files re-merged only for structural changes
-* [ ] Removed files deleted upstream
-* [ ] Fixed JSX comments
-* [ ] Fixed icon prefixes
-* [ ] Fixed wrangler.jsonc
-* [ ] Fixed sidebarTOC config
-* [ ] Fixed Waline CSS
-* [ ] Preserved Sveltia CMS
-* [ ] Added svg-spinners
-* [ ] `pnpm install` succeeded
-* [ ] `pnpm build` succeeded
-* [ ] Protected areas have no diff
-* [ ] Firefly-hyde custom widgets untouched (src/components/widget/, src/components/widgets/, src/content/ziyuan/)
-* [ ] Dynamic/Moments feature implementation files untouched (src/components/pages/dynamic/, src/components/widget/Dynamic.astro, src/config/dynamicConfig.ts, etc.)
-* [ ] Diary feature implementation files untouched (src/pages/diary.astro, src/data/diary.ts, src/components/features/diary/, src/components/atoms/FilterTabs.astro, src/utils/timeFormat.ts, public/js/filter-tabs-handler.js)
-* [ ] Diary content (`src/content/diary/`) not overwritten from any external repo
-* [ ] Dynamic mode verified as local mode
-* [ ] `_backup/` removed
-* [ ] Committed and pushed to origin master
-
----
-
-## Auto-Upload Rule
-
-After any and all operations (including sync, feature addition, configuration changes, content updates, bug fixes, etc.), the changes **must be committed and pushed** to the remote repository (`origin master`) upon completion, **unless explicitly told otherwise** (e.g., "don't push yet", "keep local", "wait before uploading").
-
-This applies to:
-- Upstream Firefly sync
-- Firefly-hyde feature integration
-- Configuration changes
-- Content/documentation updates
-- Bug fixes and refactors
-- Any other modification to the codebase
-
-Exception: If the user explicitly says "do not commit", "don't push", "keep local", or similar instruction, skip the push and report that changes are local only.
-
+## Rules
+
+- **构建必须通过才能提交。** 只有 `pnpm build` 出 `[build] Complete!` 才 commit。
+- **受保护清单逐项确认**（见上），有意外改动就停下来查，别硬提交。
+- **不制造验证残留**：临时脚本、探针文件、合成用例、`*.bak` 一律放仓库外（`/tmp`），
+  验证完连临时目录一起删。确实要在 `dist/` 造探针时，验证后立即 `rm -rf`，并确认 `git status` 干净。
+- 不用 `sudo` 改系统配置，不动用户的 shell 配置。
+- 优先相对路径。
+
+### Auto-Upload Rule
+
+任何操作（同步、加功能、改配置、更新内容、修 bug、重构等）完成后**必须 commit 并 push 到
+`origin master`**，除非用户明确说「先别推 / 保持本地 / 不要提交」。
+
+例外时只报告「改动仅在本地」，并明确指出未推送。
+
+### 同步后检查清单
+
+- [ ] 工作区干净时才开始；已打 `pre-sync-<日期>` tag
+- [ ] 查过**真实 delta**（用上次同步的上游版本当基线），不是被提交数吓到
+- [ ] merge 用 `--no-ff`，提交保留两个父提交
+- [ ] 冲突用**正确的 base** 解（`git merge-file`，base = 上游上次同步到的版本）
+- [ ] **核对过自动合并的文件**（上游没改过的文件必须逐字节等于本地）
+- [ ] 上游的仓库文档与示例内容已删除（`.github/`、`docs/`、示例文章、示例项目、示例相册）
+- [ ] `pnpm install` / `pnpm check` / `pnpm type-check` / `pnpm build` 全绿
+- [ ] 受保护清单逐项 diff 检查通过
+- [ ] 漫展模块 + 日历倒计时模块做过功能性回归（含切页后）
+- [ ] 侧边栏四个定制组件都在且启用
+- [ ] 验证残留已清理，`git status` 只剩本次同步的改动
+- [ ] 已 commit 并 push 到 `origin master`
