@@ -550,4 +550,5 @@ export const zh_TW: Translation = {
 	[Key.diaryDaysAgo]: "天前",
 	[Key.diaryNoResults]: "沒有找到匹配的日記",
 	[Key.diaryTips]: "生活就像日記，每頁都是新的開始。",
+	[Key.birthdayGreeting]: "今天是這隻baka的生日，快祝Ta生日快樂",
 };

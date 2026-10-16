@@ -10,8 +10,7 @@ export type ProfileConfig = {
 	// 链接显示模式，仅作为默认值：显示设置面板可在运行时切换并记忆到 localStorage
 	// 不填等同 "icon"，与旧配置表现一致
 	linkDisplayMode?: ProfileLinkDisplayMode;
-	// 生日，格式 "MM-DD"（如 "10-17"）。留空即关闭生日气球特效。
-	// 判定按站点时区 siteConfig.timezone，详见 src/components/features/BalloonEffect.astro
+	// 生日，格式 "MM-DD"。留空即关闭生日特效（气球 + Profile 横幅）
 	birthday?: string;
 	links: {
 		name: string;

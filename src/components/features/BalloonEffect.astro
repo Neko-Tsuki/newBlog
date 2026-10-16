@@ -1,28 +1,20 @@
 ---
-// 生日气球特效：生日当天（按站点时区 siteConfig.timezone 判定）页面上飘起一批气球，
-// 从底部升到顶部之外，一轮结束就停；当天只播一次，之后重开浏览器也不再播。
-//
-// 配置见 src/config/profileConfig.ts 的 birthday（格式 MM-DD，留空即关闭）。
-//
-// 与 SakuraEffect/WavesEffect 一致：组件没有 HTML 模板，canvas 由脚本动态创建挂到 body，
-// 动画全部 rAF 驱动（环境特效在本项目一律不用 CSS @keyframes）。
-// 生日判定必须在客户端做：静态站点构建期渲染的是构建机时间，部署平台多为 UTC。
+// 生日气球：生日当天飘一轮气球，当天只播一次。配置见 profileConfig.birthday。
+// 判定必须在客户端做 —— 静态站点构建期拿到的是构建机时间（部署平台多为 UTC）。
 ---
 
 <script>
 	import { profileConfig, siteConfig } from "@/config";
 
-	// 外观与运动参数。刻意不放进 config：这些是"实现细节"，
-	// 配置面只留一个生日日期，避免配置项扩散。
+	// 运动参数。一轮总时长 = SPAWN_WINDOW_MS + RISE_MS + TAIL_FADE_MS ≈ 4.9 秒
 	const BALLOON_COUNT = 36; // 一轮总共放多少个
-	const SPAWN_WINDOW_MS = 4500; // 错峰入场铺开的总时长
-	const RISE_MS = 11000; // 单个气球从底部升到顶部之外所需时间
-	const TAIL_FADE_MS = 700; // 最后一个气球离场后，整层淡出的时长
+	const SPAWN_WINDOW_MS = 1100; // 错峰入场铺开的总时长
+	const RISE_MS = 3400; // 单个气球从底部升到顶部之外所需时间
+	const TAIL_FADE_MS = 400; // 最后一个气球离场后整层淡出的时长
 	const SWAY_PX = 46; // 水平摇摆幅度上限
-	const Z_INDEX = 100; // 与樱花同层；全屏且 pointer-events:none，不挡操作
+	const Z_INDEX = 100; // 与樱花同层；pointer-events:none，不挡操作
 	const STORAGE_KEY = "birthdayBalloonShown";
 
-	// 气球配色：饱和度压一点，明暗两套主题下都不刺眼
 	const PALETTE = [
 		"#ff6b81",
 		"#ffa502",
@@ -84,7 +76,7 @@
 		try {
 			localStorage.setItem(STORAGE_KEY, date);
 		} catch {
-			// 存不下就存不下，不能因此影响动画
+			// 存不下不影响动画
 		}
 	}
 
@@ -320,7 +312,6 @@
 			);
 			ctx.stroke();
 
-			// 气球本体
 			ctx.fillStyle = balloon.color;
 			ctx.beginPath();
 			ctx.ellipse(0, 0, radius, bodyHeight / 2, 0, 0, Math.PI * 2);
@@ -350,9 +341,6 @@
 		}
 	}
 
-	// ===========================================================================
-	// 入口：幂等初始化
-	// ===========================================================================
 	(function setupBalloon() {
 		if (window.balloonInitialized) return;
 		window.balloonInitialized = true;
@@ -360,16 +348,14 @@
 		const birthday = normalizeBirthday(profileConfig.birthday);
 		if (!birthday) return; // 没配生日 = 关闭
 
-		// 动画正是「减少动态效果」要避开的，这类用户静默跳过，不给他们播
+		// 动画正是「减少动态效果」要避开的，静默跳过
 		if (prefersReducedMotion()) return;
 
 		const today = todayInSiteTimezone();
 		if (!today || today.md !== birthday) return;
 
-		// 当天只播一次：重开浏览器也不再播，所以用 localStorage（不是 sessionStorage）
+		// 当天只播一次，重开浏览器也不再播；先记上再播，刷新不至于重播
 		if (readShownDate() === today.ymd) return;
-
-		// 先记上再播，刷新页面不至于重播
 		markShown(today.ymd);
 
 		const manager = new BalloonManager();

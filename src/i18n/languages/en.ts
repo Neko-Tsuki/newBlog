@@ -561,4 +561,6 @@ export const en: Translation = {
 	[Key.diaryDaysAgo]: "d ago",
 	[Key.diaryNoResults]: "No matching diary entries found",
 	[Key.diaryTips]: "Life is like a diary - every page is a new beginning.",
+	[Key.birthdayGreeting]:
+		"It's this baka's birthday today — go wish them a happy one!",
 };

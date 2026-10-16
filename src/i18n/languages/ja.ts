@@ -558,4 +558,5 @@ export const ja: Translation = {
 	[Key.diaryDaysAgo]: "日前",
 	[Key.diaryNoResults]: "該当する日記が見つかりません",
 	[Key.diaryTips]: "人生は日記のようなもの、毎ページが新しい始まりです。",
+	[Key.birthdayGreeting]: "今日はこのバカの誕生日、お祝いしてあげて！",
 };

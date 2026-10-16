@@ -67,3 +67,36 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+/* 生日横幅（仅生日当天出现）：染一层很淡的主题色、两端渐隐，通栏贴住卡片上沿，
+ * 负 margin 抵掉卡片的 p-3，圆角由 card-base 的 overflow-hidden 裁出来。 */
+
+.profile-birthday-banner {
+	/* 抵掉卡片 padding：p-3 = 0.75rem */
+	margin: -0.75rem -0.75rem 0.7rem;
+	padding: 0.4rem 0.5rem; /* 侧边距压小，省下的横向空间直接决定它会不会换行 */
+	font-size: 0.75rem;
+	font-weight: 600;
+	line-height: 1.5;
+	letter-spacing: 0.01em;
+	text-align: center;
+	text-wrap: balance; /* 换行时两行长度接近，不留孤零零的尾巴 */
+	color: var(--primary);
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		color-mix(in oklab, var(--primary) 14%, transparent) 50%,
+		transparent 100%
+	);
+}
+
+/* 🎂↓ 是个整体（箭头指着下面的头像），别被拆到两行 */
+.profile-birthday-banner .profile-birthday-lead {
+	white-space: nowrap;
+}
+
+/* 上面若将来加了 display，会盖掉 [hidden] 的 display:none，这条显式兜住 */
+.profile-birthday-banner[hidden] {
+	display: none;
+}
+

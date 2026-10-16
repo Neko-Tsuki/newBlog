@@ -562,4 +562,5 @@ export const ru: Translation = {
 	[Key.diaryDaysAgo]: " д. назад",
 	[Key.diaryNoResults]: "Не найдено подходящих записей",
 	[Key.diaryTips]: "Жизнь как дневник — каждая страница новое начало.",
+	[Key.birthdayGreeting]: "Сегодня день рождения этого баки — поздравьте!",
 };

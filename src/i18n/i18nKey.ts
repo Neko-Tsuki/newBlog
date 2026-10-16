@@ -542,6 +542,8 @@ enum I18nKey {
 	diaryDaysAgo = "diaryDaysAgo",
 	diaryNoResults = "diaryNoResults",
 	diaryTips = "diaryTips",
+	// Profile 卡片的生日横幅（仅生日当天出现）
+	birthdayGreeting = "birthdayGreeting",
 }
 
 export default I18nKey;

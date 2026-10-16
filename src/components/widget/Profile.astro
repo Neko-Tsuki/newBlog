@@ -2,6 +2,9 @@
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import { profileConfig } from "@/config/profileConfig";
+import { siteConfig } from "@/config/siteConfig";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
 import { encodeMailto, MAILTO_ONCLICK_SCRIPT } from "@/utils/email-utils";
 import { url } from "@/utils/url-utils";
 
@@ -11,9 +14,17 @@ interface Props {
 }
 const { style } = Astro.props;
 const className = Astro.props.class;
+
+// 生日横幅只在生日当天显示；构建期拿到的是构建机时间，所以先渲染成 hidden，
+// 由下面的脚本判定后再取消。没配生日就永远不显示。
+const birthday = (profileConfig.birthday ?? "").trim();
+const birthdayLabel = i18n(I18nKey.birthdayGreeting);
 ---
 
 <div class:list={["card-base", "p-3", className]} style={style}>
+  <div class="profile-birthday-banner" data-birthday-banner hidden>
+    <span class="profile-birthday-lead" aria-hidden="true">🎂↓</span>{birthdayLabel}
+  </div>
   <a
     aria-label="Go to About Page"
     href={url("/about/")}
@@ -79,3 +90,43 @@ const className = Astro.props.class;
         </div>
   </div>
 </div>
+
+<script is:inline define:vars={{ birthday, timezone: siteConfig.timezone || "UTC" }}>
+	(function () {
+		// 判定与 BalloonEffect 同一套：站点时区取今天，容忍 "MM-DD" / "YYYY-MM-DD" 
+		function todayInSiteTimezone() {
+			try {
+				return new Intl.DateTimeFormat("en-CA", {
+					timeZone: timezone,
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+				})
+					.format(new Date())
+					.slice(5);
+			} catch (e) {
+				return "";
+			}
+		}
+
+		function normalizeBirthday(raw) {
+			var v = (raw || "").trim();
+			if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v.slice(5);
+			return /^\d{2}-\d{2}$/.test(v) ? v : "";
+		}
+
+		function apply() {
+			var wanted = normalizeBirthday(birthday);
+			var show = wanted !== "" && wanted === todayInSiteTimezone();
+			var banners = document.querySelectorAll("[data-birthday-banner]");
+			for (var i = 0; i < banners.length; i++) banners[i].hidden = !show;
+		}
+
+		// 侧边栏在 Swup 容器里，切页会被换成服务端渲染的那份（又是 hidden 的）
+		if (!window.__profileBirthdayInit) {
+			window.__profileBirthdayInit = true;
+			document.addEventListener("swup:contentReplaced", apply);
+		}
+		apply();
+	})();
+</script>

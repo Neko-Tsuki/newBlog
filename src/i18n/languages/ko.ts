@@ -558,4 +558,5 @@ export const ko: Translation = {
 	[Key.diaryDaysAgo]: "일 전",
 	[Key.diaryNoResults]: "일치하는 일기 항목이 없습니다",
 	[Key.diaryTips]: "인생은 일기와 같습니다. 매 페이지가 새로운 시작입니다.",
+	[Key.birthdayGreeting]: "오늘은 이 바보의 생일이에요, 축하해 주세요!",
 };
