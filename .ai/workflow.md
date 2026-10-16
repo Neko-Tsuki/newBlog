@@ -125,6 +125,14 @@ src/
 - `Unable to load the "local" icon set` → bare icon name without set prefix (e.g., `github` → `simple-icons:github`)
 - `Cannot use assets with a binding in an assets-only Worker` → old binding leftover in `wrangler.jsonc`
 
+### 测试产物用完即删（保持工作区干净）
+
+Testing is a means, not a deliverable — **验证跑完就把为验证而生的一切删掉**：
+
+- 临时测试脚本、探针文件、合成用例、备份副本（`*.bak`）一律**不进仓库**。需要就放仓库外（如 `/tmp`），验证完连临时目录一起删除。
+- 确实要在 `dist/` 里造探针文件来触发构建脚本（如 `minify-inline-scripts.ts`）时，验证后立即 `rm -rf`，并确认 `git status` 干净。
+- 仓库里不留 `*.test.*` / `probe-*` / `dist-raw|dist-old|dist-new` 这类验证残留；也不为它们加不需要的终端 log 输出。
+
 ---
 
 ## Key Files to Never Overwrite (Upstream Sync Protection)

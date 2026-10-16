@@ -11,6 +11,8 @@
 //    因此需要引入 common.css 提供 .page-heading / .page-icon。
 // 3. 改为按状态分区渲染：即将到来 / 正在进行 / 完结撒花。
 //    空分区服务端直接不渲染；筛选时同时处理卡片与分区两级可见性。
+// 4. 分区归属与状态徽标在客户端按访客本地时间重算一遍：静态产物里烤的是
+//    构建那天的状态，构建之后日期再走也不会自己变（详见下方脚本注释）。
 import EventSection from "@/components/comic/EventSection.astro";
 import FilterBar from "@/components/comic/FilterBar.astro";
 import PageHeader from "@/components/comic/PageHeader.astro";
@@ -69,48 +71,157 @@ const endedEvents = eventsByStatus("ended");
 </style>
 
 <script>
+	// 静态产物里烤的是「构建那天」的状态：构建之后日期再走，分区归属和状态徽标
+	// 都不会自己变（侧边栏「最近漫展」同理，见 RecentComicEvent.astro 注释 5）。
+	// 所以首屏与 Swup 切页后都按访客的本地时间重算一遍。
+	//
 	// 筛选需要同时处理「分区」和「卡片」两级可见性：
 	// 1. 状态筛选决定哪些分区可见
 	// 2. 城市筛选决定分区内哪些卡片可见；分区内全被滤掉时连分区一起隐藏
 	// 3. 所有分区都不可见时显示全局空状态
-	type ComicFilterState = { status?: string; city?: string };
+	type ComicEventStatus = "upcoming" | "ongoing" | "ended";
+	type ComicFilterState = { status: string; city: string };
+
+	const STATUS_LABELS: Record<ComicEventStatus, string> = {
+		upcoming: "即将到来",
+		ongoing: "进行中",
+		ended: "已结束",
+	};
+
+	const ALL_STATUSES: ComicEventStatus[] = ["upcoming", "ongoing", "ended"];
+
+	// 与服务端 computeStatus() 同款判据：日期是纯日期串，new Date() 按 UTC 零点解析
+	function computeStatus(startDate: string, endDate: string): ComicEventStatus {
+		const now = Date.now();
+		if (now < new Date(startDate).getTime()) return "upcoming";
+		if (now > new Date(endDate).getTime()) return "ended";
+		return "ongoing";
+	}
+
+	function applyFilter(status: string, city: string): void {
+		let anyVisible = false;
+
+		const sections = document.querySelectorAll<HTMLElement>(".event-section");
+		for (const section of sections) {
+			const sectionStatus = section.dataset.sectionStatus;
+			const statusOk = !status || status === "all" || sectionStatus === status;
+			if (!statusOk) {
+				section.hidden = true;
+				continue;
+			}
+
+			let visibleInSection = 0;
+			const cards = section.querySelectorAll<HTMLElement>(".event-card");
+			for (const card of cards) {
+				const cityOk = !city || city === "all" || card.dataset.city === city;
+				card.style.display = cityOk ? "" : "none";
+				if (cityOk) visibleInSection++;
+			}
+
+			section.hidden = visibleInSection === 0;
+			if (visibleInSection > 0) anyVisible = true;
+		}
+
+		const empty = document.getElementById("comic-empty-state");
+		if (empty) empty.hidden = anyVisible;
+	}
+
+	// 把卡片挪到它当前该在的分区，并同步状态徽标与筛选徽标数字
+	function syncStatuses(page: HTMLElement): void {
+		// 状态 → 分区里的卡片容器（空分区也渲染了空 grid，所以三种状态都能找到落点）
+		const grids = new Map<ComicEventStatus, HTMLElement>();
+		for (const section of page.querySelectorAll<HTMLElement>(".event-section")) {
+			const status = section.dataset.sectionStatus as
+				| ComicEventStatus
+				| undefined;
+			const grid = section.querySelector<HTMLElement>(".event-card-grid");
+			if (status && grid) grids.set(status, grid);
+		}
+
+		// 先记下服务端渲染的顺序，分区内重排时按它排，保持数据文件里的录入顺序
+		const cards = Array.from(
+			page.querySelectorAll<HTMLElement>(".event-card"),
+		);
+		const order = new Map(cards.map((card, i) => [card, i]));
+
+		const counts: Record<string, number> = { all: cards.length };
+		for (const key of ALL_STATUSES) counts[key] = 0;
+
+		for (const card of cards) {
+			const start = card.dataset.start;
+			const end = card.dataset.end;
+			if (!start || !end) continue;
+
+			const status = computeStatus(start, end);
+			counts[status]++;
+
+			card.dataset.status = status;
+			const badge = card.querySelector<HTMLElement>(".status-badge");
+			if (badge) {
+				badge.className = `status-badge ${status}`;
+				badge.textContent = STATUS_LABELS[status];
+			}
+
+			const grid = grids.get(status);
+			if (grid && card.parentElement !== grid) grid.appendChild(card);
+		}
+
+		// 分区内按原顺序重排（appendChild 移动节点），并按是否有卡片决定分区显隐
+		for (const grid of grids.values()) {
+			const inGrid = Array.from(
+				grid.querySelectorAll<HTMLElement>(":scope > .event-card"),
+			).sort((a, b) => (order.get(a) ?? 0) - (order.get(b) ?? 0));
+			for (const card of inGrid) grid.appendChild(card);
+
+			const section = grid.closest<HTMLElement>(".event-section");
+			if (section) section.hidden = inGrid.length === 0;
+		}
+
+		const bar = page.querySelector<HTMLElement>(
+			'.filter-bar[data-filter-group="status"]',
+		);
+		if (!bar) return;
+		for (const btn of bar.querySelectorAll<HTMLElement>(".filter-btn")) {
+			const key = btn.dataset.filterValue;
+			const badge = btn.querySelector<HTMLElement>(".filter-badge");
+			if (!key || !badge) continue;
+			badge.textContent = String(counts[key] ?? 0);
+		}
+	}
+
+	// Swup 切页后按钮会回到服务端渲染的「全部」，所以从 DOM 读当前筛选而不是记在闭包里
+	function readFilterFromDom(): ComicFilterState {
+		const active = (group: string): string =>
+			document.querySelector<HTMLElement>(
+				`.filter-bar[data-filter-group="${group}"] .filter-btn.active`,
+			)?.dataset.filterValue ?? "all";
+		return { status: active("status"), city: active("city") };
+	}
+
+	function refresh(): void {
+		const page = document.querySelector<HTMLElement>(".comic-events-page");
+		if (!page) return;
+
+		syncStatuses(page);
+		const { status, city } = readFilterFromDom();
+		applyFilter(status, city);
+	}
 
 	const w = window as unknown as Record<string, unknown>;
 	if (!w.__comicEventsFilterInit) {
 		w.__comicEventsFilterInit = true;
 
-		const applyFilter = (status?: string, city?: string): void => {
-			let anyVisible = false;
-
-			const sections = document.querySelectorAll<HTMLElement>(".event-section");
-			for (const section of sections) {
-				const sectionStatus = section.dataset.sectionStatus;
-				const statusOk =
-					!status || status === "all" || sectionStatus === status;
-				if (!statusOk) {
-					section.hidden = true;
-					continue;
-				}
-
-				let visibleInSection = 0;
-				const cards = section.querySelectorAll<HTMLElement>(".event-card");
-				for (const card of cards) {
-					const cityOk = !city || city === "all" || card.dataset.city === city;
-					card.style.display = cityOk ? "" : "none";
-					if (cityOk) visibleInSection++;
-				}
-
-				section.hidden = visibleInSection === 0;
-				if (visibleInSection > 0) anyVisible = true;
-			}
-
-			const empty = document.getElementById("comic-empty-state");
-			if (empty) empty.hidden = anyVisible;
-		};
-
 		window.addEventListener("comic:filter", (e) => {
 			const { status, city } = (e as CustomEvent<ComicFilterState>).detail ?? {};
-			applyFilter(status, city);
+			applyFilter(status ?? "all", city ?? "all");
 		});
+
+		// Swup 换页会把整块内容换成服务端渲染的那份，状态又变回构建期的，得再同步
+		document.addEventListener("swup:contentReplaced", refresh);
+	}
+
+	refresh();
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", refresh);
 	}
 </script>

@@ -32,6 +32,13 @@ const result = daysToNearestEvent();
 const event = result?.event ?? null;
 const days = result?.days ?? 0;
 
+// 首屏展示的是「距当前最近」的那场，但圆点原本固定把第 0 个点亮成 active。
+// 两者在数据里不是同一条时，客户端 refreshCountdowns() 会按 currentIndex()
+// 读到第 0 条，把倒计时文案写成另一场的。所以圆点的初始 active 要跟着最近那场走。
+const initialIndex = event
+	? comicEvents.findIndex((e) => e.id === event.id)
+	: 0;
+
 // 倒计时文案：优先用该条数据自带的 note（{days} 会替换成天数），
 // 否则回退到内置的通用文案
 function renderNote(note: string, days: number): string {
@@ -158,7 +165,7 @@ const clientEvents = comicEvents.map((e) => ({
 						<span class="page-dots">
 							{comicEvents.map((_, i) => (
 								<span
-									class:list={["page-dot", { active: i === 0 }]}
+									class:list={["page-dot", { active: i === initialIndex }]}
 									data-index={i}
 								/>
 							))}

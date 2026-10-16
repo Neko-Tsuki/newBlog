@@ -22,7 +22,10 @@ export interface DiaryItem {
 }
 
 // 获取日记列表（按时间倒序）
-export const getDiaryList = (data: DiaryItem[], limit?: number) => {
+export const getDiaryList = (
+	data: DiaryItem[],
+	limit?: number,
+): DiaryItem[] => {
 	const sortedData = [...data].sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
 	);
@@ -35,7 +38,7 @@ export const getDiaryList = (data: DiaryItem[], limit?: number) => {
 };
 
 // 获取所有标签
-export const getAllTags = (data: DiaryItem[]) => {
+export const getAllTags = (data: DiaryItem[]): string[] => {
 	const tags = new Set<string>();
 	data.forEach((item) => {
 		if (item.tags) {

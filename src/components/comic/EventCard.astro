@@ -24,11 +24,14 @@ const ticketText = event.tickets
 	.join(" | ");
 ---
 
+<!-- data-start / data-end 供页面脚本按访客本地时间重算状态（静态产物里烤的是构建那天的） -->
 <article
 	class="event-card"
 	data-status={event.status}
 	data-city={event.city}
 	data-event-id={event.id}
+	data-start={event.startDate}
+	data-end={event.endDate}
 >
 	<div class="card-cover">
 		<div

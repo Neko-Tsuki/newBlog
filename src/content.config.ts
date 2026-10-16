@@ -52,6 +52,25 @@ type DiaryData = {
 	};
 };
 
+// 两种条目二选一：公告（带正文，可挂链接）或名言集合。
+// 字段取自下面 z.union 的 infer 结果，改 schema 时这里要一起改。
+type ZiyuanData =
+	| {
+			title: string;
+			content: string;
+			closable: boolean;
+			link?: {
+				enable: boolean;
+				text: string;
+				url: string;
+				external: boolean;
+			};
+	  }
+	| {
+			title: string;
+			quotes: { text: string; author: string }[];
+	  };
+
 type ContentCollection<T> = CollectionConfig<
 	ZodType<T>,
 	ReturnType<typeof glob>
@@ -126,7 +145,7 @@ const diaryCollection: ContentCollection<DiaryData> = defineCollection({
 	}),
 });
 
-const ziyuanCollection = defineCollection({
+const ziyuanCollection: ContentCollection<ZiyuanData> = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/ziyuan" }),
 	schema: z.union([
 		z.object({
