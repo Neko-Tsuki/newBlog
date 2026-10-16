@@ -20,6 +20,12 @@ export const profileConfig: ProfileConfig = {
 	// 这里只是默认值，显示设置面板的「外观 → Profile 链接样式」可运行时切换
 	linkDisplayMode: "banner",
 
+	// 生日 —— 到了这天，页面上会浮起一片气球（模仿 X 的生日特效）
+	// 格式："MM-DD"，例如 "10-17"（写完整的 "2000-10-17" 也行，只取月日）
+	// 判定按站点时区 siteConfig.timezone；当天只播一次，之后重开浏览器也不再播
+	// 留空 = 关闭这个特效。实现见 src/components/features/BalloonEffect.astro
+	birthday: "",
+
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
 	// 访问https://icones.js.org/ 获取图标代码，

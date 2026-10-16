@@ -77,6 +77,14 @@ declare global {
 		wavesManager?: WavesManagerLike;
 		/** 水波纹特效初始化守卫,确保只初始化一次(Swup 切页重跑脚本时复用) */
 		wavesInitialized?: boolean;
+		/** 生日气球特效管理器(一次性播放,播完自毁) */
+		balloonManager?: {
+			readonly getIsRunning: boolean;
+			init: () => void;
+			stop: () => void;
+		};
+		/** 生日气球特效初始化守卫,确保只初始化一次 */
+		balloonInitialized?: boolean;
 		/** 布局初始化守卫,确保 Swup 切页重跑模块脚本时只执行一次 */
 		__fireflyLayoutInit?: boolean;
 		/** 打字机特效监听器守卫,确保只注册一次 */

@@ -3,6 +3,7 @@ import GoogleAnalytics from "@components/analytics/GoogleAnalytics.astro";
 import La51Analytics from "@components/analytics/La51Analytics.astro";
 import MicrosoftClarity from "@components/analytics/MicrosoftClarity.astro";
 import UmamiAnalytics from "@components/analytics/UmamiAnalytics.astro";
+import BalloonEffect from "@components/features/BalloonEffect.astro";
 import CodeGroupManager from "@components/features/CodeGroupManager.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
@@ -585,6 +586,9 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
 
     <!-- Water Waves Effect -->
     <WavesEffect />
+
+    <!-- Birthday Balloons Effect（仅在 profileConfig.birthday 当天、且当天还没播过时才会出现） -->
+    <BalloonEffect />
 
     <!-- Fancybox Manager -->
     <FancyboxManager />
