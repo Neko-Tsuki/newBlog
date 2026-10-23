@@ -7,6 +7,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { onMount } from "svelte";
 import { formatDynamicDate } from "@/utils/date-utils";
+import { dynamicPlainText } from "@/utils/dynamic-html";
 import { fetchWithDedup } from "@/utils/fetch-dedup";
 import { fetchMemos } from "@/utils/memos-adapter";
 import { url } from "@/utils/url-utils";
@@ -65,13 +66,6 @@ function updateCountBadge() {
 	}
 }
 
-// 从 HTML 中提取纯文本摘要
-function getPlainText(html: string): string {
-	const div = document.createElement("div");
-	div.innerHTML = html;
-	return div.textContent?.trim() || "";
-}
-
 // 格式化日期
 // 本地 API 使用 formatDynamicDate（带时区转换）
 // 第三方 API 和 Memos 使用浏览器本地时区，不做额外转换
@@ -103,7 +97,7 @@ function formatDate(timestamp: number): string {
 		</p>
 	{:else}
 		{#each entries as entry (entry.id)}
-			{@const text = getPlainText(entry.html)}
+			{@const text = dynamicPlainText(entry.html)}
 			{@const hasImage = (entry.images?.length ?? 0) > 0}
 			<a
 				href={url(`/dynamic/#dynamic-${entry.id}`)}

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "6.16.8",
   "engines": {
-    "node": ">=22.23.0"
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
   },
   "packageManager": "pnpm@11.22.0",
   "scripts": {
@@ -51,11 +51,12 @@
     "@tailwindcss/typography": "^0.5.20",
     "@types/hast": "^3.0.5",
     "@types/mdast": "^4.0.4",
-    "astro": "7.3.2",
+    "astro": "7.3.3",
     "astro-expressive-code": "^0.44.2",
     "astro-icon": "^1.2.0",
     "ci-info": "^4.4.0",
     "dayjs": "^1.11.23",
+    "dompurify": "^3.4.17",
     "ec-lang-logo": "^1.0.5",
     "expressive-code-collapsible": "^0.1.0",
     "expressive-code-language-badge": "^1.1.0",
@@ -81,9 +82,9 @@
     "remark-directive": "^4.0.0",
     "remark-math": "^6.0.0",
     "remark-sectionize": "^2.1.0",
-    "sanitize-html": "^2.18.0",
+    "sanitize-html": "^2.18.1",
     "satteri": "^0.10.5",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "stylus": "^0.64.0",
     "svelte": "^5.57.0",
     "tailwindcss": "^4.3.3",

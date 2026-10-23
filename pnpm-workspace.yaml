@@ -3,3 +3,11 @@ packages:
 allowBuilds:
   esbuild: true
   workerd: true
+
+# Keep security fixes in transitive dependencies whose parents pin older releases.
+overrides:
+  'serialize-javascript@<7.0.3': '^7.0.3'
+  'sharp@<0.35.5': '^0.35.5'
+  'undici@7.29.0': '^7.29.1'
+  'katex@<0.18.2': '^0.19.0'
+  'postcss-selector-parser@<7.1.6': '^7.1.6'

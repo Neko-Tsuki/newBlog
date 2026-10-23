@@ -11,7 +11,7 @@
 - **Astro 7** + **Svelte 5**
 - Tailwind CSS v4
 - Pagefind（站内搜索）
-- pnpm（包管理，需 Node.js >= 22）
+- pnpm（包管理，需 Node.js 22.23.4+、24.22.1+ 或 26.12.1+）
 
 ## 本地开发
 

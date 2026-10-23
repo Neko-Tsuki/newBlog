@@ -2,6 +2,7 @@
 import { onMount, tick } from "svelte";
 import ClientPagination from "@/components/common/ClientPagination.svelte";
 import { formatTimezoneOffset } from "@/utils/date-utils";
+import { dynamicImageUrl, sanitizeDynamicHtml } from "@/utils/dynamic-html";
 import { fetchMemos } from "@/utils/memos-adapter";
 import { registerDynamicGallery } from "./dynamic-gallery";
 import { registerDynamicInlineComments } from "./dynamic-inline-comments";
@@ -201,10 +202,15 @@ function createItem(entry: DynamicData) {
 	const content = root.querySelector<HTMLElement>("[data-dynamic-content]");
 	if (content) {
 		content.id = `${anchorId}-content`;
-		content.innerHTML = entry.html;
+		content.innerHTML = sanitizeDynamicHtml(entry.html);
+		for (const link of content.querySelectorAll("a[target='_blank']")) {
+			link.setAttribute("rel", "noopener noreferrer");
+		}
 		for (const image of entry.images) {
+			const src = dynamicImageUrl(image.src);
+			if (!src) continue;
 			const element = document.createElement("img");
-			element.src = image.src;
+			element.src = src;
 			element.alt = image.alt;
 			element.loading = "lazy";
 			if (image.title) element.title = image.title;
